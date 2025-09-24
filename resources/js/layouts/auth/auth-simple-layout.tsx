@@ -15,28 +15,59 @@ export default function AuthSimpleLayout({
     description,
 }: PropsWithChildren<AuthLayoutProps>) {
     return (
-        <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
-            <div className="w-full max-w-sm">
-                <div className="flex flex-col gap-8">
-                    <div className="flex flex-col items-center gap-4">
-                        <Link
-                            href={home()}
-                            className="flex flex-col items-center gap-2 font-medium"
-                        >
-                            <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md">
-                                <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" />
+        <div className="flex min-h-svh bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
+            {/* Left side - Inspiring Branding */}
+            <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center bg-gradient-to-br from-pink-600 to-purple-600 text-white p-12">
+                <div className="max-w-md text-center">
+                    <Link href={home()} className="mb-8 inline-block">
+                        <div className="flex items-center justify-center space-x-4">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white">
+                                <AppLogoIcon className="size-10 fill-current text-pink-600" />
                             </div>
-                            <span className="sr-only">{title}</span>
-                        </Link>
-
-                        <div className="space-y-2 text-center">
-                            <h1 className="text-xl font-medium">{title}</h1>
-                            <p className="text-center text-sm text-muted-foreground">
-                                {description}
+                            <div className="text-left">
+                                <div className="text-3xl font-bold">Kaupod</div>
+                                <div className="text-pink-100">Private Health Care</div>
+                            </div>
+                        </div>
+                    </Link>
+                    
+                    <div className="space-y-6">
+                        <div>
+                            <h3 className="text-xl font-semibold mb-2">Private & Secure</h3>
+                            <p className="text-pink-100">
+                                Your reproductive health journey with complete confidentiality.
                             </p>
                         </div>
                     </div>
-                    {children}
+                </div>
+            </div>
+
+
+            {/* Right side - Form */}
+            <div className="flex flex-1 flex-col items-center justify-center p-6 md:p-10 lg:w-1/2">
+                <div className="w-full max-w-md">
+                    <div className="bg-white rounded-lg shadow border p-8">
+                        <div className="flex flex-col items-center gap-6 mb-8">
+                            {/* Mobile logo */}
+                            <Link
+                                href={home()}
+                                className="lg:hidden flex flex-col items-center gap-2"
+                            >
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-pink-600 to-purple-600">
+                                    <AppLogoIcon className="size-8 fill-current text-white" />
+                                </div>
+                                <span className="text-xl font-bold text-pink-600">Kaupod</span>
+                            </Link>
+
+                            <div className="space-y-2 text-center">
+                                <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                                <p className="text-gray-600">
+                                    {description}
+                                </p>
+                            </div>
+                        </div>
+                        {children}
+                    </div>
                 </div>
             </div>
         </div>
