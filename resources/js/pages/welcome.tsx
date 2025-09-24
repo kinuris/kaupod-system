@@ -1,6 +1,6 @@
-import { dashboard, login, register } from '@/routes';
+import { dashboard, logout } from '@/routes';
 import { type SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
@@ -20,17 +20,37 @@ export default function Welcome() {
                         </div>
                         <div className="flex items-center space-x-4">
                             {auth.user ? (
-                                <Link href={dashboard()} className="text-pink-600 hover:text-pink-700 font-medium">
-                                    Dashboard
-                                </Link>
+                                <>
+                                    <span className="text-gray-600 text-sm">
+                                        Welcome, {auth.user.name}
+                                    </span>
+                                    <Link href={dashboard()} className="text-pink-600 hover:text-pink-700 font-medium">
+                                        Dashboard
+                                    </Link>
+                                    <Link 
+                                        href={logout()} 
+                                        as="button"
+                                        method="post"
+                                        className="text-gray-600 hover:text-gray-700 font-medium"
+                                        onClick={() => router.flushAll()}
+                                    >
+                                        Logout
+                                    </Link>
+                                </>
                             ) : (
                                 <>
-                                    <Link href={login()} className="text-gray-600 hover:text-gray-700">
+                                    <a 
+                                        href="/login" 
+                                        className="text-gray-600 hover:text-gray-700"
+                                    >
                                         Login
-                                    </Link>
-                                    <Link href={register()} className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700">
+                                    </a>
+                                    <a 
+                                        href="/register" 
+                                        className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700"
+                                    >
                                         Get Started
-                                    </Link>
+                                    </a>
                                 </>
                             )}
                         </div>
@@ -49,9 +69,9 @@ export default function Welcome() {
                         Access reproductive health services with complete privacy and dignity. 
                         Your health, your choice, your confidentiality.
                     </p>
-                    <Link href={register()} className="inline-block bg-pink-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-pink-700 transition-colors">
+                    <a href="/register" className="inline-block bg-pink-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-pink-700 transition-colors">
                         Start Your Journey
-                    </Link>
+                    </a>
                 </div>
             </section>
 
@@ -79,9 +99,9 @@ export default function Welcome() {
                                 Discreet home delivery of reproductive health products. All packages are unmarked 
                                 and delivered with complete confidentiality to protect your privacy.
                             </p>
-                            <Link href={register()} className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors">
+                            <a href="/register" className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors">
                                 Order Privacy Kit
-                            </Link>
+                            </a>
                         </div>
 
                         <div className="bg-teal-50 rounded-2xl p-8 border border-teal-100">
@@ -95,9 +115,9 @@ export default function Welcome() {
                                 Connect with qualified healthcare professionals in a judgment-free environment. 
                                 Get the guidance and support you need with complete confidentiality.
                             </p>
-                            <Link href={register()} className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
+                            <a href="/register" className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
                                 Book Consultation
-                            </Link>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -125,9 +145,9 @@ export default function Welcome() {
                                     Our AI companion provides immediate, judgment-free guidance on reproductive health topics. 
                                     All conversations are completely private and never stored.
                                 </p>
-                                <Link href={register()} className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                                <a href="/register" className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
                                     Try AI Companion
-                                </Link>
+                                </a>
                             </div>
                             <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-6">
                                 <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
@@ -155,9 +175,9 @@ export default function Welcome() {
                     <p className="text-xl text-pink-100 mb-8">
                         Join thousands who trust Kaupod for private, compassionate reproductive health care.
                     </p>
-                    <Link href={register()} className="inline-block bg-white text-pink-600 px-8 py-4 rounded-lg text-lg font-bold hover:bg-gray-50 transition-colors">
+                    <a href="/register" className="inline-block bg-white text-pink-600 px-8 py-4 rounded-lg text-lg font-bold hover:bg-gray-50 transition-colors">
                         Get Started Today
-                    </Link>
+                    </a>
                 </div>
             </section>
 
