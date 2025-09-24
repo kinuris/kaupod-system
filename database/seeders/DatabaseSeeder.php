@@ -14,15 +14,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::firstOrCreate(
-            ['email' => 'test@example.com'],
             [
-                'name' => 'Test User',
+                'email' => 'admin@kaupod.com',
+                'name' => 'Admin User',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'role' => 'admin',
             ]
         );
+
+        $this->call([
+            SettingsSeeder::class,
+            HubSeeder::class,
+        ]);
     }
 }
