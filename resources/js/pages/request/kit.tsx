@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle, Package, MapPin } from 'lucide-react';
+import { LoaderCircle, Package, MapPin, Info } from 'lucide-react';
 
 interface DeliveryLocation {
     lat: number;
@@ -37,12 +37,71 @@ export default function KitRequest() {
                                 <Package className="h-8 w-8 text-white" />
                             </div>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Privacy Kit Request
-                        </h1>
+                        <div className="flex items-center justify-center gap-3 mb-4">
+                            <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+                                Privacy Kit Request
+                            </h1>
+                            <div className="group relative">
+                                <Info className="h-6 w-6 text-pink-600 cursor-help" />
+                                <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-80 p-4 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 shadow-lg">
+                                    <div className="space-y-3">
+                                        <div className="font-semibold text-pink-300">What's in the Privacy Kit?</div>
+                                        <div>HIV testing kits delivered discreetly to your specified location with complete confidentiality.</div>
+                                        <div className="space-y-2">
+                                            <div className="font-medium text-teal-300">How it works:</div>
+                                            <div className="space-y-1 text-xs">
+                                                <div>• 1. Receive your kit at the pinpointed location</div>
+                                                <div>• 2. Complete the testing procedure privately</div>
+                                                <div>• 3. Schedule a pickup using our platform</div>
+                                                <div>• 4. Get your results securely in Kaupod</div>
+                                            </div>
+                                        </div>
+                                        <div className="text-xs text-gray-300 italic">Complete privacy guaranteed throughout the entire process.</div>
+                                    </div>
+                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                </div>
+                            </div>
+                        </div>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Request a discreet delivery of reproductive health products with complete confidentiality
+                            Confidential HIV testing kits delivered to your exact location with secure result delivery
                         </p>
+                    </div>
+
+                    {/* Information Card */}
+                    <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl border border-pink-200 p-6 max-w-2xl mx-auto mb-8">
+                        <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100">
+                                    <Info className="h-5 w-5 text-pink-600" />
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">HIV Testing Kit Information</h3>
+                                <div className="space-y-3 text-gray-700">
+                                    <p className="text-sm">
+                                        Our privacy kits contain professional-grade HIV testing materials delivered discreetly to your chosen location.
+                                    </p>
+                                    <div className="grid md:grid-cols-2 gap-4 text-sm">
+                                        <div className="space-y-2">
+                                            <div className="font-medium text-pink-700">✓ Delivery Process</div>
+                                            <div className="text-xs space-y-1">
+                                                <div>• Unmarked, discrete packaging</div>
+                                                <div>• GPS-precise delivery location</div>
+                                                <div>• No signature required options</div>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="font-medium text-teal-700">✓ Testing & Results</div>
+                                            <div className="text-xs space-y-1">
+                                                <div>• Complete testing in privacy</div>
+                                                <div>• Schedule pickup via platform</div>
+                                                <div>• Secure results in your account</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
@@ -134,25 +193,42 @@ export default function KitRequest() {
                                     </div>
 
                                     <div className="bg-pink-50 border border-pink-200 rounded-lg p-6">
-                                        <h3 className="font-semibold text-pink-800 mb-3">Privacy Guarantee</h3>
-                                        <ul className="text-pink-700 space-y-2">
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-pink-600 font-bold">•</span>
-                                                All packages are unmarked and discreet
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-pink-600 font-bold">•</span>
-                                                No identifying information on exterior packaging
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-pink-600 font-bold">•</span>
-                                                Secure, confidential delivery process
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-pink-600 font-bold">•</span>
-                                                Your privacy is our top priority
-                                            </li>
-                                        </ul>
+                                        <h3 className="font-semibold text-pink-800 mb-3">Complete Privacy & Process</h3>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <div className="font-medium text-pink-800 mb-2">Delivery Guarantee:</div>
+                                                <ul className="text-pink-700 space-y-1 text-sm">
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-pink-600 font-bold">•</span>
+                                                        All packages are unmarked and discreet
+                                                    </li>
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-pink-600 font-bold">•</span>
+                                                        No identifying information on exterior packaging
+                                                    </li>
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-pink-600 font-bold">•</span>
+                                                        GPS-precise delivery to your chosen location
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <div className="font-medium text-teal-800 mb-2">After Testing:</div>\n                                                <ul className="text-teal-700 space-y-1 text-sm">
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-teal-600 font-bold">•</span>
+                                                        Complete the HIV test in complete privacy
+                                                    </li>
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-teal-600 font-bold">•</span>
+                                                        Use the platform to specify a pickup location
+                                                    </li>
+                                                    <li className="flex items-start gap-2">
+                                                        <span className="text-teal-600 font-bold">•</span>
+                                                        Receive secure results directly in Kaupod
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <Button

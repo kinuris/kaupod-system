@@ -29,6 +29,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/request/consultation', [ConsultationRequestController::class, 'store'])->name('consultation-request.store');
     Route::get('/request/kit', function() { return Inertia::render('request/kit'); })->name('kit-order.form');
     Route::get('/request/consultation', function() { return Inertia::render('request/consultation'); })->name('consultation-request.form');
+    
+    // My Orders page - for clients to check status
+    Route::get('/my-orders', function() {
+        $user = request()->user();
+        $kitOrders = $user->kitOrders()->latest()->get(['id', 'status', 'phone', 'delivery_location_address', 'delivery_address', 'created_at', 'timeline']);
+        $consultations = $user->consultationRequests()->latest()->get(['id', 'status', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 'created_at', 'timeline']);
+        
+        return Inertia::render('my-orders', [
+            'kitOrders' => $kitOrders,
+            'consultationRequests' => $consultations,
+        ]);
+    })->name('my-orders');
 });
 
 // Admin routes

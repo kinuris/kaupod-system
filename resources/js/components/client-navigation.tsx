@@ -28,13 +28,19 @@ export default function ClientNavigation() {
                                             href="/request/kit" 
                                             className="text-pink-600 hover:text-pink-700 font-medium"
                                         >
-                                            Privacy Kits
+                                            Testing Kits
                                         </Link>
                                         <Link 
                                             href="/request/consultation" 
                                             className="text-teal-600 hover:text-teal-700 font-medium"
                                         >
                                             Consultations
+                                        </Link>
+                                        <Link 
+                                            href="/my-orders" 
+                                            className="text-purple-600 hover:text-purple-700 font-medium"
+                                        >
+                                            My Orders
                                         </Link>
                                     </>
                                 ) : (

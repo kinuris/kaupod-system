@@ -13,20 +13,29 @@ class ConsultationRequestController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'schedule_preferences' => 'required|array',
-            'schedule_preferences.preferred_days' => 'nullable|array',
-            'schedule_preferences.time_range' => 'nullable|string|max:255',
-            'notes' => 'nullable|string|max:2000',
+            'preferred_date' => 'required|date|after:today',
+            'preferred_time' => 'required|string',
+            'consultation_type' => 'required|string',
+            'phone' => 'required|string|max:20',
+            'reason' => 'required|string|max:2000',
+            'medical_history' => 'nullable|string|max:2000',
         ]);
 
         ConsultationRequest::create([
             'user_id' => Auth::id(),
-            'schedule_preferences' => $data['schedule_preferences'],
+            'phone' => $data['phone'],
+            'preferred_date' => $data['preferred_date'],
+            'preferred_time' => $data['preferred_time'],
+            'consultation_type' => $data['consultation_type'],
+            'reason' => $data['reason'],
+            'medical_history' => $data['medical_history'] ?? null,
             'status' => ConsultationStatus::Received,
-            'notes' => $data['notes'] ?? null,
+            'timeline' => [now()->toDateTimeString() => 'received'],
         ]);
 
-        return redirect()->route('dashboard')->with('status', 'Consultation request submitted.');
+        // For clients, redirect to home instead of dashboard
+        $redirectRoute = $request->user()->isClient() ? 'home' : 'dashboard';
+        return redirect()->route($redirectRoute)->with('status', 'Consultation request submitted successfully! We will contact you soon to confirm your appointment.');
     }
 
     public function updateStatus(Request $request, ConsultationRequest $consultationRequest)
@@ -42,7 +51,15 @@ class ConsultationRequestController extends Controller
         if (! in_array($new, $current->nextAllowed(), true)) {
             return back()->withErrors(['status' => 'Invalid status transition']);
         }
-        $consultationRequest->update(['status' => $new]);
+        
+        $timeline = $consultationRequest->timeline ?? [];
+        $timeline[now()->toDateTimeString()] = $new->value;
+        
+        $consultationRequest->update([
+            'status' => $new,
+            'timeline' => $timeline,
+        ]);
+        
         return back()->with('status', 'Status updated');
     }
 }

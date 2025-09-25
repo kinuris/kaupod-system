@@ -12,12 +12,15 @@ class ConsultationRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'schedule_preferences', 'status', 'confirmed_datetime', 'notes'
+        'user_id', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 
+        'reason', 'medical_history', 'schedule_preferences', 'status', 'confirmed_datetime', 'notes', 'timeline'
     ];
 
     protected $casts = [
         'schedule_preferences' => 'array',
+        'timeline' => 'array',
         'confirmed_datetime' => 'datetime',
+        'preferred_date' => 'date',
         'status' => ConsultationStatus::class,
     ];
 

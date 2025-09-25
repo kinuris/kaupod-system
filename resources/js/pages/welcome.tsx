@@ -47,18 +47,18 @@ export default function Welcome() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-4">Privacy Kits</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4">HIV Testing Kits</h3>
                             <p className="text-gray-600 mb-6 leading-relaxed">
-                                Discreet home delivery of reproductive health products. All packages are unmarked 
-                                and delivered with complete confidentiality to protect your privacy.
+                                Confidential HIV testing kits delivered discreetly to your exact location. Complete the test privately, 
+                                schedule pickup through our platform, and receive secure results directly in your Kaupod account.
                             </p>
                             {auth.user ? (
                                 <Link href="/request/kit" className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors">
-                                    Order Privacy Kit
+                                    Order HIV Testing Kit
                                 </Link>
                             ) : (
                                 <a href="/register" className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors">
-                                    Order Privacy Kit
+                                    Order HIV Testing Kit
                                 </a>
                             )}
                         </div>
