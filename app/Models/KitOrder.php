@@ -12,7 +12,8 @@ class KitOrder extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'price', 'delivery_notes', 'status', 'timeline'
+        'user_id', 'phone', 'price', 'delivery_notes', 'delivery_latitude', 'delivery_longitude', 
+        'delivery_location_address', 'delivery_address', 'status', 'timeline'
     ];
 
     protected $casts = [

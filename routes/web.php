@@ -13,16 +13,18 @@ Route::get('/', function () {
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Dashboard - only for admin users
     Route::get('dashboard', function () {
-    $user = request()->user();
+        $user = request()->user();
         $kitOrders = $user->kitOrders()->latest()->take(5)->get(['id','status']);
         $consults = $user->consultationRequests()->latest()->take(5)->get(['id','status']);
         return Inertia::render('dashboard', [
             'kitOrders' => $kitOrders,
             'consultationRequests' => $consults,
         ]);
-    })->name('dashboard');
+    })->name('dashboard')->middleware(\App\Http\Middleware\RestrictClientAccess::class);
 
+    // Service request routes - available to all authenticated users
     Route::post('/request/kit', [KitOrderController::class, 'store'])->name('kit-order.store');
     Route::post('/request/consultation', [ConsultationRequestController::class, 'store'])->name('consultation-request.store');
     Route::get('/request/kit', function() { return Inertia::render('request/kit'); })->name('kit-order.form');
