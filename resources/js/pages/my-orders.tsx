@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ClientNavigation from '@/components/client-navigation';
-import { Head } from '@inertiajs/react';
-import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck, MapPin } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
+import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck, MapPin, Trash2 } from 'lucide-react';
 import LocationMapModal from '@/components/location-map-modal';
 
 interface KitOrder {
@@ -30,6 +30,9 @@ interface ConsultationRequest {
 interface StatusPageProps {
     kitOrders: KitOrder[];
     consultationRequests: ConsultationRequest[];
+    filters: {
+        show_cancelled: boolean;
+    };
 }
 
 const getStatusIcon = (status: string) => {
@@ -90,7 +93,7 @@ const formatStatusDisplay = (status: string) => {
     return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
-export default function MyOrders({ kitOrders = [], consultationRequests = [] }: StatusPageProps) {
+export default function MyOrders({ kitOrders = [], consultationRequests = [], filters }: StatusPageProps) {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<{
         latitude: number;
@@ -146,11 +149,36 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [] }: 
                     <div className="grid lg:grid-cols-2 gap-8">
                         {/* HIV Testing Kits */}
                         <div className="bg-white rounded-2xl shadow-xl p-8">
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100">
-                                    <Package className="h-5 w-5 text-pink-600" />
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100">
+                                        <Package className="h-5 w-5 text-pink-600" />
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-gray-900">HIV Testing Kits</h2>
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-900">HIV Testing Kits</h2>
+                                
+                                <div className="flex items-center gap-2">
+                                    <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={filters.show_cancelled}
+                                            onChange={(e) => {
+                                                const url = new URL(window.location.href);
+                                                if (e.target.checked) {
+                                                    url.searchParams.set('show_cancelled', '1');
+                                                } else {
+                                                    url.searchParams.delete('show_cancelled');
+                                                }
+                                                router.get(url.pathname + url.search, {}, {
+                                                    preserveState: true,
+                                                    preserveScroll: true,
+                                                });
+                                            }}
+                                            className="rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+                                        />
+                                        Show cancelled orders
+                                    </label>
+                                </div>
                             </div>
 
                             {kitOrders.length === 0 ? (
@@ -210,6 +238,31 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [] }: 
                                             <div className="text-sm text-gray-600">
                                                 <span className="font-medium">Contact:</span> {order.phone}
                                             </div>
+
+                                            {order.status === 'in_review' && (
+                                                <div className="mt-3 pt-3 border-t border-gray-100">
+                                                    <button
+                                                        onClick={() => {
+                                                            if (confirm('Are you sure you want to cancel this kit order? This action cannot be undone.')) {
+                                                                router.delete(`/kit-orders/${order.id}/cancel`, {
+                                                                    preserveScroll: true,
+                                                                    onSuccess: () => {
+                                                                        // The success message will be shown via the redirect
+                                                                    },
+                                                                    onError: (errors) => {
+                                                                        console.error('Error cancelling order:', errors);
+                                                                        alert('Error cancelling order. Please try again.');
+                                                                    }
+                                                                });
+                                                            }
+                                                        }}
+                                                        className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                        Cancel Order
+                                                    </button>
+                                                </div>
+                                            )}
 
                                             {order.timeline && Object.keys(order.timeline).length > 0 && (
                                                 <div className="mt-3 pt-3 border-t border-gray-100">

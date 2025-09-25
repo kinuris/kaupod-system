@@ -64,4 +64,29 @@ class KitOrderController extends Controller
 
         return back()->with('status', 'Status updated');
     }
+
+    public function cancel(Request $request, KitOrder $kitOrder)
+    {
+        // Only the owner or admin can cancel
+        abort_unless(
+            $request->user()?->id === $kitOrder->user_id || $request->user()?->isAdmin(), 
+            403
+        );
+
+        // Can only cancel if status is InReview
+        if ($kitOrder->status !== KitOrderStatus::InReview) {
+            return back()->withErrors(['cancel' => 'Kit order can only be cancelled when it is still in review.']);
+        }
+
+        $timeline = $kitOrder->timeline ?? [];
+        $timeline[now()->toDateTimeString()] = 'cancelled';
+        
+        $kitOrder->update([
+            'status' => KitOrderStatus::Cancelled,
+            'timeline' => $timeline,
+        ]);
+
+        $redirectRoute = $request->user()->isClient() ? 'home' : 'dashboard';
+        return redirect()->route($redirectRoute)->with('status', 'Kit order has been cancelled successfully.');
+    }
 }
