@@ -33,7 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // My Orders page - for clients to check status
     Route::get('/my-orders', function() {
         $user = request()->user();
-        $kitOrders = $user->kitOrders()->latest()->get(['id', 'status', 'phone', 'delivery_location_address', 'delivery_address', 'created_at', 'timeline']);
+        $kitOrders = $user->kitOrders()->latest()->get(['id', 'status', 'phone', 'delivery_location_address', 'delivery_address', 'delivery_latitude', 'delivery_longitude', 'created_at', 'timeline']);
         $consultations = $user->consultationRequests()->latest()->get(['id', 'status', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 'created_at', 'timeline']);
         
         return Inertia::render('my-orders', [

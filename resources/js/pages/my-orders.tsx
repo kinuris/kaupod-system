@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ClientNavigation from '@/components/client-navigation';
 import { Head } from '@inertiajs/react';
-import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck } from 'lucide-react';
+import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck, MapPin } from 'lucide-react';
+import LocationMapModal from '@/components/location-map-modal';
 
 interface KitOrder {
     id: number;
@@ -9,6 +10,8 @@ interface KitOrder {
     phone: string;
     delivery_location_address?: string;
     delivery_address?: string;
+    delivery_latitude?: number;
+    delivery_longitude?: number;
     created_at: string;
     timeline?: Record<string, string>;
 }
@@ -31,13 +34,20 @@ interface StatusPageProps {
 
 const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
+        case 'in_review':
         case 'confirmed':
         case 'pending':
             return <Clock className="h-5 w-5 text-yellow-500" />;
+        case 'shipping':
         case 'processing':
         case 'shipped':
         case 'in_progress':
             return <Truck className="h-5 w-5 text-blue-500" />;
+        case 'out_for_delivery':
+            return <Truck className="h-5 w-5 text-purple-500" />;
+        case 'returning':
+            return <Package className="h-5 w-5 text-orange-500" />;
+        case 'received':
         case 'completed':
         case 'delivered':
             return <CheckCircle className="h-5 w-5 text-green-500" />;
@@ -51,13 +61,20 @@ const getStatusIcon = (status: string) => {
 
 const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
+        case 'in_review':
         case 'confirmed':
         case 'pending':
             return 'bg-yellow-50 text-yellow-800 border-yellow-200';
+        case 'shipping':
         case 'processing':
         case 'shipped':
         case 'in_progress':
             return 'bg-blue-50 text-blue-800 border-blue-200';
+        case 'out_for_delivery':
+            return 'bg-purple-50 text-purple-800 border-purple-200';
+        case 'returning':
+            return 'bg-orange-50 text-orange-800 border-orange-200';
+        case 'received':
         case 'completed':
         case 'delivered':
             return 'bg-green-50 text-green-800 border-green-200';
@@ -69,7 +86,45 @@ const getStatusColor = (status: string) => {
     }
 };
 
+const formatStatusDisplay = (status: string) => {
+    return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
 export default function MyOrders({ kitOrders = [], consultationRequests = [] }: StatusPageProps) {
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState<{
+        latitude: number;
+        longitude: number;
+        locationAddress: string;
+        deliveryAddress?: string;
+        orderType: 'kit' | 'consultation';
+        orderId: number;
+    } | null>(null);
+
+    const openLocationModal = (
+        latitude: number,
+        longitude: number,
+        locationAddress: string,
+        deliveryAddress: string | undefined,
+        orderType: 'kit' | 'consultation',
+        orderId: number
+    ) => {
+        setSelectedLocation({
+            latitude,
+            longitude,
+            locationAddress,
+            deliveryAddress,
+            orderType,
+            orderId
+        });
+        setModalOpen(true);
+    };
+
+    const closeLocationModal = () => {
+        setModalOpen(false);
+        setSelectedLocation(null);
+    };
+
     return (
         <>
             <Head title="My Orders & Requests - Kaupod" />
@@ -124,13 +179,31 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [] }: 
                                                 </div>
                                                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-sm font-medium ${getStatusColor(order.status)}`}>
                                                     {getStatusIcon(order.status)}
-                                                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                                    {formatStatusDisplay(order.status)}
                                                 </div>
                                             </div>
                                             
                                             {order.delivery_location_address && (
                                                 <div className="text-sm text-gray-600 mb-2">
-                                                    <span className="font-medium">Delivery Location:</span> {order.delivery_location_address}
+                                                    <span className="font-medium">Delivery Location:</span>
+                                                    {order.delivery_latitude && order.delivery_longitude ? (
+                                                        <button
+                                                            onClick={() => openLocationModal(
+                                                                order.delivery_latitude!,
+                                                                order.delivery_longitude!,
+                                                                order.delivery_location_address!,
+                                                                order.delivery_address,
+                                                                'kit',
+                                                                order.id
+                                                            )}
+                                                            className="ml-2 text-pink-600 hover:text-pink-800 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                                                        >
+                                                            {order.delivery_location_address}
+                                                            <MapPin className="h-3 w-3" />
+                                                        </button>
+                                                    ) : (
+                                                        <span className="ml-2">{order.delivery_location_address}</span>
+                                                    )}
                                                 </div>
                                             )}
                                             
@@ -192,7 +265,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [] }: 
                                                 </div>
                                                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-sm font-medium ${getStatusColor(request.status)}`}>
                                                     {getStatusIcon(request.status)}
-                                                    {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                                                    {formatStatusDisplay(request.status)}
                                                 </div>
                                             </div>
                                             
@@ -266,6 +339,20 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [] }: 
                     </div>
                 </div>
             </footer>
+
+            {/* Location Map Modal */}
+            {selectedLocation && (
+                <LocationMapModal
+                    isOpen={modalOpen}
+                    onClose={closeLocationModal}
+                    latitude={selectedLocation.latitude}
+                    longitude={selectedLocation.longitude}
+                    locationAddress={selectedLocation.locationAddress}
+                    deliveryAddress={selectedLocation.deliveryAddress}
+                    orderType={selectedLocation.orderType}
+                    orderId={selectedLocation.orderId}
+                />
+            )}
         </>
     );
 }
