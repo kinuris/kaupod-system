@@ -32,8 +32,8 @@ class KitOrderController extends Controller
             'delivery_longitude' => $data['delivery_longitude'] ?? null,
             'delivery_location_address' => $data['delivery_location_address'] ?? null,
             'delivery_address' => $data['delivery_address'] ?? null,
-            'status' => KitOrderStatus::Confirmed,
-            'timeline' => [now()->toDateTimeString() => 'confirmed'],
+            'status' => KitOrderStatus::InReview,
+            'timeline' => [now()->toDateTimeString() => 'in_review'],
         ]);
 
         // For clients, redirect to home instead of dashboard
