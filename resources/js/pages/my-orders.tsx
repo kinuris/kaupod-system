@@ -15,6 +15,8 @@ interface KitOrder {
     delivery_longitude?: number;
     return_location_address?: string;
     return_address?: string;
+    return_latitude?: number;
+    return_longitude?: number;
     return_date?: string;
     return_notes?: string;
     created_at: string;
@@ -222,28 +224,77 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                 </div>
                                             </div>
                                             
-                                            {order.delivery_location_address && (
-                                                <div className="text-sm text-gray-600 mb-2">
-                                                    <span className="font-medium">Delivery Location:</span>
-                                                    {order.delivery_latitude && order.delivery_longitude ? (
-                                                        <button
-                                                            onClick={() => openLocationModal(
-                                                                order.delivery_latitude!,
-                                                                order.delivery_longitude!,
-                                                                order.delivery_location_address!,
-                                                                order.delivery_address,
-                                                                'kit',
-                                                                order.id
+                                            {/* Show Return Location for Returning status, otherwise show Delivery Location */}
+                                            {order.status === 'returning' || order.status === 'received' ? (
+                                                /* Return Location Section */
+                                                <>
+                                                    {(order.return_location_address || order.return_address) && (
+                                                        <div className="text-sm text-gray-600 mb-2">
+                                                            <span className="font-medium">Return Address:</span>
+                                                            {order.return_latitude && order.return_longitude ? (
+                                                                <button
+                                                                    onClick={() => openLocationModal(
+                                                                        order.return_latitude!,
+                                                                        order.return_longitude!,
+                                                                        order.return_location_address || order.return_address || '',
+                                                                        order.return_address,
+                                                                        'kit',
+                                                                        order.id
+                                                                    )}
+                                                                    className="ml-2 text-orange-600 hover:text-orange-800 transition-colors inline-flex items-center gap-1 cursor-pointer font-medium"
+                                                                >
+                                                                    {order.return_address || order.return_location_address}
+                                                                    <MapPin className="h-3 w-3" />
+                                                                </button>
+                                                            ) : (
+                                                                <span className="ml-2 text-orange-600 font-medium">
+                                                                    {order.return_address || order.return_location_address}
+                                                                </span>
                                                             )}
-                                                            className="ml-2 text-pink-600 hover:text-pink-800 transition-colors inline-flex items-center gap-1 cursor-pointer"
-                                                        >
-                                                            {order.delivery_location_address}
-                                                            <MapPin className="h-3 w-3" />
-                                                        </button>
-                                                    ) : (
-                                                        <span className="ml-2">{order.delivery_location_address}</span>
+                                                        </div>
                                                     )}
-                                                </div>
+
+                                                    {order.return_date && (
+                                                        <div className="text-sm text-gray-600 mb-2">
+                                                            <span className="font-medium">Return Date & Time:</span>
+                                                            <span className="ml-2 text-orange-600 font-medium">
+                                                                {new Date(order.return_date).toLocaleDateString()} at {new Date(order.return_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                                            </span>
+                                                        </div>
+                                                    )}
+
+                                                    {order.return_notes && (
+                                                        <div className="text-sm text-gray-600 mb-2">
+                                                            <span className="font-medium">Return Notes:</span>
+                                                            <span className="ml-2 text-gray-700">{order.return_notes}</span>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                /* Delivery Location Section */
+                                                order.delivery_location_address && (
+                                                    <div className="text-sm text-gray-600 mb-2">
+                                                        <span className="font-medium">Delivery Location:</span>
+                                                        {order.delivery_latitude && order.delivery_longitude ? (
+                                                            <button
+                                                                onClick={() => openLocationModal(
+                                                                    order.delivery_latitude!,
+                                                                    order.delivery_longitude!,
+                                                                    order.delivery_location_address!,
+                                                                    order.delivery_address,
+                                                                    'kit',
+                                                                    order.id
+                                                                )}
+                                                                className="ml-2 text-pink-600 hover:text-pink-800 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                                                            >
+                                                                {order.delivery_location_address}
+                                                                <MapPin className="h-3 w-3" />
+                                                            </button>
+                                                        ) : (
+                                                            <span className="ml-2">{order.delivery_location_address}</span>
+                                                        )}
+                                                    </div>
+                                                )
                                             )}
                                             
                                             <div className="text-sm text-gray-600">

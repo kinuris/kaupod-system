@@ -11,12 +11,35 @@ interface ReturnKitModalProps {
 }
 
 const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderId }) => {
+  // Get current date + 1 hour in UTC+8 for defaults
+  const getDefaultDateTime = () => {
+    const now = new Date();
+    // Convert to UTC+8 (Philippine Time)
+    const utc8 = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+    utc8.setHours(utc8.getHours() + 1); // Add 1 hour for default
+    
+    return {
+      year: utc8.getFullYear().toString(),
+      month: (utc8.getMonth() + 1).toString().padStart(2, '0'),
+      day: utc8.getDate().toString().padStart(2, '0'),
+      hour: utc8.getHours().toString().padStart(2, '0'),
+      minute: utc8.getMinutes().toString().padStart(2, '0'),
+    };
+  };
+
+  const defaultDateTime = getDefaultDateTime();
+
   const [formData, setFormData] = useState({
     return_location_address: '',
     return_latitude: '',
     return_longitude: '',
     return_address: '',
     return_date: '',
+    return_year: defaultDateTime.year,
+    return_month: defaultDateTime.month,
+    return_day: defaultDateTime.day,
+    return_hour: defaultDateTime.hour,
+    return_minute: defaultDateTime.minute,
     return_notes: '',
   });
   
@@ -61,19 +84,29 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
     setIsSubmitting(true);
     setErrors({});
 
+    // Combine separate date/time fields into ISO datetime string
+    const combinedDateTime = `${formData.return_year}-${formData.return_month.padStart(2, '0')}-${formData.return_day.padStart(2, '0')}T${formData.return_hour.padStart(2, '0')}:${formData.return_minute.padStart(2, '0')}:00`;
+
     router.patch(`/kit-orders/${orderId}/client-status`, {
       status: 'returning',
       ...formData,
+      return_date: combinedDateTime,
     }, {
       preserveScroll: true,
       onSuccess: () => {
         onClose();
+        const resetDateTime = getDefaultDateTime();
         setFormData({
           return_location_address: '',
           return_latitude: '',
           return_longitude: '',
           return_address: '',
           return_date: '',
+          return_year: resetDateTime.year,
+          return_month: resetDateTime.month,
+          return_day: resetDateTime.day,
+          return_hour: resetDateTime.hour,
+          return_minute: resetDateTime.minute,
           return_notes: '',
         });
       },
@@ -203,19 +236,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
     }
   };
 
-  // Format datetime-local input value
-  const formatDateForInput = (date: string) => {
-    if (!date) return '';
-    const d = new Date(date);
-    return d.toISOString().slice(0, 16);
-  };
 
-  // Set minimum date to current date + 1 hour
-  const getMinDateTime = () => {
-    const now = new Date();
-    now.setHours(now.getHours() + 1);
-    return now.toISOString().slice(0, 16);
-  };
 
   if (!isOpen) return null;
 
@@ -335,7 +356,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
               name="return_address"
               value={formData.return_address}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-gray-900"
               placeholder="Unit number, building name, etc."
             />
           </div>
@@ -346,15 +367,78 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
               <Calendar className="h-4 w-4 inline mr-1" />
               Preferred Return Date & Time *
             </label>
-            <input
-              type="datetime-local"
-              name="return_date"
-              value={formatDateForInput(formData.return_date)}
-              onChange={handleInputChange}
-              min={getMinDateTime()}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-              required
-            />
+            <div className="grid grid-cols-5 gap-2">
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Year</label>
+                <input
+                  type="number"
+                  min="2024"
+                  max="2030"
+                  value={formData.return_year}
+                  onChange={(e) => setFormData({ ...formData, return_year: e.target.value })}
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Month</label>
+                <select
+                  value={formData.return_month}
+                  onChange={(e) => setFormData({ ...formData, return_month: e.target.value })}
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  required
+                >
+                  <option value="01">Jan</option>
+                  <option value="02">Feb</option>
+                  <option value="03">Mar</option>
+                  <option value="04">Apr</option>
+                  <option value="05">May</option>
+                  <option value="06">Jun</option>
+                  <option value="07">Jul</option>
+                  <option value="08">Aug</option>
+                  <option value="09">Sep</option>
+                  <option value="10">Oct</option>
+                  <option value="11">Nov</option>
+                  <option value="12">Dec</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Day</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="31"
+                  value={formData.return_day}
+                  onChange={(e) => setFormData({ ...formData, return_day: e.target.value })}
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Hour</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="23"
+                  value={formData.return_hour}
+                  onChange={(e) => setFormData({ ...formData, return_hour: e.target.value })}
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Minute</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={formData.return_minute}
+                  onChange={(e) => setFormData({ ...formData, return_minute: e.target.value })}
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  required
+                />
+              </div>
+            </div>
             {errors.return_date && (
               <p className="text-red-500 text-xs mt-1">{errors.return_date}</p>
             )}
@@ -374,7 +458,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
               value={formData.return_notes}
               onChange={handleInputChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-gray-900"
               placeholder="Any special instructions for collection..."
             />
             <p className="text-xs text-gray-500 mt-1">
