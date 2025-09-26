@@ -48,6 +48,8 @@ const getStatusIcon = (status: string) => {
             return <Truck className="h-5 w-5 text-blue-500" />;
         case 'out_for_delivery':
             return <Truck className="h-5 w-5 text-purple-500" />;
+        case 'accepted':
+            return <CheckCircle className="h-5 w-5 text-green-400" />;
         case 'returning':
             return <Package className="h-5 w-5 text-orange-500" />;
         case 'received':
@@ -75,6 +77,8 @@ const getStatusColor = (status: string) => {
             return 'bg-blue-50 text-blue-800 border-blue-200';
         case 'out_for_delivery':
             return 'bg-purple-50 text-purple-800 border-purple-200';
+        case 'accepted':
+            return 'bg-green-50 text-green-800 border-green-200';
         case 'returning':
             return 'bg-orange-50 text-orange-800 border-orange-200';
         case 'received':

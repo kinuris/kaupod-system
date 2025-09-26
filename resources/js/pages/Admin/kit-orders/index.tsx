@@ -56,6 +56,8 @@ const getStatusIcon = (status: string) => {
       return <Package className="h-4 w-4 text-blue-500" />;
     case 'out_for_delivery':
       return <Package className="h-4 w-4 text-purple-500" />;
+    case 'accepted':
+      return <Package className="h-4 w-4 text-green-400" />;
     case 'returning':
       return <Package className="h-4 w-4 text-orange-500" />;
     case 'received':
@@ -75,6 +77,8 @@ const getStatusColor = (status: string) => {
       return 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 border-blue-200 dark:border-blue-700';
     case 'out_for_delivery':
       return 'bg-purple-50 dark:bg-purple-900/20 text-purple-800 dark:text-purple-400 border-purple-200 dark:border-purple-700';
+    case 'accepted':
+      return 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-400 border-green-200 dark:border-green-700';
     case 'returning':
       return 'bg-orange-50 dark:bg-orange-900/20 text-orange-800 dark:text-orange-400 border-orange-200 dark:border-orange-700';
     case 'received':
