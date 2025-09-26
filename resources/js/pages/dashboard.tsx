@@ -5,8 +5,8 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import React from 'react';
 
-type Order = { id:number; status:string };
-type Consultation = { id:number; status:string };
+type Order = { id:number; status:string; user_id?:number; created_at?:string };
+type Consultation = { id:number; status:string; user_id?:number; created_at?:string };
 interface PageProps { kitOrders?: Order[]; consultationRequests?: Consultation[]; }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -39,14 +39,20 @@ export default function Dashboard(props: PageProps) {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <h3 className="font-medium">Privacy Kit Orders</h3>
-                                <Link href="/request/kit" className="text-xs text-pink-600 hover:underline">New</Link>
+                                <Link href="/admin/kit-orders" className="text-xs text-pink-600 hover:underline">Manage All</Link>
                             </div>
                             {kitOrders.length === 0 && <p className="text-xs text-neutral-500">No kit orders yet.</p>}
                             <ul className="space-y-2">
                                 {kitOrders.map(o => (
                                     <li key={o.id} className="text-xs flex justify-between items-center bg-neutral-50 dark:bg-neutral-800/40 border border-neutral-200 dark:border-neutral-700 rounded px-2 py-1">
-                                        <span>Order #{o.id}</span>
-                                        <span className="font-mono bg-neutral-200/60 dark:bg-neutral-700/60 px-2 py-0.5 rounded">{o.status}</span>
+                                        <div className="flex flex-col">
+                                            <span>Order #{o.id}</span>
+                                            {o.user_id && <span className="text-neutral-400">User #{o.user_id}</span>}
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <span className="font-mono bg-neutral-200/60 dark:bg-neutral-700/60 px-2 py-0.5 rounded">{o.status}</span>
+                                            {o.created_at && <span className="text-neutral-400 mt-1">{new Date(o.created_at).toLocaleDateString()}</span>}
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
@@ -54,14 +60,20 @@ export default function Dashboard(props: PageProps) {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <h3 className="font-medium">Consultation Requests</h3>
-                                <Link href="/request/consultation" className="text-xs text-teal-600 hover:underline">New</Link>
+                                <Link href="/admin/consultation-requests" className="text-xs text-teal-600 hover:underline">Manage All</Link>
                             </div>
                             {consultationRequests.length === 0 && <p className="text-xs text-neutral-500">No consultation requests yet.</p>}
                             <ul className="space-y-2">
                                 {consultationRequests.map(c => (
                                     <li key={c.id} className="text-xs flex justify-between items-center bg-neutral-50 dark:bg-neutral-800/40 border border-neutral-200 dark:border-neutral-700 rounded px-2 py-1">
-                                        <span>Request #{c.id}</span>
-                                        <span className="font-mono bg-neutral-200/60 dark:bg-neutral-700/60 px-2 py-0.5 rounded">{c.status}</span>
+                                        <div className="flex flex-col">
+                                            <span>Request #{c.id}</span>
+                                            {c.user_id && <span className="text-neutral-400">User #{c.user_id}</span>}
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <span className="font-mono bg-neutral-200/60 dark:bg-neutral-700/60 px-2 py-0.5 rounded">{c.status}</span>
+                                            {c.created_at && <span className="text-neutral-400 mt-1">{new Date(c.created_at).toLocaleDateString()}</span>}
+                                        </div>
                                     </li>
                                 ))}
                             </ul>

@@ -16,8 +16,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard - only for admin users
     Route::get('dashboard', function () {
         $user = request()->user();
-        $kitOrders = $user->kitOrders()->latest()->take(5)->get(['id','status']);
-        $consults = $user->consultationRequests()->latest()->take(5)->get(['id','status']);
+        
+        // Admins see all recent orders, regular users see their own
+        if ($user->isAdmin()) {
+            $kitOrders = \App\Models\KitOrder::latest()->take(5)->get(['id','status','user_id','created_at']);
+            $consults = \App\Models\ConsultationRequest::latest()->take(5)->get(['id','status','user_id','created_at']);
+        } else {
+            $kitOrders = $user->kitOrders()->latest()->take(5)->get(['id','status']);
+            $consults = $user->consultationRequests()->latest()->take(5)->get(['id','status']);
+        }
+        
         return Inertia::render('dashboard', [
             'kitOrders' => $kitOrders,
             'consultationRequests' => $consults,
@@ -57,22 +65,65 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Admin routes
 Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/kit-orders', function() {
-        $orders = \App\Models\KitOrder::latest()->paginate(20, ['id','status','price','user_id']);
-        return Inertia::render('admin/kit-orders/index', [
+        $query = \App\Models\KitOrder::with('user:id,name,email');
+        
+        // Filter by status
+        if (request('status') && request('status') !== 'all') {
+            $query->where('status', request('status'));
+        }
+        
+        // Filter by date range
+        if (request('date_from')) {
+            $query->whereDate('created_at', '>=', request('date_from'));
+        }
+        if (request('date_to')) {
+            $query->whereDate('created_at', '<=', request('date_to'));
+        }
+        
+        // Search by customer name or email
+        if (request('search')) {
+            $search = request('search');
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            })->orWhere('phone', 'like', "%{$search}%");
+        }
+        
+        // Sort
+        $sortField = request('sort', 'created_at');
+        $sortDirection = request('direction', 'desc');
+        $query->orderBy($sortField, $sortDirection);
+        
+        $orders = $query->paginate(20, ['id','status','price','user_id','phone','delivery_address','delivery_location_address','created_at','timeline'])
+                       ->withQueryString();
+        
+        return Inertia::render('Admin/kit-orders/index', [
             'orders' => $orders,
             'statuses' => array_map(fn($c)=>$c->value, \App\Enums\KitOrderStatus::cases()),
+            'filters' => [
+                'status' => request('status', 'all'),
+                'date_from' => request('date_from'),
+                'date_to' => request('date_to'),
+                'search' => request('search'),
+                'sort' => request('sort', 'created_at'),
+                'direction' => request('direction', 'desc'),
+            ]
         ]);
     })->name('kit-orders.index');
     Route::patch('/kit-orders/{kitOrder}/status', [KitOrderController::class, 'updateStatus'])->name('kit-orders.update-status');
 
     Route::get('/consultation-requests', function() {
         $requests = \App\Models\ConsultationRequest::latest()->paginate(20, ['id','status','user_id']);
-        return Inertia::render('admin/consultation-requests/index', [
+        return Inertia::render('Admin/consultation-requests/index', [
             'requests' => $requests,
             'statuses' => array_map(fn($c)=>$c->value, \App\Enums\ConsultationStatus::cases()),
         ]);
     })->name('consultation-requests.index');
     Route::patch('/consultation-requests/{consultationRequest}/status', [ConsultationRequestController::class, 'updateStatus'])->name('consultation-requests.update-status');
+
+    // Pricing settings routes
+    Route::get('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'index'])->name('pricing.index');
+    Route::patch('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'update'])->name('pricing.update');
 });
 
 require __DIR__.'/settings.php';

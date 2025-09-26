@@ -11,18 +11,42 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { type NavItem, type SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { BookOpen, Folder, LayoutGrid, Package, MessageCircle, DollarSign } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+const getMainNavItems = (isAdmin: boolean): NavItem[] => {
+    const baseItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
+    if (isAdmin) {
+        baseItems.push(
+            {
+                title: 'Manage Kit Requests',
+                href: '/admin/kit-orders',
+                icon: Package,
+            },
+            {
+                title: 'Manage Consultations',
+                href: '/admin/consultation-requests',
+                icon: MessageCircle,
+            },
+            {
+                title: 'Pricing Settings',
+                href: '/admin/pricing',
+                icon: DollarSign,
+            }
+        );
+    }
+
+    return baseItems;
+};
 
 const footerNavItems: NavItem[] = [
     {
@@ -38,6 +62,9 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage<SharedData>().props;
+    const mainNavItems = getMainNavItems(auth.user?.role === 'admin');
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
