@@ -341,6 +341,20 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                 </div>
                                             )}
 
+                                            {order.status === 'received' && (
+                                                <div className="mt-3 pt-3 border-t border-gray-100">
+                                                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <CheckCircle className="h-5 w-5 text-green-600" />
+                                                            <span className="font-medium text-green-800">Kit Successfully Received</span>
+                                                        </div>
+                                                        <p className="text-sm text-green-700">
+                                                            Your testing kit has been received and is being processed. We will send your test results via email within the next few business days.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {order.timeline && Object.keys(order.timeline).length > 0 && (
                                                 <div className="mt-3 pt-3 border-t border-gray-100">
                                                     <div className="text-xs font-medium text-gray-700 mb-2">Timeline:</div>
