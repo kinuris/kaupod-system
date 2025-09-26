@@ -18,15 +18,25 @@ export default function PricingIndex({ pricing }: PageProps) {
     shipping_fee: pricing.shipping_fee,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string | string[]>>({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrors({});
+    setSuccessMessage('');
 
     router.patch('/admin/pricing', formData, {
       onFinish: () => setIsSubmitting(false),
       onSuccess: () => {
-        // Optional: Show success message
+        setSuccessMessage('Pricing settings updated successfully!');
+        // Clear the success message after 5 seconds
+        setTimeout(() => setSuccessMessage(''), 5000);
+      },
+      onError: (errors) => {
+        setErrors(errors);
+        console.error('Pricing update errors:', errors);
       },
     });
   };
@@ -55,6 +65,51 @@ export default function PricingIndex({ pricing }: PageProps) {
             </p>
           </div>
         </div>
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="max-w-2xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                  {successMessage}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error Messages */}
+        {Object.keys(errors).length > 0 && (
+          <div className="max-w-2xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                  There were errors with your submission:
+                </h3>
+                <div className="mt-2 text-sm text-red-700 dark:text-red-300">
+                  <ul className="list-disc pl-5 space-y-1">
+                    {Object.entries(errors).map(([field, messages]) => (
+                      <li key={field}>
+                        <strong>{field.replace('_', ' ')}:</strong> {Array.isArray(messages) ? messages.join(', ') : String(messages)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Settings Form */}
         <div className="max-w-2xl">

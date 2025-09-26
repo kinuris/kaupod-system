@@ -94,6 +94,27 @@ const formatStatusDisplay = (status: string) => {
   return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
+const getValidNextStatuses = (currentStatus: string): string[] => {
+  switch (currentStatus.toLowerCase()) {
+    case 'in_review':
+      return ['shipping', 'cancelled'];
+    case 'shipping':
+      return ['out_for_delivery'];
+    case 'out_for_delivery':
+      return ['accepted'];
+    case 'accepted':
+      return ['returning'];
+    case 'returning':
+      return ['received'];
+    case 'received':
+      return [];
+    case 'cancelled':
+      return [];
+    default:
+      return [];
+  }
+};
+
 export default function KitOrdersIndex({ orders, statuses, filters }: PageProps) {
   const [updatingId, setUpdatingId] = useState<number|null>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -403,7 +424,12 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                         onChange={e => updateStatus(order.id, e.target.value)} 
                         className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
                       >
-                        {statuses.map(status => (
+                        {/* Current status (always shown) */}
+                        <option key={order.status} value={order.status}>
+                          {formatStatusDisplay(order.status)} (Current)
+                        </option>
+                        {/* Valid next statuses */}
+                        {getValidNextStatuses(order.status).map(status => (
                           <option key={status} value={status}>
                             {formatStatusDisplay(status)}
                           </option>
