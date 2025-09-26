@@ -52,9 +52,48 @@ class KitOrderController extends Controller
 
         $current = $kitOrder->status; /** @var KitOrderStatus $current */
         $new = KitOrderStatus::from($data['status']);
-        if (! in_array($new, $current->nextAllowed(), true)) {
+        
+        // Check if this is an admin making the change
+        $user = $request->user();
+        $allowedTransitions = $user && $user->isAdmin() 
+            ? $current->adminNextAllowed()
+            : $current->clientNextAllowed();
+            
+        if (! in_array($new, $allowedTransitions, true)) {
+            $errorMessage = $user && $user->isAdmin() 
+                ? 'Invalid admin status transition'
+                : 'Invalid client status transition';
+            return back()->withErrors(['status' => $errorMessage]);
+        }
+        $timeline = $kitOrder->timeline ?? [];
+        $timeline[now()->toDateTimeString()] = $new->value;
+        $kitOrder->update([
+            'status' => $new,
+            'timeline' => $timeline,
+        ]);
+
+        return back()->with('status', 'Status updated');
+    }
+
+    public function clientUpdateStatus(Request $request, KitOrder $kitOrder)
+    {
+        // Only the owner can update status via client actions
+        if ($request->user()->id !== $kitOrder->user_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $data = $request->validate([
+            'status' => [ 'required', new Enum(KitOrderStatus::class) ],
+        ]);
+
+        $current = $kitOrder->status; /** @var KitOrderStatus $current */
+        $new = KitOrderStatus::from($data['status']);
+        
+        // Use client-specific allowed transitions
+        if (! in_array($new, $current->clientNextAllowed(), true)) {
             return back()->withErrors(['status' => 'Invalid status transition']);
         }
+        
         $timeline = $kitOrder->timeline ?? [];
         $timeline[now()->toDateTimeString()] = $new->value;
         $kitOrder->update([

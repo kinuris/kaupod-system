@@ -95,6 +95,7 @@ const formatStatusDisplay = (status: string) => {
 };
 
 const getValidNextStatuses = (currentStatus: string): string[] => {
+  // Admin-specific status transitions
   switch (currentStatus.toLowerCase()) {
     case 'in_review':
       return ['shipping', 'cancelled'];
@@ -103,7 +104,7 @@ const getValidNextStatuses = (currentStatus: string): string[] => {
     case 'out_for_delivery':
       return ['accepted'];
     case 'accepted':
-      return ['returning'];
+      return []; // Admin cannot move from Accepted - client must initiate return
     case 'returning':
       return ['received'];
     case 'received':
@@ -418,27 +419,36 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <select 
-                        disabled={updatingId === order.id} 
-                        value={order.status} 
-                        onChange={e => updateStatus(order.id, e.target.value)} 
-                        className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
-                      >
-                        {/* Current status (always shown) */}
-                        <option key={order.status} value={order.status}>
-                          {formatStatusDisplay(order.status)} (Current)
-                        </option>
-                        {/* Valid next statuses */}
-                        {getValidNextStatuses(order.status).map(status => (
-                          <option key={status} value={status}>
-                            {formatStatusDisplay(status)}
-                          </option>
-                        ))}
-                      </select>
-                      {updatingId === order.id && (
-                        <div className="ml-2 inline-block">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-600"></div>
+                      {order.status === 'accepted' ? (
+                        <div className="flex items-center gap-2 text-xs text-orange-600 dark:text-orange-400 font-medium">
+                          <Clock className="h-4 w-4" />
+                          Waiting for Kit Return from Client
                         </div>
+                      ) : (
+                        <>
+                          <select 
+                            disabled={updatingId === order.id} 
+                            value={order.status} 
+                            onChange={e => updateStatus(order.id, e.target.value)} 
+                            className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+                          >
+                            {/* Current status (always shown) */}
+                            <option key={order.status} value={order.status}>
+                              {formatStatusDisplay(order.status)} (Current)
+                            </option>
+                            {/* Valid next statuses */}
+                            {getValidNextStatuses(order.status).map(status => (
+                              <option key={status} value={status}>
+                                {formatStatusDisplay(status)}
+                              </option>
+                            ))}
+                          </select>
+                          {updatingId === order.id && (
+                            <div className="ml-2 inline-block">
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-600"></div>
+                            </div>
+                          )}
+                        </>
                       )}
                     </td>
                   </tr>

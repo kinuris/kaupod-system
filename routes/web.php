@@ -60,6 +60,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ],
         ]);
     })->name('my-orders');
+    
+    // Client can update their own kit order status (e.g., mark as returning)
+    Route::patch('/kit-orders/{kitOrder}/client-status', [KitOrderController::class, 'clientUpdateStatus'])->name('kit-orders.client-update-status');
 });
 
 // Admin routes

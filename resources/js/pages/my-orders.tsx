@@ -268,6 +268,33 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                 </div>
                                             )}
 
+                                            {order.status === 'accepted' && (
+                                                <div className="mt-3 pt-3 border-t border-gray-100">
+                                                    <button
+                                                        onClick={() => {
+                                                            if (confirm('Are you ready to return this testing kit? Please ensure you have completed your test.')) {
+                                                                router.patch(`/kit-orders/${order.id}/client-status`, {
+                                                                    status: 'returning'
+                                                                }, {
+                                                                    preserveScroll: true,
+                                                                    onSuccess: () => {
+                                                                        // The success message will be shown via flash
+                                                                    },
+                                                                    onError: (errors) => {
+                                                                        console.error('Error updating order status:', errors);
+                                                                        alert('Error updating order status. Please try again.');
+                                                                    }
+                                                                });
+                                                            }
+                                                        }}
+                                                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors"
+                                                    >
+                                                        <Package className="h-4 w-4" />
+                                                        Mark as Returning
+                                                    </button>
+                                                </div>
+                                            )}
+
                                             {order.timeline && Object.keys(order.timeline).length > 0 && (
                                                 <div className="mt-3 pt-3 border-t border-gray-100">
                                                     <div className="text-xs font-medium text-gray-700 mb-2">Timeline:</div>
