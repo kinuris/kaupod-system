@@ -84,6 +84,12 @@ class KitOrderController extends Controller
 
         $data = $request->validate([
             'status' => [ 'required', new Enum(KitOrderStatus::class) ],
+            'return_location_address' => 'nullable|string|max:255',
+            'return_latitude' => 'nullable|numeric|between:-90,90',
+            'return_longitude' => 'nullable|numeric|between:-180,180',
+            'return_address' => 'nullable|string|max:500',
+            'return_date' => 'nullable|date|after:now',
+            'return_notes' => 'nullable|string|max:1000',
         ]);
 
         $current = $kitOrder->status; /** @var KitOrderStatus $current */
@@ -94,14 +100,37 @@ class KitOrderController extends Controller
             return back()->withErrors(['status' => 'Invalid status transition']);
         }
         
+        // Prepare update data
+        $updateData = [
+            'status' => $new,
+        ];
+
+        // If transitioning to returning status, require return details
+        if ($new === KitOrderStatus::Returning) {
+            if (!$data['return_location_address'] || !$data['return_date']) {
+                return back()->withErrors([
+                    'return_location_address' => 'Return location is required',
+                    'return_date' => 'Return date is required'
+                ]);
+            }
+            
+            $updateData = array_merge($updateData, [
+                'return_location_address' => $data['return_location_address'],
+                'return_latitude' => $data['return_latitude'],
+                'return_longitude' => $data['return_longitude'],
+                'return_address' => $data['return_address'],
+                'return_date' => $data['return_date'],
+                'return_notes' => $data['return_notes'],
+            ]);
+        }
+        
         $timeline = $kitOrder->timeline ?? [];
         $timeline[now()->toDateTimeString()] = $new->value;
-        $kitOrder->update([
-            'status' => $new,
-            'timeline' => $timeline,
-        ]);
+        $updateData['timeline'] = $timeline;
+        
+        $kitOrder->update($updateData);
 
-        return back()->with('status', 'Status updated');
+        return back()->with('status', 'Return details saved and status updated');
     }
 
     public function cancel(Request $request, KitOrder $kitOrder)

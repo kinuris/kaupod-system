@@ -18,6 +18,10 @@ interface Order {
   phone: string;
   delivery_address?: string;
   delivery_location_address?: string;
+  return_location_address?: string;
+  return_address?: string;
+  return_date?: string;
+  return_notes?: string;
   created_at: string;
   timeline?: Record<string, string>;
 }
@@ -405,6 +409,20 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                             <span className="truncate max-w-32" title={order.delivery_location_address}>
                               {order.delivery_location_address}
                             </span>
+                          </div>
+                        )}
+                        {(order.status === 'returning' || order.status === 'received') && order.return_location_address && (
+                          <div className="text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1 pt-1 border-t">
+                            <MapPin className="h-3 w-3" />
+                            <span className="truncate max-w-32" title={`Return: ${order.return_location_address}`}>
+                              Return: {order.return_location_address}
+                            </span>
+                          </div>
+                        )}
+                        {(order.status === 'returning' || order.status === 'received') && order.return_date && (
+                          <div className="text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(order.return_date).toLocaleDateString()} {new Date(order.return_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                           </div>
                         )}
                       </div>

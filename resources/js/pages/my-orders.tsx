@@ -3,6 +3,7 @@ import ClientNavigation from '@/components/client-navigation';
 import { Head, router } from '@inertiajs/react';
 import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck, MapPin, Trash2 } from 'lucide-react';
 import LocationMapModal from '@/components/location-map-modal';
+import ReturnKitModal from '@/components/ReturnKitModal';
 
 interface KitOrder {
     id: number;
@@ -12,6 +13,10 @@ interface KitOrder {
     delivery_address?: string;
     delivery_latitude?: number;
     delivery_longitude?: number;
+    return_location_address?: string;
+    return_address?: string;
+    return_date?: string;
+    return_notes?: string;
     created_at: string;
     timeline?: Record<string, string>;
 }
@@ -107,6 +112,8 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
         orderType: 'kit' | 'consultation';
         orderId: number;
     } | null>(null);
+    const [returnModalOpen, setReturnModalOpen] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
     const openLocationModal = (
         latitude: number,
@@ -272,25 +279,13 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                 <div className="mt-3 pt-3 border-t border-gray-100">
                                                     <button
                                                         onClick={() => {
-                                                            if (confirm('Are you ready to return this testing kit? Please ensure you have completed your test.')) {
-                                                                router.patch(`/kit-orders/${order.id}/client-status`, {
-                                                                    status: 'returning'
-                                                                }, {
-                                                                    preserveScroll: true,
-                                                                    onSuccess: () => {
-                                                                        // The success message will be shown via flash
-                                                                    },
-                                                                    onError: (errors) => {
-                                                                        console.error('Error updating order status:', errors);
-                                                                        alert('Error updating order status. Please try again.');
-                                                                    }
-                                                                });
-                                                            }
+                                                            setSelectedOrderId(order.id);
+                                                            setReturnModalOpen(true);
                                                         }}
                                                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors"
                                                     >
                                                         <Package className="h-4 w-4" />
-                                                        Mark as Returning
+                                                        Set Return Location & Date
                                                     </button>
                                                 </div>
                                             )}
@@ -435,6 +430,17 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                     deliveryAddress={selectedLocation.deliveryAddress}
                     orderType={selectedLocation.orderType}
                     orderId={selectedLocation.orderId}
+                />
+            )}
+
+            {selectedOrderId && (
+                <ReturnKitModal
+                    isOpen={returnModalOpen}
+                    onClose={() => {
+                        setReturnModalOpen(false);
+                        setSelectedOrderId(null);
+                    }}
+                    orderId={selectedOrderId}
                 />
             )}
         </>

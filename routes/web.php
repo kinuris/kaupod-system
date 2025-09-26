@@ -97,7 +97,7 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
         $sortDirection = request('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
         
-        $orders = $query->paginate(20, ['id','status','price','user_id','phone','delivery_address','delivery_location_address','created_at','timeline'])
+        $orders = $query->paginate(20, ['id','status','price','user_id','phone','delivery_address','delivery_location_address','return_location_address','return_address','return_date','return_notes','created_at','timeline'])
                        ->withQueryString();
         
         return Inertia::render('Admin/kit-orders/index', [
