@@ -32,9 +32,10 @@ interface OngoingKitOrder {
 interface KitRequestProps {
     hasOngoingKitOrder: boolean;
     ongoingKitOrder?: OngoingKitOrder;
+    kitPrice: number;
 }
 
-export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder }: KitRequestProps) {
+export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder, kitPrice }: KitRequestProps) {
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
     const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
     const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -117,6 +118,58 @@ export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                             Confidential HIV testing kits delivered to your exact location with secure result delivery
                         </p>
+                    </div>
+
+                    {/* Pricing Card */}
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 max-w-2xl mx-auto mb-8">
+                        <div className="text-center">
+                            <div className="flex items-center justify-center gap-2 mb-4">
+                                <Package className="h-6 w-6 text-red-700" />
+                                <h3 className="text-2xl font-bold text-gray-900">Kit Pricing</h3>
+                            </div>
+                            <div className="mb-4">
+                                <div className="text-4xl font-bold text-red-700 mb-2">
+                                    ₱{kitPrice.toFixed(2)}
+                                </div>
+                                <div className="text-sm text-gray-600 mb-3">
+                                    Complete kit package with delivery and processing
+                                </div>
+                                <div className="text-xs text-gray-500 space-y-1">
+                                    <div className="flex justify-between items-center max-w-xs mx-auto">
+                                        <span>Testing Kit:</span>
+                                        <span>₱350.00</span>
+                                    </div>
+                                    <div className="flex justify-between items-center max-w-xs mx-auto">
+                                        <span>Delivery & Processing:</span>
+                                        <span>₱120.00</span>
+                                    </div>
+                                    <div className="border-t border-gray-200 pt-1 mt-2">
+                                        <div className="flex justify-between items-center max-w-xs mx-auto font-semibold">
+                                            <span>Total:</span>
+                                            <span>₱{kitPrice.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4 text-sm">
+                                <div className="bg-red-50 rounded-lg p-3">
+                                    <div className="font-semibold text-red-700 mb-1">✓ What's Included</div>
+                                    <div className="text-gray-700 space-y-1">
+                                        <div>• FDA-approved HIV test kit</div>
+                                        <div>• Discreet packaging & delivery</div>
+                                        <div>• Secure result processing</div>
+                                    </div>
+                                </div>
+                                <div className="bg-amber-50 rounded-lg p-3">
+                                    <div className="font-semibold text-amber-700 mb-1">✓ Privacy Features</div>
+                                    <div className="text-gray-700 space-y-1">
+                                        <div>• Unmarked packages</div>
+                                        <div>• GPS-precise delivery</div>
+                                        <div>• Confidential results</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Information Card */}

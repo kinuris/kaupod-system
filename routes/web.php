@@ -66,9 +66,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->whereNotIn('status', ['cancelled', 'sent_result'])
             ->first();
         
+        $priceCalculator = new \App\Services\PriceCalculator();
+        
         return Inertia::render('request/kit', [
             'hasOngoingKitOrder' => !!$ongoingKitOrder,
             'ongoingKitOrder' => $ongoingKitOrder,
+            'kitPrice' => $priceCalculator->kitPrice(),
         ]);
     })->name('kit-order.form');
     Route::get('/request/consultation', function() {
