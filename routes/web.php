@@ -36,8 +36,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/request/kit', [KitOrderController::class, 'store'])->name('kit-order.store');
     Route::delete('/kit-orders/{kitOrder}/cancel', [KitOrderController::class, 'cancel'])->name('kit-order.cancel');
     Route::post('/request/consultation', [ConsultationRequestController::class, 'store'])->name('consultation-request.store');
+    Route::post('/consultations/{consultationRequest}/reschedule', [ConsultationRequestController::class, 'reschedule'])->name('consultation-request.reschedule');
     Route::get('/request/kit', function() { return Inertia::render('request/kit'); })->name('kit-order.form');
     Route::get('/request/consultation', function() { return Inertia::render('request/consultation'); })->name('consultation-request.form');
+    
+    // Plus Tracker - Enhanced consultation tracking
+    Route::get('/plus-tracker', function() {
+        $user = request()->user();
+        $consultations = $user->consultationRequests()
+            ->with('assignedPartnerDoctor')
+            ->latest()->get([
+                'id', 'status', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 
+                'consultation_mode', 'consultation_latitude', 'consultation_longitude', 
+                'consultation_location_address', 'reason', 'medical_history', 'scheduled_datetime',
+                'assigned_partner_doctor_id', 'rescheduling_reason', 'last_rescheduled_at', 
+                'timeline', 'created_at'
+            ]);
+        
+        return Inertia::render('consultation-tracker', [
+            'consultationRequests' => $consultations,
+        ]);
+    })->name('consultation-tracker');
     
     // My Orders page - for clients to check status
     Route::get('/my-orders', function() {
@@ -125,6 +144,7 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
         ]);
     })->name('consultation-requests.index');
     Route::patch('/consultation-requests/{consultationRequest}/status', [ConsultationRequestController::class, 'updateStatus'])->name('consultation-requests.update-status');
+    Route::post('/consultation-requests/{consultationRequest}/assign-partner', [ConsultationRequestController::class, 'assignPartnerDoctor'])->name('consultation-requests.assign-partner');
 
     // Pricing settings routes
     Route::get('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'index'])->name('pricing.index');
