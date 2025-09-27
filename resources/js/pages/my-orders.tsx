@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ClientNavigation from '@/components/client-navigation';
 import { Head, router } from '@inertiajs/react';
-import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck, MapPin, Trash2 } from 'lucide-react';
+import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck, MapPin, Trash2, FileText, Undo2 } from 'lucide-react';
 import LocationMapModal from '@/components/location-map-modal';
 import ReturnKitModal from '@/components/ReturnKitModal';
 
@@ -102,6 +102,95 @@ const getStatusColor = (status: string) => {
 
 const formatStatusDisplay = (status: string) => {
     return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
+const getTimelineStatusDetails = (status: string) => {
+    const statusLower = status.toLowerCase();
+    switch (statusLower) {
+        case 'in_review':
+            return {
+                icon: <FileText className="h-4 w-4" />,
+                color: 'text-yellow-600',
+                bgColor: 'bg-yellow-100',
+                borderColor: 'border-yellow-200',
+                description: 'Order submitted for review'
+            };
+        case 'confirmed':
+        case 'accepted':
+            return {
+                icon: <CheckCircle className="h-4 w-4" />,
+                color: 'text-green-600',
+                bgColor: 'bg-green-100',
+                borderColor: 'border-green-200',
+                description: 'Order confirmed and accepted'
+            };
+        case 'shipping':
+        case 'processing':
+            return {
+                icon: <Package className="h-4 w-4" />,
+                color: 'text-blue-600',
+                bgColor: 'bg-blue-100',
+                borderColor: 'border-blue-200',
+                description: 'Kit being prepared for shipment'
+            };
+        case 'shipped':
+        case 'out_for_delivery':
+            return {
+                icon: <Truck className="h-4 w-4" />,
+                color: 'text-purple-600',
+                bgColor: 'bg-purple-100',
+                borderColor: 'border-purple-200',
+                description: 'Kit is on its way to you'
+            };
+        case 'delivered':
+            return {
+                icon: <MapPin className="h-4 w-4" />,
+                color: 'text-indigo-600',
+                bgColor: 'bg-indigo-100',
+                borderColor: 'border-indigo-200',
+                description: 'Kit delivered successfully'
+            };
+        case 'returning':
+            return {
+                icon: <Undo2 className="h-4 w-4" />,
+                color: 'text-orange-600',
+                bgColor: 'bg-orange-100',
+                borderColor: 'border-orange-200',
+                description: 'Kit being returned for processing'
+            };
+        case 'received':
+            return {
+                icon: <CheckCircle className="h-4 w-4" />,
+                color: 'text-green-600',
+                bgColor: 'bg-green-100',
+                borderColor: 'border-green-200',
+                description: 'Kit received and being processed'
+            };
+        case 'completed':
+            return {
+                icon: <CheckCircle className="h-4 w-4" />,
+                color: 'text-green-700',
+                bgColor: 'bg-green-100',
+                borderColor: 'border-green-200',
+                description: 'Process completed successfully'
+            };
+        case 'cancelled':
+            return {
+                icon: <XCircle className="h-4 w-4" />,
+                color: 'text-red-600',
+                bgColor: 'bg-red-100',
+                borderColor: 'border-red-200',
+                description: 'Order was cancelled'
+            };
+        default:
+            return {
+                icon: <Clock className="h-4 w-4" />,
+                color: 'text-gray-600',
+                bgColor: 'bg-gray-100',
+                borderColor: 'border-gray-200',
+                description: formatStatusDisplay(status)
+            };
+    }
 };
 
 export default function MyOrders({ kitOrders = [], consultationRequests = [], filters }: StatusPageProps) {
@@ -357,14 +446,50 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
 
                                             {order.timeline && Object.keys(order.timeline).length > 0 && (
                                                 <div className="mt-3 pt-3 border-t border-gray-100">
-                                                    <div className="text-xs font-medium text-gray-700 mb-2">Timeline:</div>
-                                                    <div className="space-y-1">
-                                                        {Object.entries(order.timeline).map(([timestamp, status]) => (
-                                                            <div key={timestamp} className="flex justify-between text-xs text-gray-500">
-                                                                <span>{status}</span>
-                                                                <span>{new Date(timestamp).toLocaleString()}</span>
-                                                            </div>
-                                                        ))}
+                                                    <div className="text-sm font-medium text-gray-800 mb-4 flex items-center gap-2">
+                                                        <Clock className="h-4 w-4 text-gray-600" />
+                                                        Order Timeline
+                                                    </div>
+                                                    <div className="relative">
+                                                        {Object.entries(order.timeline)
+                                                            .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
+                                                            .map(([timestamp, status], index, array) => {
+                                                                const statusDetails = getTimelineStatusDetails(status);
+                                                                const isLast = index === array.length - 1;
+                                                                
+                                                                return (
+                                                                    <div key={timestamp} className="relative flex items-start gap-3 pb-4">
+                                                                        {/* Timeline line */}
+                                                                        {!isLast && (
+                                                                            <div className="absolute left-5 top-10 bottom-0 w-0.5 bg-gray-200"></div>
+                                                                        )}
+                                                                        
+                                                                        {/* Status icon */}
+                                                                        <div className={`relative flex items-center justify-center w-10 h-10 rounded-full border-2 ${statusDetails.borderColor} ${statusDetails.bgColor} ${statusDetails.color}`}>
+                                                                            {statusDetails.icon}
+                                                                        </div>
+                                                                        
+                                                                        {/* Status content */}
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <div className="flex items-center justify-between">
+                                                                                <div>
+                                                                                    <p className="text-sm font-medium text-gray-900">
+                                                                                        {formatStatusDisplay(status)}
+                                                                                    </p>
+                                                                                    <p className="text-xs text-gray-500 mt-1">
+                                                                                        {statusDetails.description}
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div className="text-xs text-gray-400 ml-4 text-right">
+                                                                                    <div>{new Date(timestamp).toLocaleDateString()}</div>
+                                                                                    <div>{new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })
+                                                        }
                                                     </div>
                                                 </div>
                                             )}
