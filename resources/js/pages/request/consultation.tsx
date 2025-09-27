@@ -23,7 +23,21 @@ interface DeliveryLocation {
     address?: string;
 }
 
-export default function ConsultationRequest() {
+interface OngoingConsultation {
+    id: number;
+    status: string;
+    preferred_date: string;
+    preferred_time: string;
+    consultation_type: string;
+}
+
+interface ConsultationRequestProps {
+    hasOngoingConsultation?: boolean;
+    ongoingConsultation?: OngoingConsultation;
+    errors?: Record<string, string>;
+}
+
+export default function ConsultationRequest({ hasOngoingConsultation = false, ongoingConsultation, errors }: ConsultationRequestProps) {
     const [consultationMode, setConsultationMode] = useState<'online' | 'in-person' | ''>('');
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
     const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
@@ -35,6 +49,11 @@ export default function ConsultationRequest() {
     };
 
     const handleFormSubmit = (submit: () => void) => {
+        // Prevent submission if there's an ongoing consultation
+        if (hasOngoingConsultation) {
+            return;
+        }
+
         if (!ageConfirmed) {
             setSubmitCallback(() => submit);
             setShowAgeConfirmModal(true);
@@ -140,7 +159,52 @@ export default function ConsultationRequest() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
+                    {/* Ongoing Consultation Warning */}
+                    {hasOngoingConsultation && (
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-8 max-w-2xl mx-auto">
+                            <div className="flex items-start gap-3">
+                                <Info className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-semibold text-amber-800 mb-2">
+                                        You have an ongoing consultation
+                                    </h3>
+                                    <p className="text-amber-700 mb-3">
+                                        You currently have a consultation request in progress. You cannot submit a new consultation request until your current one is completed.
+                                    </p>
+                                    {ongoingConsultation && (
+                                        <div className="bg-amber-100 rounded-md p-3 text-sm">
+                                            <div className="font-medium text-amber-800 mb-1">Current Consultation:</div>
+                                            <div className="text-amber-700 space-y-1">
+                                                <div>Status: <span className="font-medium capitalize">{ongoingConsultation.status.replace('_', ' ')}</span></div>
+                                                <div>Type: <span className="font-medium capitalize">{ongoingConsultation.consultation_type.replace('_', ' ')}</span></div>
+                                                <div>Scheduled: <span className="font-medium">{new Date(ongoingConsultation.preferred_date).toLocaleDateString()} at {ongoingConsultation.preferred_time}</span></div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div className="mt-4">
+                                        <a 
+                                            href="/plus-tracker" 
+                                            className="inline-flex items-center text-amber-700 hover:text-amber-800 font-medium text-sm underline"
+                                        >
+                                            View your consultation status →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* General Error Messages */}
+                    {errors?.consultation && (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+                            <div className="flex items-center gap-2">
+                                <Info className="w-4 h-4 text-red-600" />
+                                <p className="text-red-800 text-sm font-medium">{errors.consultation}</p>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className={`bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto ${hasOngoingConsultation ? 'opacity-60 pointer-events-none' : ''}`}>
                         <Form
                             action="/request/consultation"
                             method="post"
@@ -381,7 +445,7 @@ export default function ConsultationRequest() {
                                         type="button"
                                         onClick={() => handleFormSubmit(submit)}
                                         className="w-full bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-700 hover:to-amber-700 text-lg py-4 font-semibold"
-                                        disabled={processing}
+                                        disabled={processing || hasOngoingConsultation}
                                     >
                                         {processing && (
                                             <LoaderCircle className="h-5 w-5 animate-spin mr-3" />

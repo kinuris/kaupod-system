@@ -39,7 +39,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/request/consultation', [ConsultationRequestController::class, 'store'])->name('consultation-request.store');
     Route::post('/consultations/{consultationRequest}/reschedule', [ConsultationRequestController::class, 'reschedule'])->name('consultation-request.reschedule');
     Route::get('/request/kit', function() { return Inertia::render('request/kit'); })->name('kit-order.form');
-    Route::get('/request/consultation', function() { return Inertia::render('request/consultation'); })->name('consultation-request.form');
+    Route::get('/request/consultation', function() {
+        $user = request()->user();
+        $ongoingConsultation = $user->consultationRequests()
+            ->whereIn('status', ['in_review', 'coordinating', 'confirmed'])
+            ->first();
+        
+        return Inertia::render('request/consultation', [
+            'hasOngoingConsultation' => !!$ongoingConsultation,
+            'ongoingConsultation' => $ongoingConsultation,
+        ]);
+    })->name('consultation-request.form');
     
     // Plus Tracker - Enhanced consultation tracking
     Route::get('/plus-tracker', function() {

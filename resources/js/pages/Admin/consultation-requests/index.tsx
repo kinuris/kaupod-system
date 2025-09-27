@@ -155,8 +155,7 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
   const assignPartnerDoctor = (consultationId: number, partnerDoctorId: number) => {
     setAssigningDoctorId(consultationId);
     router.post(`/admin/consultation-requests/${consultationId}/assign-partner`, { 
-      partner_doctor_id: partnerDoctorId,
-      scheduled_datetime: new Date().toISOString()
+      partner_doctor_id: partnerDoctorId
     }, { 
       onFinish: () => setAssigningDoctorId(null),
       onSuccess: () => {
@@ -486,7 +485,7 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
                             {updatingId === request.id ? (
                               <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
                             ) : null}
-                            Send Reminder
+                            Complete & Send Reminder
                           </button>
                         </div>
                       ) : (

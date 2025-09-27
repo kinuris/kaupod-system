@@ -12,6 +12,17 @@ class ConsultationRequestController extends Controller
 {
     public function store(Request $request)
     {
+        // Check if user has an ongoing consultation
+        $ongoingConsultation = ConsultationRequest::where('user_id', Auth::id())
+            ->whereIn('status', ['in_review', 'coordinating', 'confirmed'])
+            ->first();
+
+        if ($ongoingConsultation) {
+            return back()->withErrors([
+                'consultation' => 'You already have an ongoing consultation request. Please wait for it to be completed before requesting a new one.'
+            ])->withInput();
+        }
+
         $data = $request->validate([
             'preferred_month' => 'required|string|in:01,02,03,04,05,06,07,08,09,10,11,12',
             'preferred_day' => 'required|string|in:01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31',
@@ -146,18 +157,24 @@ class ConsultationRequestController extends Controller
 
         $data = $request->validate([
             'partner_doctor_id' => 'required|exists:partner_doctors,id',
-            'scheduled_datetime' => 'required|date|after:now',
+            'scheduled_datetime' => 'nullable|date|after:now',
         ]);
 
         $timeline = $consultationRequest->timeline ?? [];
         $timeline[now()->toDateTimeString()] = 'partner_doctor_assigned';
 
-        $consultationRequest->update([
+        $updateData = [
             'assigned_partner_doctor_id' => $data['partner_doctor_id'],
-            'scheduled_datetime' => $data['scheduled_datetime'],
             'status' => ConsultationStatus::Confirmed,
             'timeline' => $timeline,
-        ]);
+        ];
+
+        // Only update scheduled_datetime if provided
+        if (isset($data['scheduled_datetime'])) {
+            $updateData['scheduled_datetime'] = $data['scheduled_datetime'];
+        }
+
+        $consultationRequest->update($updateData);
 
         return back()->with('status', 'Partner doctor assigned and consultation confirmed.');
     }
