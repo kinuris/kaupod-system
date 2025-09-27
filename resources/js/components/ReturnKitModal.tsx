@@ -271,7 +271,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
                   <button
                     type="button"
                     onClick={getCurrentLocation}
-                    className="bg-white shadow-md rounded-md px-3 py-2 text-sm font-medium text-pink-600 hover:text-pink-800 hover:bg-gray-50 border border-gray-200"
+                    className="bg-white shadow-md rounded-md px-3 py-2 text-sm font-medium text-red-700 hover:text-red-700 hover:bg-gray-50 border border-gray-200"
                   >
                     <Crosshair className="h-4 w-4 inline mr-1" />
                     Use Current Location
@@ -295,13 +295,13 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
                   name="return_location_address"
                   value={formData.return_location_address}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-gray-900"
+                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900"
                   placeholder="Address will be auto-filled from map or enter manually"
                   required
                 />
                 {isGeocodingAddress && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-600"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-700"></div>
                   </div>
                 )}
               </div>
@@ -356,7 +356,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
               name="return_address"
               value={formData.return_address}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-gray-900"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900"
               placeholder="Unit number, building name, etc."
             />
           </div>
@@ -376,7 +376,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
                   max="2030"
                   value={formData.return_year}
                   onChange={(e) => setFormData({ ...formData, return_year: e.target.value })}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
                   required
                 />
               </div>
@@ -385,7 +385,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
                 <select
                   value={formData.return_month}
                   onChange={(e) => setFormData({ ...formData, return_month: e.target.value })}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
                   required
                 >
                   <option value="01">Jan</option>
@@ -410,7 +410,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
                   max="31"
                   value={formData.return_day}
                   onChange={(e) => setFormData({ ...formData, return_day: e.target.value })}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
                   required
                 />
               </div>
@@ -422,7 +422,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
                   max="23"
                   value={formData.return_hour}
                   onChange={(e) => setFormData({ ...formData, return_hour: e.target.value })}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
                   required
                 />
               </div>
@@ -434,7 +434,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
                   max="59"
                   value={formData.return_minute}
                   onChange={(e) => setFormData({ ...formData, return_minute: e.target.value })}
-                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
                   required
                 />
               </div>
@@ -458,7 +458,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
               value={formData.return_notes}
               onChange={handleInputChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-gray-900"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900"
               placeholder="Any special instructions for collection..."
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -482,7 +482,7 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
             type="submit"
             form="return-form"
             disabled={isSubmitting}
-            className="flex-1 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors disabled:bg-pink-300 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-2 bg-red-700 text-white rounded-md hover:bg-red-700 transition-colors disabled:bg-red-700 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Saving...' : 'Set Return Details'}
           </button>

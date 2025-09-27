@@ -39,7 +39,7 @@ export default function Dashboard(props: PageProps) {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <h3 className="font-medium">Privacy Kit Orders</h3>
-                                <Link href="/admin/kit-orders" className="text-xs text-pink-600 hover:underline">Manage All</Link>
+                                <Link href="/admin/kit-orders" className="text-xs text-red-700 hover:underline">Manage All</Link>
                             </div>
                             {kitOrders.length === 0 && <p className="text-xs text-neutral-500">No kit orders yet.</p>}
                             <ul className="space-y-2">
@@ -60,7 +60,7 @@ export default function Dashboard(props: PageProps) {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <h3 className="font-medium">Consultation Requests</h3>
-                                <Link href="/admin/consultation-requests" className="text-xs text-teal-600 hover:underline">Manage All</Link>
+                                <Link href="/admin/consultation-requests" className="text-xs text-amber-700 hover:underline">Manage All</Link>
                             </div>
                             {consultationRequests.length === 0 && <p className="text-xs text-neutral-500">No consultation requests yet.</p>}
                             <ul className="space-y-2">

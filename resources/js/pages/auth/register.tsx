@@ -86,7 +86,7 @@ export default function Register() {
 
                             <Button
                                 type="submit"
-                                className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700"
+                                className="w-full bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-700 hover:to-amber-700"
                                 tabIndex={5}
                                 data-test="register-user-button"
                             >
@@ -110,7 +110,7 @@ export default function Register() {
                             <TextLink 
                                 href={login()} 
                                 tabIndex={6}
-                                className="text-sm text-pink-600 hover:text-pink-700 underline"
+                                className="text-sm text-red-700 hover:text-red-800 underline"
                             >
                                 Already have an account? Sign in
                             </TextLink>
@@ -119,11 +119,11 @@ export default function Register() {
                         <div className="text-center">
                             <p className="text-xs text-gray-500">
                                 By creating an account, you agree to our{' '}
-                                <a href="#" className="text-pink-600 hover:text-pink-700 underline">
+                                <a href="#" className="text-red-700 hover:text-red-800 underline">
                                     Terms of Service
                                 </a>{' '}
                                 and{' '}
-                                <a href="#" className="text-pink-600 hover:text-pink-700 underline">
+                                <a href="#" className="text-red-700 hover:text-red-800 underline">
                                     Privacy Policy
                                 </a>
                             </p>

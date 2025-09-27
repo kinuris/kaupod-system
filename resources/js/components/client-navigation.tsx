@@ -11,7 +11,7 @@ export default function ClientNavigation() {
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <Link href={home()} className="text-2xl font-bold text-pink-600">
+                            <Link href={home()} className="text-2xl font-bold text-red-700">
                                 Kaupod
                             </Link>
                         </div>
@@ -26,25 +26,25 @@ export default function ClientNavigation() {
                                     <>
                                         <Link 
                                             href="/request/kit" 
-                                            className="text-pink-600 hover:text-pink-700 font-medium"
+                                            className="text-red-700 hover:text-red-700 font-medium"
                                         >
                                             Testing Kits
                                         </Link>
                                         <Link 
                                             href="/request/consultation" 
-                                            className="text-teal-600 hover:text-teal-700 font-medium"
+                                            className="text-amber-700 hover:text-amber-700 font-medium"
                                         >
                                             Consultations
                                         </Link>
                                         <Link 
                                             href="/my-orders" 
-                                            className="text-purple-600 hover:text-purple-700 font-medium"
+                                            className="text-stone-700 hover:text-stone-700 font-medium"
                                         >
                                             My Orders
                                         </Link>
                                     </>
                                 ) : (
-                                    <Link href={dashboard()} className="text-pink-600 hover:text-pink-700 font-medium">
+                                    <Link href={dashboard()} className="text-red-700 hover:text-red-700 font-medium">
                                         Dashboard
                                     </Link>
                                 )}
@@ -68,7 +68,7 @@ export default function ClientNavigation() {
                                 </a>
                                 <a 
                                     href="/register" 
-                                    className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700"
+                                    className="bg-red-700 text-white px-4 py-2 rounded-lg hover:bg-red-700"
                                 >
                                     Get Started
                                 </a>

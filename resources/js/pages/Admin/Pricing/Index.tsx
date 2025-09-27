@@ -55,8 +55,8 @@ export default function PricingIndex({ pricing }: PageProps) {
       <div className="space-y-6 p-6">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-100 dark:bg-pink-900/20">
-            <DollarSign className="h-6 w-6 text-pink-600 dark:text-pink-400" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 dark:bg-red-50/20">
+            <DollarSign className="h-6 w-6 text-red-700 dark:text-red-700" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Pricing Settings</h1>
@@ -68,15 +68,15 @@ export default function PricingIndex({ pricing }: PageProps) {
 
         {/* Success Message */}
         {successMessage && (
-          <div className="max-w-2xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+          <div className="max-w-2xl bg-red-50 dark:bg-red-50/20 border border-red-200 dark:border-red-200 rounded-lg p-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-5 w-5 text-red-700" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                <p className="text-sm font-medium text-red-700 dark:text-red-700">
                   {successMessage}
                 </p>
               </div>
@@ -134,7 +134,7 @@ export default function PricingIndex({ pricing }: PageProps) {
                     min="0"
                     value={formData.kit_base_price}
                     onChange={(e) => handleInputChange('kit_base_price', e.target.value)}
-                    className="block w-full pl-8 pr-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                    className="block w-full pl-8 pr-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     placeholder="0.00"
                     required
                   />
@@ -163,7 +163,7 @@ export default function PricingIndex({ pricing }: PageProps) {
                     min="0"
                     value={formData.shipping_fee}
                     onChange={(e) => handleInputChange('shipping_fee', e.target.value)}
-                    className="block w-full pl-8 pr-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                    className="block w-full pl-8 pr-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     placeholder="0.00"
                     required
                   />
@@ -190,7 +190,7 @@ export default function PricingIndex({ pricing }: PageProps) {
                 <div className="border-t border-neutral-200 dark:border-neutral-600 pt-2 mt-2">
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-gray-900 dark:text-white">Total Price:</span>
-                    <span className="font-bold text-lg text-pink-600 dark:text-pink-400">
+                    <span className="font-bold text-lg text-red-700 dark:text-red-700">
                       ₱{(parseFloat(formData.kit_base_price || '0') + parseFloat(formData.shipping_fee || '0')).toFixed(2)}
                     </span>
                   </div>
@@ -202,7 +202,7 @@ export default function PricingIndex({ pricing }: PageProps) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-pink-600 hover:bg-pink-700 disabled:bg-pink-400 text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-red-700 hover:bg-red-800 disabled:bg-red-400 text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900 transition-colors"
                 >
                   {isSubmitting ? (
                     <>

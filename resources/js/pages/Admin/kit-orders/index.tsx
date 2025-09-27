@@ -58,17 +58,17 @@ interface PageProps {
 const getStatusIcon = (status: string) => {
   switch (status.toLowerCase()) {
     case 'in_review':
-      return <Clock className="h-4 w-4 text-yellow-500" />;
+      return <Clock className="h-4 w-4 text-amber-600" />;
     case 'shipping':
-      return <Package className="h-4 w-4 text-blue-500" />;
+      return <Package className="h-4 w-4 text-amber-600" />;
     case 'out_for_delivery':
-      return <Package className="h-4 w-4 text-purple-500" />;
+      return <Package className="h-4 w-4 text-amber-700" />;
     case 'accepted':
-      return <Package className="h-4 w-4 text-green-400" />;
+      return <Package className="h-4 w-4 text-red-700" />;
     case 'returning':
-      return <Package className="h-4 w-4 text-orange-500" />;
+      return <Package className="h-4 w-4 text-amber-700" />;
     case 'received':
-      return <Package className="h-4 w-4 text-green-500" />;
+      return <Package className="h-4 w-4 text-red-700" />;
     case 'cancelled':
       return <Package className="h-4 w-4 text-red-500" />;
     default:
@@ -79,17 +79,17 @@ const getStatusIcon = (status: string) => {
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case 'in_review':
-      return 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400 border-yellow-200 dark:border-yellow-700';
+      return 'bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-400 border-amber-200 dark:border-amber-700';
     case 'shipping':
-      return 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 border-blue-200 dark:border-blue-700';
+      return 'bg-amber-50 dark:bg-stone-900/20 text-amber-800 dark:text-stone-400 border-amber-200 dark:border-stone-700';
     case 'out_for_delivery':
-      return 'bg-purple-50 dark:bg-purple-900/20 text-purple-800 dark:text-purple-400 border-purple-200 dark:border-purple-700';
+      return 'bg-amber-50 dark:bg-stone-900/20 text-amber-800 dark:text-stone-400 border-amber-200 dark:border-stone-700';
     case 'accepted':
-      return 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-400 border-green-200 dark:border-green-700';
+      return 'bg-red-50 dark:bg-red-50/20 text-red-700 dark:text-red-700 border-red-200 dark:border-red-200';
     case 'returning':
-      return 'bg-orange-50 dark:bg-orange-900/20 text-orange-800 dark:text-orange-400 border-orange-200 dark:border-orange-700';
+      return 'bg-amber-50 dark:bg-amber-50/20 text-amber-700 dark:text-amber-700 border-amber-200 dark:border-amber-200';
     case 'received':
-      return 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-400 border-green-200 dark:border-green-700';
+      return 'bg-red-50 dark:bg-red-50/20 text-red-700 dark:text-red-700 border-red-200 dark:border-red-200';
     case 'cancelled':
       return 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-400 border-red-200 dark:border-red-700';
     default:
@@ -212,8 +212,8 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
       <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/20">
-              <Package className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
+              <Package className="h-5 w-5 text-red-700 dark:text-red-400" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Testing Kit Orders</h1>
@@ -247,7 +247,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                   <select
                     value={filters.status}
                     onChange={(e) => handleFilter('status', e.target.value)}
-                    className="w-full text-sm border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full text-sm border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   >
                     <option value="all">All Statuses</option>
                     {statuses.map(status => (
@@ -265,7 +265,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                     type="date"
                     value={filters.date_from || ''}
                     onChange={(e) => handleFilter('date_from', e.target.value)}
-                    className="w-full text-sm border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full text-sm border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -276,7 +276,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                     type="date"
                     value={filters.date_to || ''}
                     onChange={(e) => handleFilter('date_to', e.target.value)}
-                    className="w-full text-sm border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full text-sm border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -290,7 +290,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                       placeholder="Customer name, email, or phone"
                       value={filters.search || ''}
                       onChange={(e) => handleFilter('search', e.target.value)}
-                      className="w-full pl-10 text-sm border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                      className="w-full pl-10 text-sm border border-neutral-300 dark:border-neutral-600 rounded-md px-3 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
                 </div>
@@ -302,33 +302,33 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
               <div className="flex items-center gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-700">
                 <span className="text-sm text-neutral-600 dark:text-neutral-400">Active filters:</span>
                 {filters.status !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-pink-100 dark:bg-pink-900/20 text-pink-800 dark:text-pink-400 text-xs">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 text-xs">
                     Status: {formatStatusDisplay(filters.status)}
-                    <button onClick={() => handleFilter('status', 'all')} className="hover:text-pink-600">
+                    <button onClick={() => handleFilter('status', 'all')} className="hover:text-red-700">
                       <X className="h-3 w-3" />
                     </button>
                   </span>
                 )}
                 {filters.date_from && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-pink-100 dark:bg-pink-900/20 text-pink-800 dark:text-pink-400 text-xs">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 text-xs">
                     From: {filters.date_from}
-                    <button onClick={() => handleFilter('date_from', '')} className="hover:text-pink-600">
+                    <button onClick={() => handleFilter('date_from', '')} className="hover:text-red-700">
                       <X className="h-3 w-3" />
                     </button>
                   </span>
                 )}
                 {filters.date_to && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-pink-100 dark:bg-pink-900/20 text-pink-800 dark:text-pink-400 text-xs">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 text-xs">
                     To: {filters.date_to}
-                    <button onClick={() => handleFilter('date_to', '')} className="hover:text-pink-600">
+                    <button onClick={() => handleFilter('date_to', '')} className="hover:text-red-700">
                       <X className="h-3 w-3" />
                     </button>
                   </span>
                 )}
                 {filters.search && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-pink-100 dark:bg-pink-900/20 text-pink-800 dark:text-pink-400 text-xs">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 text-xs">
                     Search: {filters.search}
-                    <button onClick={() => handleFilter('search', '')} className="hover:text-pink-600">
+                    <button onClick={() => handleFilter('search', '')} className="hover:text-red-700">
                       <X className="h-3 w-3" />
                     </button>
                   </span>
@@ -444,7 +444,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                           </div>
                         )}
                         {(order.status === 'returning' || order.status === 'received') && order.return_location_address && (
-                          <div className="text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1 pt-1 border-t">
+                          <div className="text-xs text-amber-700 dark:text-amber-700 flex items-center gap-1 pt-1 border-t">
                             <MapPin className="h-3 w-3" />
                             <span className="truncate max-w-32" title={`Return: ${order.return_location_address}`}>
                               Return: {order.return_location_address}
@@ -452,7 +452,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                           </div>
                         )}
                         {(order.status === 'returning' || order.status === 'received') && order.return_date && (
-                          <div className="text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1">
+                          <div className="text-xs text-amber-700 dark:text-amber-700 flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
                             {new Date(order.return_date).toLocaleDateString()} {new Date(order.return_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                           </div>
@@ -473,7 +473,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                         <div className="flex flex-col gap-2">
                           {order.result_email_sent ? (
                             <div className="flex items-center gap-2">
-                              <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+                              <div className="flex items-center gap-1 text-xs text-red-700 dark:text-red-700">
                                 <CheckCircle className="h-4 w-4" />
                                 Email Sent
                               </div>
@@ -494,7 +494,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                               {!order.result_email_sent ? (
                                 <button
                                   onClick={() => markEmailSent(order.id)}
-                                  className="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                                  className="text-xs px-2 py-1 bg-red-50 text-white rounded hover:bg-red-50 transition-colors"
                                 >
                                   Mark Sent
                                 </button>
@@ -517,7 +517,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {order.status === 'accepted' ? (
-                        <div className="flex items-center gap-2 text-xs text-orange-600 dark:text-orange-400 font-medium">
+                        <div className="flex items-center gap-2 text-xs text-amber-700 dark:text-amber-700 font-medium">
                           <Clock className="h-4 w-4" />
                           Waiting for Kit Return from Client
                         </div>
@@ -527,7 +527,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                             disabled={updatingId === order.id} 
                             value={order.status} 
                             onChange={e => updateStatus(order.id, e.target.value)} 
-                            className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+                            className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
                           >
                             {/* Current status (always shown) */}
                             <option key={order.status} value={order.status}>
@@ -542,7 +542,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                           </select>
                           {updatingId === order.id && (
                             <div className="ml-2 inline-block">
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-600"></div>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-700"></div>
                             </div>
                           )}
                         </>
@@ -577,7 +577,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                       href={link.url}
                       className={`px-3 py-2 text-sm border rounded-md ${
                         link.active
-                          ? 'bg-pink-600 text-white border-pink-600'
+                          ? 'bg-red-700 text-white border-red-700'
                           : 'bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-300 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-700'
                       }`}
                       dangerouslySetInnerHTML={{ __html: link.label }}

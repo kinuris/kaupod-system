@@ -12,17 +12,17 @@ export default function Welcome() {
             <ClientNavigation />
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-pink-50 to-purple-50 py-20">
+            <section className="bg-gradient-to-br from-red-50 to-amber-50 py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
                         Private, Compassionate
-                        <span className="text-pink-600 block">Health Care</span>
+                        <span className="text-red-700 block">Health Care</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
                         Access reproductive health services with complete privacy and dignity. 
                         Your health, your choice, your confidentiality.
                     </p>
-                    <a href="/register" className="inline-block bg-pink-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-pink-700 transition-colors">
+                    <a href="/register" className="inline-block bg-red-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-red-800 transition-colors">
                         Start Your Journey
                     </a>
                 </div>
@@ -41,8 +41,8 @@ export default function Welcome() {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-12">
-                        <div className="bg-pink-50 rounded-2xl p-8 border border-pink-100">
-                            <div className="w-12 h-12 bg-pink-600 rounded-lg flex items-center justify-center mb-6">
+                        <div className="bg-red-50 rounded-2xl p-8 border border-red-100">
+                            <div className="w-12 h-12 bg-red-700 rounded-lg flex items-center justify-center mb-6">
                                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
@@ -53,18 +53,18 @@ export default function Welcome() {
                                 schedule pickup through our platform, and receive secure results directly in your Kaupod account.
                             </p>
                             {auth.user ? (
-                                <Link href="/request/kit" className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors">
+                                <Link href="/request/kit" className="inline-block bg-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors">
                                     Order HIV Testing Kit
                                 </Link>
                             ) : (
-                                <a href="/register" className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors">
+                                <a href="/register" className="inline-block bg-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors">
                                     Order HIV Testing Kit
                                 </a>
                             )}
                         </div>
 
-                        <div className="bg-teal-50 rounded-2xl p-8 border border-teal-100">
-                            <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center mb-6">
+                        <div className="bg-amber-50 rounded-2xl p-8 border border-amber-100">
+                            <div className="w-12 h-12 bg-amber-700 rounded-lg flex items-center justify-center mb-6">
                                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                 </svg>
@@ -75,11 +75,11 @@ export default function Welcome() {
                                 Get the guidance and support you need with complete confidentiality.
                             </p>
                             {auth.user ? (
-                                <Link href="/request/consultation" className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
+                                <Link href="/request/consultation" className="inline-block bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-800 transition-colors">
                                     Book Consultation
                                 </Link>
                             ) : (
-                                <a href="/register" className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors">
+                                <a href="/register" className="inline-block bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-800 transition-colors">
                                     Book Consultation
                                 </a>
                             )}
@@ -111,22 +111,22 @@ export default function Welcome() {
                                     All conversations are completely private and never stored.
                                 </p>
                                 {auth.user ? (
-                                    <button className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                                    <button className="inline-block bg-stone-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-stone-800 transition-colors">
                                         Try AI Companion
                                     </button>
                                 ) : (
-                                    <a href="/register" className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                                    <a href="/register" className="inline-block bg-stone-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-stone-800 transition-colors">
                                         Try AI Companion
                                     </a>
                                 )}
                             </div>
-                            <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-6">
+                            <div className="bg-gradient-to-br from-amber-100 to-red-100 rounded-xl p-6">
                                 <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
                                     <p className="text-sm text-gray-600">
                                         "I need guidance about reproductive health options. Can you help?"
                                     </p>
                                 </div>
-                                <div className="bg-purple-600 text-white rounded-lg p-4">
+                                <div className="bg-stone-700 text-white rounded-lg p-4">
                                     <p className="text-sm">
                                         I'm here to provide confidential, judgment-free guidance. I can help you understand your options and connect you with appropriate services.
                                     </p>
@@ -138,15 +138,15 @@ export default function Welcome() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-r from-pink-600 to-purple-600">
+            <section className="py-20 bg-gradient-to-r from-red-700 to-stone-800">
                 <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
                         Ready to Take Control of Your Health?
                     </h2>
-                    <p className="text-xl text-pink-100 mb-8">
+                    <p className="text-xl text-red-100 mb-8">
                         Join thousands who trust Kaupod for private, compassionate reproductive health care.
                     </p>
-                    <a href="/register" className="inline-block bg-white text-pink-600 px-8 py-4 rounded-lg text-lg font-bold hover:bg-gray-50 transition-colors">
+                    <a href="/register" className="inline-block bg-white text-red-700 px-8 py-4 rounded-lg text-lg font-bold hover:bg-gray-50 transition-colors">
                         Get Started Today
                     </a>
                 </div>

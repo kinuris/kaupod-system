@@ -29,11 +29,11 @@ export default function KitRequest() {
             <ClientNavigation />
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 py-20">
+            <section className="bg-gradient-to-br from-red-50 via-amber-50 to-stone-50 py-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
                         <div className="flex justify-center mb-6">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-pink-600">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-700">
                                 <Package className="h-8 w-8 text-white" />
                             </div>
                         </div>
@@ -42,13 +42,13 @@ export default function KitRequest() {
                                 Privacy Kit Request
                             </h1>
                             <div className="group relative">
-                                <Info className="h-6 w-6 text-pink-600 cursor-help" />
+                                <Info className="h-6 w-6 text-red-700 cursor-help" />
                                 <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-80 p-4 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 shadow-lg">
                                     <div className="space-y-3">
-                                        <div className="font-semibold text-pink-300">What's in the Privacy Kit?</div>
+                                        <div className="font-semibold text-red-300">What's in the Privacy Kit?</div>
                                         <div>HIV testing kits delivered discreetly to your specified location with complete confidentiality.</div>
                                         <div className="space-y-2">
-                                            <div className="font-medium text-teal-300">How it works:</div>
+                                            <div className="font-medium text-amber-300">How it works:</div>
                                             <div className="space-y-1 text-xs">
                                                 <div>• 1. Receive your kit at the pinpointed location</div>
                                                 <div>• 2. Complete the testing procedure privately</div>
@@ -68,11 +68,11 @@ export default function KitRequest() {
                     </div>
 
                     {/* Information Card */}
-                    <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl border border-pink-200 p-6 max-w-2xl mx-auto mb-8">
+                    <div className="bg-gradient-to-r from-red-50 to-amber-50 rounded-2xl border border-red-200 p-6 max-w-2xl mx-auto mb-8">
                         <div className="flex items-start gap-4">
                             <div className="flex-shrink-0">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100">
-                                    <Info className="h-5 w-5 text-pink-600" />
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                                    <Info className="h-5 w-5 text-red-700" />
                                 </div>
                             </div>
                             <div className="flex-1">
@@ -83,7 +83,7 @@ export default function KitRequest() {
                                     </p>
                                     <div className="grid md:grid-cols-2 gap-4 text-sm">
                                         <div className="space-y-2">
-                                            <div className="font-medium text-pink-700">✓ Delivery Process</div>
+                                            <div className="font-medium text-red-700">✓ Delivery Process</div>
                                             <div className="text-xs space-y-1">
                                                 <div>• Unmarked, discrete packaging</div>
                                                 <div>• GPS-precise delivery location</div>
@@ -91,7 +91,7 @@ export default function KitRequest() {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <div className="font-medium text-teal-700">✓ Testing & Results</div>
+                                            <div className="font-medium text-amber-700">✓ Testing & Results</div>
                                             <div className="text-xs space-y-1">
                                                 <div>• Complete testing in privacy</div>
                                                 <div>• Schedule pickup via platform</div>
@@ -115,7 +115,7 @@ export default function KitRequest() {
                                     <div className="space-y-6">
                                         <div className="grid gap-3">
                                             <Label className="text-base font-semibold text-gray-900 flex items-center gap-2">
-                                                <MapPin className="h-5 w-5 text-pink-600" />
+                                                <MapPin className="h-5 w-5 text-red-700" />
                                                 Delivery Location
                                             </Label>
                                             <p className="text-sm text-gray-600 mb-3">
@@ -126,10 +126,10 @@ export default function KitRequest() {
                                                 initialLocation={selectedLocation || undefined}
                                             />
                                             {selectedLocation && (
-                                                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                                                    <p className="text-sm font-medium text-green-800 mb-1">Selected Location:</p>
-                                                    <p className="text-sm text-green-700">{selectedLocation.address}</p>
-                                                    <p className="text-xs text-green-600 mt-1">
+                                                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                                                    <p className="text-sm font-medium text-red-700 mb-1">Selected Location:</p>
+                                                    <p className="text-sm text-red-700">{selectedLocation.address}</p>
+                                                    <p className="text-xs text-red-700 mt-1">
                                                         Coordinates: {selectedLocation.lat.toFixed(6)}, {selectedLocation.lng.toFixed(6)}
                                                     </p>
                                                 </div>
@@ -192,38 +192,38 @@ export default function KitRequest() {
                                         </div>
                                     </div>
 
-                                    <div className="bg-pink-50 border border-pink-200 rounded-lg p-6">
-                                        <h3 className="font-semibold text-pink-800 mb-3">Complete Privacy & Process</h3>
+                                    <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                                        <h3 className="font-semibold text-red-800 mb-3">Complete Privacy & Process</h3>
                                         <div className="space-y-4">
                                             <div>
-                                                <div className="font-medium text-pink-800 mb-2">Delivery Guarantee:</div>
-                                                <ul className="text-pink-700 space-y-1 text-sm">
+                                                <div className="font-medium text-red-800 mb-2">Delivery Guarantee:</div>
+                                                <ul className="text-red-700 space-y-1 text-sm">
                                                     <li className="flex items-start gap-2">
-                                                        <span className="text-pink-600 font-bold">•</span>
+                                                        <span className="text-red-700 font-bold">•</span>
                                                         All packages are unmarked and discreet
                                                     </li>
                                                     <li className="flex items-start gap-2">
-                                                        <span className="text-pink-600 font-bold">•</span>
+                                                        <span className="text-red-700 font-bold">•</span>
                                                         No identifying information on exterior packaging
                                                     </li>
                                                     <li className="flex items-start gap-2">
-                                                        <span className="text-pink-600 font-bold">•</span>
+                                                        <span className="text-red-700 font-bold">•</span>
                                                         GPS-precise delivery to your chosen location
                                                     </li>
                                                 </ul>
                                             </div>
                                             <div>
-                                                <div className="font-medium text-teal-800 mb-2">After Testing:</div>\n                                                <ul className="text-teal-700 space-y-1 text-sm">
+                                                <div className="font-medium text-red-700 mb-2">After Testing:</div>\n                                                <ul className="text-amber-700 space-y-1 text-sm">
                                                     <li className="flex items-start gap-2">
-                                                        <span className="text-teal-600 font-bold">•</span>
+                                                        <span className="text-red-700 font-bold">•</span>
                                                         Complete the HIV test in complete privacy
                                                     </li>
                                                     <li className="flex items-start gap-2">
-                                                        <span className="text-teal-600 font-bold">•</span>
+                                                        <span className="text-red-700 font-bold">•</span>
                                                         Use the platform to specify a pickup location
                                                     </li>
                                                     <li className="flex items-start gap-2">
-                                                        <span className="text-teal-600 font-bold">•</span>
+                                                        <span className="text-red-700 font-bold">•</span>
                                                         Receive secure results directly in Kaupod
                                                     </li>
                                                 </ul>
@@ -233,7 +233,7 @@ export default function KitRequest() {
 
                                     <Button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-lg py-4 font-semibold"
+                                        className="w-full bg-gradient-to-r from-red-50 to-amber-50 hover:from-red-50 hover:to-amber-50 text-lg py-4 font-semibold"
                                         disabled={processing}
                                     >
                                         {processing && (

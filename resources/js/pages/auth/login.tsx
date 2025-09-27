@@ -25,7 +25,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <Head title="Sign In - Kaupod" />
 
             {status && (
-                <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 text-center text-sm font-medium text-green-800">
+                <div className="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 text-center text-sm font-medium text-red-700">
                     {status}
                 </div>
             )}
@@ -59,7 +59,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
-                                            className="text-sm text-pink-600 hover:text-pink-700"
+                                            className="text-sm text-red-700 hover:text-red-800"
                                             tabIndex={5}
                                         >
                                             Forgot password?
@@ -89,7 +89,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                             <Button
                                 type="submit"
-                                className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700"
+                                className="w-full bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-700 hover:to-amber-700"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
@@ -114,7 +114,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <TextLink 
                                 href={register()} 
                                 tabIndex={6}
-                                className="text-sm text-pink-600 hover:text-pink-700 underline"
+                                className="text-sm text-red-700 hover:text-red-800 underline"
                             >
                                 Don't have an account? Sign up
                             </TextLink>

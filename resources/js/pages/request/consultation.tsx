@@ -15,11 +15,11 @@ export default function ConsultationRequest() {
             <ClientNavigation />
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 py-20">
+            <section className="bg-gradient-to-br from-red-50 via-amber-50 to-stone-50 py-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
                         <div className="flex justify-center mb-6">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-teal-600">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-700">
                                 <MessageCircle className="h-8 w-8 text-white" />
                             </div>
                         </div>
@@ -131,23 +131,23 @@ export default function ConsultationRequest() {
                                         </div>
                                     </div>
 
-                                    <div className="bg-teal-50 border border-teal-200 rounded-lg p-6">
-                                        <h3 className="font-semibold text-teal-800 mb-3">Confidentiality Assurance</h3>
-                                        <ul className="text-teal-700 space-y-2">
+                                    <div className="bg-red-700 border border-red-200 rounded-lg p-6">
+                                        <h3 className="font-semibold text-red-700 mb-3">Confidentiality Assurance</h3>
+                                        <ul className="text-red-700 space-y-2">
                                             <li className="flex items-start gap-2">
-                                                <span className="text-teal-600 font-bold">•</span>
+                                                <span className="text-red-700 font-bold">•</span>
                                                 All consultations are completely confidential
                                             </li>
                                             <li className="flex items-start gap-2">
-                                                <span className="text-teal-600 font-bold">•</span>
+                                                <span className="text-red-700 font-bold">•</span>
                                                 Professional, judgment-free environment
                                             </li>
                                             <li className="flex items-start gap-2">
-                                                <span className="text-teal-600 font-bold">•</span>
+                                                <span className="text-red-700 font-bold">•</span>
                                                 Qualified healthcare professionals
                                             </li>
                                             <li className="flex items-start gap-2">
-                                                <span className="text-teal-600 font-bold">•</span>
+                                                <span className="text-red-700 font-bold">•</span>
                                                 Secure communication channels
                                             </li>
                                         </ul>
@@ -155,7 +155,7 @@ export default function ConsultationRequest() {
 
                                     <Button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-lg py-4 font-semibold"
+                                        className="w-full bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-700 hover:to-amber-700 text-lg py-4 font-semibold"
                                         disabled={processing}
                                     >
                                         {processing && (

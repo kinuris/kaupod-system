@@ -47,22 +47,22 @@ const getStatusIcon = (status: string) => {
         case 'in_review':
         case 'confirmed':
         case 'pending':
-            return <Clock className="h-5 w-5 text-yellow-500" />;
+            return <Clock className="h-5 w-5 text-amber-600" />;
         case 'shipping':
         case 'processing':
         case 'shipped':
         case 'in_progress':
-            return <Truck className="h-5 w-5 text-blue-500" />;
+            return <Truck className="h-5 w-5 text-amber-700" />;
         case 'out_for_delivery':
-            return <Truck className="h-5 w-5 text-purple-500" />;
+            return <Truck className="h-5 w-5 text-amber-700" />;
         case 'accepted':
-            return <CheckCircle className="h-5 w-5 text-green-400" />;
+            return <CheckCircle className="h-5 w-5 text-red-700" />;
         case 'returning':
-            return <Package className="h-5 w-5 text-orange-500" />;
+            return <Package className="h-5 w-5 text-amber-700" />;
         case 'received':
         case 'completed':
         case 'delivered':
-            return <CheckCircle className="h-5 w-5 text-green-500" />;
+            return <CheckCircle className="h-5 w-5 text-red-700" />;
         case 'cancelled':
         case 'rejected':
             return <XCircle className="h-5 w-5 text-red-500" />;
@@ -76,22 +76,22 @@ const getStatusColor = (status: string) => {
         case 'in_review':
         case 'confirmed':
         case 'pending':
-            return 'bg-yellow-50 text-yellow-800 border-yellow-200';
+            return 'bg-amber-50 text-amber-800 border-amber-200';
         case 'shipping':
         case 'processing':
         case 'shipped':
         case 'in_progress':
-            return 'bg-blue-50 text-blue-800 border-blue-200';
+            return 'bg-amber-50 text-amber-800 border-amber-200';
         case 'out_for_delivery':
-            return 'bg-purple-50 text-purple-800 border-purple-200';
+            return 'bg-amber-50 text-amber-800 border-amber-200';
         case 'accepted':
-            return 'bg-green-50 text-green-800 border-green-200';
+            return 'bg-red-50 text-red-700 border-red-200';
         case 'returning':
-            return 'bg-orange-50 text-orange-800 border-orange-200';
+            return 'bg-amber-50 text-amber-700 border-amber-200';
         case 'received':
         case 'completed':
         case 'delivered':
-            return 'bg-green-50 text-green-800 border-green-200';
+            return 'bg-red-50 text-red-700 border-red-200';
         case 'cancelled':
         case 'rejected':
             return 'bg-red-50 text-red-800 border-red-200';
@@ -110,68 +110,68 @@ const getTimelineStatusDetails = (status: string) => {
         case 'in_review':
             return {
                 icon: <FileText className="h-4 w-4" />,
-                color: 'text-yellow-600',
-                bgColor: 'bg-yellow-100',
-                borderColor: 'border-yellow-200',
+                color: 'text-amber-700',
+                bgColor: 'bg-amber-100',
+                borderColor: 'border-amber-200',
                 description: 'Order submitted for review'
             };
         case 'confirmed':
         case 'accepted':
             return {
                 icon: <CheckCircle className="h-4 w-4" />,
-                color: 'text-green-600',
-                bgColor: 'bg-green-100',
-                borderColor: 'border-green-200',
+                color: 'text-red-700',
+                bgColor: 'bg-red-50',
+                borderColor: 'border-red-200',
                 description: 'Order confirmed and accepted'
             };
         case 'shipping':
         case 'processing':
             return {
                 icon: <Package className="h-4 w-4" />,
-                color: 'text-blue-600',
-                bgColor: 'bg-blue-100',
-                borderColor: 'border-blue-200',
+                color: 'text-amber-700',
+                bgColor: 'bg-amber-100',
+                borderColor: 'border-amber-200',
                 description: 'Kit being prepared for shipment'
             };
         case 'shipped':
         case 'out_for_delivery':
             return {
                 icon: <Truck className="h-4 w-4" />,
-                color: 'text-purple-600',
-                bgColor: 'bg-purple-100',
-                borderColor: 'border-purple-200',
+                color: 'text-amber-700',
+                bgColor: 'bg-amber-100',
+                borderColor: 'border-amber-200',
                 description: 'Kit is on its way to you'
             };
         case 'delivered':
             return {
                 icon: <MapPin className="h-4 w-4" />,
-                color: 'text-indigo-600',
-                bgColor: 'bg-indigo-100',
-                borderColor: 'border-indigo-200',
+                color: 'text-amber-700',
+                bgColor: 'bg-amber-100',
+                borderColor: 'border-amber-200',
                 description: 'Kit delivered successfully'
             };
         case 'returning':
             return {
                 icon: <Undo2 className="h-4 w-4" />,
-                color: 'text-orange-600',
-                bgColor: 'bg-orange-100',
-                borderColor: 'border-orange-200',
+                color: 'text-amber-700',
+                bgColor: 'bg-amber-50',
+                borderColor: 'border-amber-200',
                 description: 'Kit being returned for processing'
             };
         case 'received':
             return {
                 icon: <CheckCircle className="h-4 w-4" />,
-                color: 'text-green-600',
-                bgColor: 'bg-green-100',
-                borderColor: 'border-green-200',
+                color: 'text-red-700',
+                bgColor: 'bg-red-50',
+                borderColor: 'border-red-200',
                 description: 'Kit received and being processed'
             };
         case 'completed':
             return {
                 icon: <CheckCircle className="h-4 w-4" />,
-                color: 'text-green-700',
-                bgColor: 'bg-green-100',
-                borderColor: 'border-green-200',
+                color: 'text-red-700',
+                bgColor: 'bg-red-50',
+                borderColor: 'border-red-200',
                 description: 'Process completed successfully'
             };
         case 'cancelled':
@@ -237,7 +237,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
             <ClientNavigation />
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 py-20">
+            <section className="bg-gradient-to-br from-red-50 to-amber-50 py-20">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -253,8 +253,8 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                         <div className="bg-white rounded-2xl shadow-xl p-8">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100">
-                                        <Package className="h-5 w-5 text-pink-600" />
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                                        <Package className="h-5 w-5 text-red-700" />
                                     </div>
                                     <h2 className="text-2xl font-bold text-gray-900">HIV Testing Kits</h2>
                                 </div>
@@ -276,7 +276,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                     preserveScroll: true,
                                                 });
                                             }}
-                                            className="rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+                                            className="rounded border-gray-300 text-red-700 focus:ring-red-500"
                                         />
                                         Show cancelled orders
                                     </label>
@@ -289,7 +289,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                     <p className="text-gray-500 mb-4">No testing kit orders yet</p>
                                     <a 
                                         href="/request/kit"
-                                        className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors"
+                                        className="inline-block bg-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors"
                                     >
                                         Order Your First Kit
                                     </a>
@@ -330,13 +330,13 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                                         'kit',
                                                                         order.id
                                                                     )}
-                                                                    className="ml-2 text-orange-600 hover:text-orange-800 transition-colors inline-flex items-center gap-1 cursor-pointer font-medium"
+                                                                    className="ml-2 text-amber-700 hover:text-amber-800 transition-colors inline-flex items-center gap-1 cursor-pointer font-medium"
                                                                 >
                                                                     {order.return_address || order.return_location_address}
                                                                     <MapPin className="h-3 w-3" />
                                                                 </button>
                                                             ) : (
-                                                                <span className="ml-2 text-orange-600 font-medium">
+                                                                <span className="ml-2 text-amber-700 font-medium">
                                                                     {order.return_address || order.return_location_address}
                                                                 </span>
                                                             )}
@@ -346,7 +346,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                     {order.return_date && (
                                                         <div className="text-sm text-gray-600 mb-2">
                                                             <span className="font-medium">Return Date & Time:</span>
-                                                            <span className="ml-2 text-orange-600 font-medium">
+                                                            <span className="ml-2 text-amber-700 font-medium">
                                                                 {new Date(order.return_date).toLocaleDateString()} at {new Date(order.return_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                                             </span>
                                                         </div>
@@ -374,7 +374,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                                     'kit',
                                                                     order.id
                                                                 )}
-                                                                className="ml-2 text-pink-600 hover:text-pink-800 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                                                                className="ml-2 text-red-700 hover:text-red-800 transition-colors inline-flex items-center gap-1 cursor-pointer"
                                                             >
                                                                 {order.delivery_location_address}
                                                                 <MapPin className="h-3 w-3" />
@@ -422,7 +422,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                             setSelectedOrderId(order.id);
                                                             setReturnModalOpen(true);
                                                         }}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors"
+                                                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-amber-50 hover:bg-amber-50 rounded-lg transition-colors"
                                                     >
                                                         <Package className="h-4 w-4" />
                                                         Set Return Location & Date
@@ -432,12 +432,12 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
 
                                             {order.status === 'received' && (
                                                 <div className="mt-3 pt-3 border-t border-gray-100">
-                                                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                                                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                                                         <div className="flex items-center gap-2 mb-2">
-                                                            <CheckCircle className="h-5 w-5 text-green-600" />
-                                                            <span className="font-medium text-green-800">Kit Successfully Received</span>
+                                                            <CheckCircle className="h-5 w-5 text-red-700" />
+                                                            <span className="font-medium text-red-700">Kit Successfully Received</span>
                                                         </div>
-                                                        <p className="text-sm text-green-700">
+                                                        <p className="text-sm text-red-700">
                                                             Your testing kit has been received and is being processed. We will send your test results via email within the next few business days.
                                                         </p>
                                                     </div>
@@ -502,8 +502,8 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                         {/* Medical Consultations */}
                         <div className="bg-white rounded-2xl shadow-xl p-8">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-100">
-                                    <MessageCircle className="h-5 w-5 text-teal-600" />
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
+                                    <MessageCircle className="h-5 w-5 text-amber-700" />
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-900">Medical Consultations</h2>
                             </div>
@@ -514,7 +514,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                     <p className="text-gray-500 mb-4">No consultation requests yet</p>
                                     <a 
                                         href="/request/consultation"
-                                        className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
+                                        className="inline-block bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-800 transition-colors"
                                     >
                                         Book Your First Consultation
                                     </a>
@@ -580,13 +580,13 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a 
                                     href="/request/kit"
-                                    className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors"
+                                    className="inline-block bg-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors"
                                 >
                                     Order New HIV Testing Kit
                                 </a>
                                 <a 
                                     href="/request/consultation"
-                                    className="inline-block bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
+                                    className="inline-block bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-800 transition-colors"
                                 >
                                     Book New Consultation
                                 </a>
@@ -597,7 +597,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
             </section>
 
             {/* Footer */}
-            <footer className="bg-gray-900 text-white py-12">
+            <footer className="bg-stone-800 text-white py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
                         <h3 className="text-xl font-bold mb-4">Kaupod</h3>
