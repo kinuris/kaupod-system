@@ -1,6 +1,22 @@
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
+import { t                <div className=\"relative flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border p-6 space-y-6\">
+                    <div className=\"flex items-center justify-between\">
+                        <h2 className=\"text-xl font-semibold\">Service Tracker</h2>
+                        {stats && (
+                            <div className=\"flex items-center gap-4 text-sm\">
+                                <div className=\"flex items-center gap-2\">
+                                    <div className=\"h-2 w-2 bg-amber-500 rounded-full\"></div>
+                                    <span className=\"text-gray-600 dark:text-gray-400\">{stats.pendingKitOrders} pending kits</span>
+                                </div>
+                                <div className=\"flex items-center gap-2\">
+                                    <div className=\"h-2 w-2 bg-blue-500 rounded-full\"></div>
+                                    <span className=\"text-gray-600 dark:text-gray-400\">{stats.pendingConsultations} pending consultations</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    <div className=\"grid md:grid-cols-2 gap-6\"> BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import React from 'react';
 
@@ -93,21 +109,7 @@ export default function Dashboard(props: PageProps) {
                     </div>
                 </div>
                 <div className="relative flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border p-6 space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold">Service Tracker</h2>
-                        {stats && (
-                            <div className="flex items-center gap-4 text-sm">
-                                <div className="flex items-center gap-2">
-                                    <div className="h-2 w-2 bg-amber-500 rounded-full"></div>
-                                    <span className="text-gray-600 dark:text-gray-400">{stats.pendingKitOrders} pending kits</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-                                    <span className="text-gray-600 dark:text-gray-400">{stats.pendingConsultations} pending consultations</span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    <h2 className="text-xl font-semibold">Service Tracker</h2>
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">

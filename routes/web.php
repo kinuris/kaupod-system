@@ -22,14 +22,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if ($user->isAdmin()) {
             $kitOrders = \App\Models\KitOrder::latest()->take(5)->get(['id','status','user_id','created_at']);
             $consults = \App\Models\ConsultationRequest::latest()->take(5)->get(['id','status','user_id','created_at']);
+            
+            // Admin statistics for dashboard cards
+            $stats = [
+                'totalUsers' => \App\Models\User::count(),
+                'activePartnerDoctors' => \App\Models\PartnerDoctor::where('is_active', true)->count(),
+                'thisMonthKitOrders' => \App\Models\KitOrder::whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->count(),
+                'thisMonthConsultations' => \App\Models\ConsultationRequest::whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->count(),
+                'pendingKitOrders' => \App\Models\KitOrder::whereIn('status', ['pending', 'approved', 'sent'])
+                    ->count(),
+                'pendingConsultations' => \App\Models\ConsultationRequest::whereIn('status', ['in_review', 'coordinating'])
+                    ->count(),
+            ];
         } else {
             $kitOrders = $user->kitOrders()->latest()->take(5)->get(['id','status']);
             $consults = $user->consultationRequests()->latest()->take(5)->get(['id','status']);
+            $stats = null; // Regular users don't see admin statistics
         }
         
         return Inertia::render('dashboard', [
             'kitOrders' => $kitOrders,
             'consultationRequests' => $consults,
+            'stats' => $stats,
         ]);
     })->name('dashboard')->middleware(\App\Http\Middleware\RestrictClientAccess::class);
 
