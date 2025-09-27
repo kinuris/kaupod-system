@@ -11,6 +11,10 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+Route::get('/about', function () {
+    return Inertia::render('about');
+})->name('about');
+
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
 
 Route::middleware(['auth', 'verified'])->group(function () {

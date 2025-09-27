@@ -93,6 +93,12 @@ export default function ClientNavigation() {
                                             >
                                                 My Orders
                                             </Link>
+                                            <Link 
+                                                href="/about" 
+                                                className="text-blue-700 hover:text-blue-800 font-medium transition-colors"
+                                            >
+                                                About Us
+                                            </Link>
                                         </>
                                     ) : (
                                         <Link href={dashboard()} className="text-red-700 hover:text-red-800 font-medium transition-colors">
@@ -111,6 +117,12 @@ export default function ClientNavigation() {
                                 </>
                             ) : (
                                 <>
+                                    <a 
+                                        href="/about" 
+                                        className="text-blue-700 hover:text-blue-800 font-medium transition-colors"
+                                    >
+                                        About Us
+                                    </a>
                                     <a 
                                         href="/login" 
                                         className="text-gray-600 hover:text-gray-700 transition-colors"
@@ -206,6 +218,13 @@ export default function ClientNavigation() {
                                         >
                                             My Orders
                                         </Link>
+                                        <Link 
+                                            href="/about" 
+                                            className="block text-blue-700 hover:text-blue-800 font-medium py-2 transition-colors"
+                                            onClick={closeMobileMenu}
+                                        >
+                                            About Us
+                                        </Link>
                                     </>
                                 ) : (
                                     <Link 
@@ -233,6 +252,13 @@ export default function ClientNavigation() {
                             </>
                         ) : (
                             <>
+                                <a 
+                                    href="/about" 
+                                    className="block text-blue-700 hover:text-blue-800 font-medium py-2 transition-colors"
+                                    onClick={closeMobileMenu}
+                                >
+                                    About Us
+                                </a>
                                 <a 
                                     href="/login" 
                                     className="block text-gray-600 hover:text-gray-700 py-2 transition-colors"
