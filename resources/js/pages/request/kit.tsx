@@ -6,8 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle, Package, MapPin, Info } from 'lucide-react';
+import { LoaderCircle, Package, MapPin, Info, Calendar } from 'lucide-react';
 
 interface DeliveryLocation {
     lat: number;
@@ -17,9 +25,37 @@ interface DeliveryLocation {
 
 export default function KitRequest() {
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
+    const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
+    const [ageConfirmed, setAgeConfirmed] = useState(false);
+    const [submitCallback, setSubmitCallback] = useState<(() => void) | null>(null);
     
     const handleLocationSelect = (location: DeliveryLocation) => {
         setSelectedLocation(location);
+    };
+
+    const handleFormSubmit = (submit: () => void) => {
+        if (!ageConfirmed) {
+            setSubmitCallback(() => submit);
+            setShowAgeConfirmModal(true);
+        } else {
+            submit();
+        }
+    };
+
+    const confirmAge = () => {
+        setAgeConfirmed(true);
+        setShowAgeConfirmModal(false);
+        
+        // Execute the stored submit callback
+        if (submitCallback) {
+            submitCallback();
+            setSubmitCallback(null);
+        }
+    };
+
+    const cancelAgeConfirmation = () => {
+        setShowAgeConfirmModal(false);
+        setSubmitCallback(null);
     };
 
     return (
@@ -110,7 +146,7 @@ export default function KitRequest() {
                             method="post"
                             className="space-y-6"
                         >
-                            {({ processing, errors }) => (
+                            {({ processing, errors, submit }) => (
                                 <>
                                     <div className="space-y-6">
                                         <div className="grid gap-3">
@@ -232,7 +268,8 @@ export default function KitRequest() {
                                     </div>
 
                                     <Button
-                                        type="submit"
+                                        type="button"
+                                        onClick={() => handleFormSubmit(submit)}
                                         className="w-full bg-gradient-to-r from-red-50 to-amber-50 hover:from-red-50 hover:to-amber-50 text-lg py-4 font-semibold"
                                         disabled={processing}
                                     >
@@ -248,6 +285,48 @@ export default function KitRequest() {
                 </div>
             </section>
 
+            {/* Age Confirmation Modal */}
+            <Dialog open={showAgeConfirmModal} onOpenChange={setShowAgeConfirmModal}>
+                <DialogContent className="sm:max-w-md bg-gradient-to-br from-red-50 via-amber-50 to-stone-50 border border-red-200">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-red-700">
+                            <Calendar className="h-5 w-5" />
+                            Age Verification Required
+                        </DialogTitle>
+                        <DialogDescription className="text-gray-600 pt-2">
+                            HIV testing kits are only available to individuals who are 18 years of age or older. 
+                            Please confirm that you meet this age requirement to proceed with your kit request.
+                        </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="bg-gradient-to-r from-red-50 to-amber-50 border border-red-200 rounded-lg p-4 mt-4">
+                        <div className="flex items-start gap-3">
+                            <Info className="h-5 w-5 text-red-700 flex-shrink-0 mt-0.5" />
+                            <div className="text-sm text-gray-700">
+                                <p className="font-medium mb-1 text-red-700">Why do we ask for age verification?</p>
+                                <p>Age verification ensures compliance with healthcare regulations and helps us provide appropriate care and support.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="mt-6">
+                        <Button
+                            variant="outline"
+                            onClick={cancelAgeConfirmation}
+                            className="flex-1 border-stone-300 text-stone-700 hover:bg-stone-50"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={confirmAge}
+                            className="flex-1 bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-800 hover:to-amber-800 text-white font-semibold"
+                        >
+                            I confirm I am 18+
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             {/* Footer */}
             <footer className="bg-gray-900 text-white py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -256,7 +335,7 @@ export default function KitRequest() {
                         <p className="text-gray-400 mb-4">
                             Private, compassionate reproductive health care for everyone.
                         </p>
-                        <p className="text-gray-400">&copy; 2024 Kaupod. All rights reserved.</p>
+                        <p className="text-gray-400">&copy; 2025 Kaupod. All rights reserved.</p>
                     </div>
                 </div>
             </footer>

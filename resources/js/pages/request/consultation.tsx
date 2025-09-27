@@ -178,7 +178,7 @@ export default function ConsultationRequest() {
                         <p className="text-gray-400 mb-4">
                             Private, compassionate reproductive health care for everyone.
                         </p>
-                        <p className="text-gray-400">&copy; 2024 Kaupod. All rights reserved.</p>
+                        <p className="text-gray-400">&copy; 2025 Kaupod. All rights reserved.</p>
                     </div>
                 </div>
             </footer>
