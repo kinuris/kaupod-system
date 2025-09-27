@@ -80,9 +80,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->whereIn('status', ['in_review', 'coordinating', 'confirmed', 'reminder_sent'])
             ->first();
         
+        $priceCalculator = new \App\Services\PriceCalculator();
+        
         return Inertia::render('request/consultation', [
             'hasOngoingConsultation' => !!$ongoingConsultation,
             'ongoingConsultation' => $ongoingConsultation,
+            'consultationPrice' => $priceCalculator->consultationPrice(),
+            'platformFee' => $priceCalculator->consultationPlatformFee(),
+            'expertFee' => $priceCalculator->consultationExpertFee(),
         ]);
     })->name('consultation-request.form');
     

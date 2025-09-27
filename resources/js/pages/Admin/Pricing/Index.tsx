@@ -6,6 +6,8 @@ import { DollarSign, Save } from 'lucide-react';
 interface PricingData {
   kit_base_price: string;
   shipping_fee: string;
+  consultation_platform_fee: string;
+  consultation_expert_fee: string;
 }
 
 interface PageProps {
@@ -16,6 +18,8 @@ export default function PricingIndex({ pricing }: PageProps) {
   const [formData, setFormData] = useState({
     kit_base_price: pricing.kit_base_price,
     shipping_fee: pricing.shipping_fee,
+    consultation_platform_fee: pricing.consultation_platform_fee,
+    consultation_expert_fee: pricing.consultation_expert_fee,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | string[]>>({});
@@ -61,7 +65,7 @@ export default function PricingIndex({ pricing }: PageProps) {
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Pricing Settings</h1>
             <p className="text-neutral-600 dark:text-neutral-400">
-              Manage kit base prices and shipping fees
+              Manage kit pricing and consultation fees
             </p>
           </div>
         </div>
@@ -173,26 +177,124 @@ export default function PricingIndex({ pricing }: PageProps) {
                 </p>
               </div>
 
+              {/* Section Divider */}
+              <div className="border-t border-neutral-200 dark:border-neutral-600 pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Consultation Pricing</h3>
+              </div>
+
+              {/* Consultation Platform Fee */}
+              <div className="space-y-2">
+                <label 
+                  htmlFor="consultation_platform_fee" 
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Platform Fee
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-neutral-500 dark:text-neutral-400 text-sm">₱</span>
+                  </div>
+                  <input
+                    type="number"
+                    id="consultation_platform_fee"
+                    step="0.01"
+                    min="0"
+                    value={formData.consultation_platform_fee}
+                    onChange={(e) => handleInputChange('consultation_platform_fee', e.target.value)}
+                    className="block w-full pl-8 pr-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  Platform service fee for consultation coordination
+                </p>
+              </div>
+
+              {/* Consultation Expert Fee */}
+              <div className="space-y-2">
+                <label 
+                  htmlFor="consultation_expert_fee" 
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Expert Fee
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-neutral-500 dark:text-neutral-400 text-sm">₱</span>
+                  </div>
+                  <input
+                    type="number"
+                    id="consultation_expert_fee"
+                    step="0.01"
+                    min="0"
+                    value={formData.consultation_expert_fee}
+                    onChange={(e) => handleInputChange('consultation_expert_fee', e.target.value)}
+                    className="block w-full pl-8 pr-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  Professional fee paid to the medical expert
+                </p>
+              </div>
+
               {/* Total Preview */}
               <div className="bg-neutral-50 dark:bg-neutral-800/40 rounded-lg p-4">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-neutral-600 dark:text-neutral-400">Kit Price:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    ₱{parseFloat(formData.kit_base_price || '0').toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-neutral-600 dark:text-neutral-400">Shipping:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    ₱{parseFloat(formData.shipping_fee || '0').toFixed(2)}
-                  </span>
-                </div>
-                <div className="border-t border-neutral-200 dark:border-neutral-600 pt-2 mt-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-gray-900 dark:text-white">Total Price:</span>
-                    <span className="font-bold text-lg text-red-700 dark:text-red-700">
-                      ₱{(parseFloat(formData.kit_base_price || '0') + parseFloat(formData.shipping_fee || '0')).toFixed(2)}
-                    </span>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Kit Pricing */}
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Kit Pricing</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-neutral-600 dark:text-neutral-400">Kit Price:</span>
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          ₱{parseFloat(formData.kit_base_price || '0').toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-neutral-600 dark:text-neutral-400">Shipping:</span>
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          ₱{parseFloat(formData.shipping_fee || '0').toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="border-t border-neutral-200 dark:border-neutral-600 pt-1 mt-1">
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium text-gray-900 dark:text-white">Kit Total:</span>
+                          <span className="font-bold text-red-700 dark:text-red-700">
+                            ₱{(parseFloat(formData.kit_base_price || '0') + parseFloat(formData.shipping_fee || '0')).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Consultation Pricing */}
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Consultation Pricing</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-neutral-600 dark:text-neutral-400">Platform Fee:</span>
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          ₱{parseFloat(formData.consultation_platform_fee || '0').toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-neutral-600 dark:text-neutral-400">Expert Fee:</span>
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          ₱{parseFloat(formData.consultation_expert_fee || '0').toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="border-t border-neutral-200 dark:border-neutral-600 pt-1 mt-1">
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium text-gray-900 dark:text-white">Consultation Total:</span>
+                          <span className="font-bold text-red-700 dark:text-red-700">
+                            ₱{(parseFloat(formData.consultation_platform_fee || '0') + parseFloat(formData.consultation_expert_fee || '0')).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

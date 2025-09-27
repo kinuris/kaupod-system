@@ -35,9 +35,12 @@ interface ConsultationRequestProps {
     hasOngoingConsultation?: boolean;
     ongoingConsultation?: OngoingConsultation;
     errors?: Record<string, string>;
+    consultationPrice: number;
+    platformFee: number;
+    expertFee: number;
 }
 
-export default function ConsultationRequest({ hasOngoingConsultation = false, ongoingConsultation, errors }: ConsultationRequestProps) {
+export default function ConsultationRequest({ hasOngoingConsultation = false, ongoingConsultation, errors, consultationPrice, platformFee, expertFee }: ConsultationRequestProps) {
     const [consultationMode, setConsultationMode] = useState<'online' | 'in-person' | ''>('');
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
     const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
@@ -120,6 +123,58 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                             Connect with qualified doctors and experts from our partner network in a judgment-free environment
                         </p>
+                    </div>
+
+                    {/* Pricing Card */}
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 max-w-2xl mx-auto mb-8">
+                        <div className="text-center">
+                            <div className="flex items-center justify-center gap-2 mb-4">
+                                <MessageCircle className="h-6 w-6 text-red-700" />
+                                <h3 className="text-2xl font-bold text-gray-900">Consultation Pricing</h3>
+                            </div>
+                            <div className="mb-4">
+                                <div className="text-4xl font-bold text-red-700 mb-2">
+                                    ₱{consultationPrice.toFixed(2)}
+                                </div>
+                                <div className="text-sm text-gray-600 mb-3">
+                                    Professional consultation with qualified experts
+                                </div>
+                                <div className="text-xs text-gray-500 space-y-1">
+                                    <div className="flex justify-between items-center max-w-xs mx-auto">
+                                        <span>Platform Fee:</span>
+                                        <span>₱{platformFee.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center max-w-xs mx-auto">
+                                        <span>Expert Fee:</span>
+                                        <span>₱{expertFee.toFixed(2)}</span>
+                                    </div>
+                                    <div className="border-t border-gray-200 pt-1 mt-2">
+                                        <div className="flex justify-between items-center max-w-xs mx-auto font-semibold">
+                                            <span>Total:</span>
+                                            <span>₱{consultationPrice.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4 text-sm">
+                                <div className="bg-red-50 rounded-lg p-3">
+                                    <div className="font-semibold text-red-700 mb-1">✓ What's Included</div>
+                                    <div className="text-gray-700 space-y-1">
+                                        <div>• Professional consultation</div>
+                                        <div>• Expert partner network access</div>
+                                        <div>• Online or in-person options</div>
+                                    </div>
+                                </div>
+                                <div className="bg-amber-50 rounded-lg p-3">
+                                    <div className="font-semibold text-amber-700 mb-1">✓ Support Features</div>
+                                    <div className="text-gray-700 space-y-1">
+                                        <div>• Flexible scheduling</div>
+                                        <div>• Plus Tracker updates</div>
+                                        <div>• Complete confidentiality</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Information Card */}
