@@ -38,7 +38,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/kit-orders/{kitOrder}/cancel', [KitOrderController::class, 'cancel'])->name('kit-order.cancel');
     Route::post('/request/consultation', [ConsultationRequestController::class, 'store'])->name('consultation-request.store');
     Route::post('/consultations/{consultationRequest}/reschedule', [ConsultationRequestController::class, 'reschedule'])->name('consultation-request.reschedule');
-    Route::get('/request/kit', function() { return Inertia::render('request/kit'); })->name('kit-order.form');
+    Route::get('/request/kit', function() {
+        $user = request()->user();
+        $ongoingKitOrder = $user->kitOrders()
+            ->whereNotIn('status', ['cancelled', 'sent_result'])
+            ->first();
+        
+        return Inertia::render('request/kit', [
+            'hasOngoingKitOrder' => !!$ongoingKitOrder,
+            'ongoingKitOrder' => $ongoingKitOrder,
+        ]);
+    })->name('kit-order.form');
     Route::get('/request/consultation', function() {
         $user = request()->user();
         $ongoingConsultation = $user->consultationRequests()

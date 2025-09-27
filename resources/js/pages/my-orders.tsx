@@ -422,7 +422,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                                             setSelectedOrderId(order.id);
                                                             setReturnModalOpen(true);
                                                         }}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-amber-50 hover:bg-amber-50 rounded-lg transition-colors"
+                                                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-800 bg-amber-100 hover:bg-amber-50 rounded-lg transition-colors"
                                                     >
                                                         <Package className="h-4 w-4" />
                                                         Set Return Location & Date

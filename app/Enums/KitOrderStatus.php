@@ -10,6 +10,7 @@ enum KitOrderStatus: string
     case Accepted = 'accepted';
     case Returning = 'returning';
     case Received = 'received';
+    case SentResult = 'sent_result';
     case Cancelled = 'cancelled';
 
     public function nextAllowed(): array
@@ -20,7 +21,8 @@ enum KitOrderStatus: string
             self::OutForDelivery => [self::Accepted],
             self::Accepted => [self::Returning],
             self::Returning => [self::Received],
-            self::Received => [],
+            self::Received => [self::SentResult],
+            self::SentResult => [],
             self::Cancelled => [],
         };
     }
@@ -33,7 +35,8 @@ enum KitOrderStatus: string
             self::OutForDelivery => [self::Accepted],
             self::Accepted => [], // Admin cannot move from Accepted - client must initiate return
             self::Returning => [self::Received],
-            self::Received => [],
+            self::Received => [self::SentResult],
+            self::SentResult => [],
             self::Cancelled => [],
         };
     }

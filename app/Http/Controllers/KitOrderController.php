@@ -23,6 +23,17 @@ class KitOrderController extends Controller
             'special_instructions' => 'nullable|string|max:1000',
         ]);
 
+        // Check if user has an ongoing kit order
+        $ongoingKitOrder = KitOrder::where('user_id', Auth::id())
+            ->whereNotIn('status', ['cancelled', 'sent_result'])
+            ->first();
+
+        if ($ongoingKitOrder) {
+            return back()->withErrors([
+                'kit_order' => 'You already have an ongoing kit order. Please wait for it to be completed before ordering a new kit.'
+            ])->withInput();
+        }
+
         KitOrder::create([
             'user_id' => Auth::id(),
             'phone' => $data['phone'],

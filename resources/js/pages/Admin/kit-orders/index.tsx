@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { router, Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { Package, User, Phone, MapPin, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, CheckCircle, AlertCircle } from 'lucide-react';
+import { Package, User, Phone, MapPin, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, CheckCircle } from 'lucide-react';
 
 interface User {
   id: number;
@@ -69,6 +69,8 @@ const getStatusIcon = (status: string) => {
       return <Package className="h-4 w-4 text-amber-700" />;
     case 'received':
       return <Package className="h-4 w-4 text-red-700" />;
+    case 'sent_result':
+      return <CheckCircle className="h-4 w-4 text-green-600" />;
     case 'cancelled':
       return <Package className="h-4 w-4 text-red-500" />;
     default:
@@ -90,6 +92,8 @@ const getStatusColor = (status: string) => {
       return 'bg-amber-50 dark:bg-amber-50/20 text-amber-700 dark:text-amber-700 border-amber-200 dark:border-amber-200';
     case 'received':
       return 'bg-red-50 dark:bg-red-50/20 text-red-700 dark:text-red-700 border-red-200 dark:border-red-200';
+    case 'sent_result':
+      return 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-400 border-green-200 dark:border-green-700';
     case 'cancelled':
       return 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-400 border-red-200 dark:border-red-700';
     default:
@@ -115,6 +119,8 @@ const getValidNextStatuses = (currentStatus: string): string[] => {
     case 'returning':
       return ['received'];
     case 'received':
+      return ['sent_result'];
+    case 'sent_result':
       return [];
     case 'cancelled':
       return [];
@@ -172,33 +178,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
     });
   };
 
-  const markEmailSent = (id: number, notes?: string) => {
-    setUpdatingId(id);
-    router.patch(`/admin/kit-orders/${id}/mark-email-sent`, { 
-      result_email_notes: notes 
-    }, { 
-      onFinish: () => setUpdatingId(null),
-      onSuccess: () => {
-        // Success message will be handled by the backend
-      },
-      onError: (errors) => {
-        console.error('Error marking email as sent:', errors);
-      }
-    });
-  };
 
-  const unmarkEmailSent = (id: number) => {
-    setUpdatingId(id);
-    router.patch(`/admin/kit-orders/${id}/unmark-email-sent`, {}, { 
-      onFinish: () => setUpdatingId(null),
-      onSuccess: () => {
-        // Success message will be handled by the backend
-      },
-      onError: (errors) => {
-        console.error('Error unmarking email:', errors);
-      }
-    });
-  };
 
   const breadcrumbs = [
     { title: 'Admin Dashboard', href: '/dashboard' },
@@ -402,7 +382,6 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                       )}
                     </button>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Email Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Update Status</th>
                 </tr>
               </thead>
@@ -467,53 +446,6 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                         {getStatusIcon(order.status)}
                         {formatStatusDisplay(order.status)}
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {order.status === 'received' ? (
-                        <div className="flex flex-col gap-2">
-                          {order.result_email_sent ? (
-                            <div className="flex items-center gap-2">
-                              <div className="flex items-center gap-1 text-xs text-red-700 dark:text-red-700">
-                                <CheckCircle className="h-4 w-4" />
-                                Email Sent
-                              </div>
-                              {order.result_email_sent_at && (
-                                <div className="text-xs text-neutral-500 dark:text-neutral-400">
-                                  {new Date(order.result_email_sent_at).toLocaleDateString()}
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-1 text-xs text-red-600 dark:text-red-400">
-                              <AlertCircle className="h-4 w-4" />
-                              Email Pending
-                            </div>
-                          )}
-                          {updatingId !== order.id && (
-                            <div className="flex gap-1">
-                              {!order.result_email_sent ? (
-                                <button
-                                  onClick={() => markEmailSent(order.id)}
-                                  className="text-xs px-2 py-1 bg-red-50 text-white rounded hover:bg-red-50 transition-colors"
-                                >
-                                  Mark Sent
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => unmarkEmailSent(order.id)}
-                                  className="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                                >
-                                  Reset
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="text-xs text-neutral-400 dark:text-neutral-500">
-                          N/A
-                        </div>
-                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {order.status === 'accepted' ? (

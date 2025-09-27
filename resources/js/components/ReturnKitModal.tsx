@@ -11,6 +11,11 @@ interface ReturnKitModalProps {
 }
 
 const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderId }) => {
+  // Helper function to get the number of days in a month
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month, 0).getDate();
+  };
+
   // Get current date + 1 hour in UTC+8 for defaults
   const getDefaultDateTime = () => {
     const now = new Date();
@@ -18,12 +23,41 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
     const utc8 = new Date(now.getTime() + (8 * 60 * 60 * 1000));
     utc8.setHours(utc8.getHours() + 1); // Add 1 hour for default
     
+    // Ensure hour is within business hours (9AM-5PM)
+    let hour = utc8.getHours();
+    if (hour < 9) {
+      hour = 9; // Default to 9AM if before business hours
+    } else if (hour > 17) {
+      hour = 9; // Default to 9AM next day if after business hours
+      utc8.setDate(utc8.getDate() + 1);
+    }
+    
+    // Round minutes to nearest valid interval (00, 15, 30, 45)
+    const currentMinutes = utc8.getMinutes();
+    let minute = 0;
+    if (currentMinutes < 8) {
+      minute = 0;
+    } else if (currentMinutes < 23) {
+      minute = 15;
+    } else if (currentMinutes < 38) {
+      minute = 30;
+    } else if (currentMinutes < 53) {
+      minute = 45;
+    } else {
+      minute = 0;
+      hour += 1; // Round up to next hour
+      if (hour > 17) {
+        hour = 9; // Wrap to next day if beyond business hours
+        utc8.setDate(utc8.getDate() + 1);
+      }
+    }
+    
     return {
       year: utc8.getFullYear().toString(),
       month: (utc8.getMonth() + 1).toString().padStart(2, '0'),
       day: utc8.getDate().toString().padStart(2, '0'),
-      hour: utc8.getHours().toString().padStart(2, '0'),
-      minute: utc8.getMinutes().toString().padStart(2, '0'),
+      hour: hour.toString().padStart(2, '0'),
+      minute: minute.toString().padStart(2, '0'),
     };
   };
 
@@ -49,6 +83,19 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
+
+  // Effect to handle day validation when month/year changes
+  useEffect(() => {
+    const maxDays = getDaysInMonth(parseInt(formData.return_year), parseInt(formData.return_month));
+    const currentDay = parseInt(formData.return_day);
+    
+    if (currentDay > maxDays) {
+      setFormData(prev => ({
+        ...prev,
+        return_day: maxDays.toString().padStart(2, '0')
+      }));
+    }
+  }, [formData.return_year, formData.return_month, formData.return_day]);
 
   const reverseGeocode = useCallback(async (lat: number, lng: number) => {
     setIsGeocodingAddress(true);
@@ -404,46 +451,58 @@ const ReturnKitModal: React.FC<ReturnKitModalProps> = ({ isOpen, onClose, orderI
               </div>
               <div>
                 <label className="block text-xs text-gray-600 mb-1">Day</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="31"
+                <select
                   value={formData.return_day}
                   onChange={(e) => setFormData({ ...formData, return_day: e.target.value })}
                   className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
                   required
-                />
+                >
+                  {Array.from({ length: getDaysInMonth(parseInt(formData.return_year), parseInt(formData.return_month)) }, (_, i) => i + 1).map(day => (
+                    <option key={day} value={day.toString().padStart(2, '0')}>
+                      {day}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-xs text-gray-600 mb-1">Hour</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="23"
+                <select
                   value={formData.return_hour}
                   onChange={(e) => setFormData({ ...formData, return_hour: e.target.value })}
                   className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
                   required
-                />
+                >
+                  <option value="09">9:00 AM</option>
+                  <option value="10">10:00 AM</option>
+                  <option value="11">11:00 AM</option>
+                  <option value="12">12:00 PM</option>
+                  <option value="13">1:00 PM</option>
+                  <option value="14">2:00 PM</option>
+                  <option value="15">3:00 PM</option>
+                  <option value="16">4:00 PM</option>
+                  <option value="17">5:00 PM</option>
+                </select>
               </div>
               <div>
                 <label className="block text-xs text-gray-600 mb-1">Minute</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="59"
+                <select
                   value={formData.return_minute}
                   onChange={(e) => setFormData({ ...formData, return_minute: e.target.value })}
                   className="w-full px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-black"
                   required
-                />
+                >
+                  <option value="00">:00</option>
+                  <option value="15">:15</option>
+                  <option value="30">:30</option>
+                  <option value="45">:45</option>
+                </select>
               </div>
             </div>
             {errors.return_date && (
               <p className="text-red-500 text-xs mt-1">{errors.return_date}</p>
             )}
             <p className="text-xs text-gray-500 mt-1">
-              Select when you'd prefer the kit to be collected
+              Select when you'd prefer the kit to be collected (9AM-5PM only)
             </p>
           </div>
 

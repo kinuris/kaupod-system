@@ -23,7 +23,18 @@ interface DeliveryLocation {
     address?: string;
 }
 
-export default function KitRequest() {
+interface OngoingKitOrder {
+    id: number;
+    status: string;
+    created_at: string;
+}
+
+interface KitRequestProps {
+    hasOngoingKitOrder: boolean;
+    ongoingKitOrder?: OngoingKitOrder;
+}
+
+export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder }: KitRequestProps) {
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
     const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
     const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -34,6 +45,11 @@ export default function KitRequest() {
     };
 
     const handleFormSubmit = (submit: () => void) => {
+        // Prevent submission if there's an ongoing kit order
+        if (hasOngoingKitOrder) {
+            return;
+        }
+
         if (!ageConfirmed) {
             setSubmitCallback(() => submit);
             setShowAgeConfirmModal(true);
@@ -140,7 +156,36 @@ export default function KitRequest() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
+                    {/* Ongoing Kit Order Warning */}
+                    {hasOngoingKitOrder && ongoingKitOrder && (
+                        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg max-w-2xl mx-auto">
+                            <div className="flex items-start space-x-3">
+                                <Package className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                                <div className="flex-1">
+                                    <h3 className="text-sm font-medium text-amber-800 mb-1">
+                                        You have an ongoing kit order
+                                    </h3>
+                                    <p className="text-sm text-amber-700 mb-3">
+                                        You already have a kit order in progress. Please wait for it to be completed before ordering a new kit.
+                                    </p>
+                                    <div className="bg-white p-3 rounded border border-amber-200 mb-3">
+                                        <div className="text-xs text-amber-600 space-y-1">
+                                            <div><span className="font-medium">Status:</span> {ongoingKitOrder.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                                            <div><span className="font-medium">Ordered:</span> {new Date(ongoingKitOrder.created_at).toLocaleDateString()}</div>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href="/my-orders"
+                                        className="inline-flex items-center text-sm font-medium text-amber-700 hover:text-amber-800"
+                                    >
+                                        View your orders →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className={`bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto ${hasOngoingKitOrder ? 'opacity-50 pointer-events-none' : ''}`}>
                         <Form
                             action="/request/kit"
                             method="post"
@@ -270,8 +315,8 @@ export default function KitRequest() {
                                     <Button
                                         type="button"
                                         onClick={() => handleFormSubmit(submit)}
-                                        className="w-full bg-gradient-to-r from-red-50 to-amber-50 hover:from-red-50 hover:to-amber-50 text-lg py-4 font-semibold"
-                                        disabled={processing}
+                                        className="w-full bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-700 hover:to-amber-700 text-lg py-4 font-semibold"
+                                        disabled={processing || hasOngoingKitOrder}
                                     >
                                         {processing && (
                                             <LoaderCircle className="h-5 w-5 animate-spin mr-3" />

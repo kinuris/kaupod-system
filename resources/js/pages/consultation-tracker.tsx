@@ -23,7 +23,8 @@ import {
     CheckCircle, 
     AlertCircle,
     RefreshCw,
-    LoaderCircle
+    LoaderCircle,
+    X
 } from 'lucide-react';
 
 interface ConsultationRequest {
@@ -69,6 +70,10 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                 return <CheckCircle className="h-5 w-5 text-green-600" />;
             case 'reminder_sent':
                 return <AlertCircle className="h-5 w-5 text-purple-600" />;
+            case 'finished':
+                return <CheckCircle className="h-5 w-5 text-green-800" />;
+            case 'canceled':
+                return <X className="h-5 w-5 text-red-600" />;
             default:
                 return <Clock className="h-5 w-5 text-gray-600" />;
         }
@@ -84,6 +89,10 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                 return 'Appointment Confirmed';
             case 'reminder_sent':
                 return 'Reminder Sent';
+            case 'finished':
+                return 'Consultation Completed';
+            case 'canceled':
+                return 'Consultation Canceled';
             default:
                 return 'Unknown Status';
         }
