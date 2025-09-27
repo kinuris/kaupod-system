@@ -14,7 +14,7 @@ class ConsultationRequestController extends Controller
     {
         // Check if user has an ongoing consultation
         $ongoingConsultation = ConsultationRequest::where('user_id', Auth::id())
-            ->whereIn('status', ['in_review', 'coordinating', 'confirmed'])
+            ->whereIn('status', ['in_review', 'coordinating', 'confirmed', 'reminder_sent'])
             ->first();
 
         if ($ongoingConsultation) {

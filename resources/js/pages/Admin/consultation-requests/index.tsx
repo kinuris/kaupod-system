@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { router, Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { MessageCircle, User, Phone, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, MapPin, Users } from 'lucide-react';
+import { MessageCircle, User, Phone, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, MapPin, Users, CheckCircle } from 'lucide-react';
 
 interface User {
   id: number;
@@ -68,8 +68,12 @@ const getStatusIcon = (status: string) => {
       return <MessageCircle className="h-4 w-4 text-amber-600" />;
     case 'confirmed':
       return <Calendar className="h-4 w-4 text-red-700" />;
-    case 'completed':
+    case 'reminder_sent':
       return <MessageCircle className="h-4 w-4 text-red-700" />;
+    case 'finished':
+      return <CheckCircle className="h-4 w-4 text-green-600" />;
+    case 'canceled':
+      return <X className="h-4 w-4 text-red-500" />;
     case 'cancelled':
       return <X className="h-4 w-4 text-red-500" />;
     default:
@@ -85,8 +89,12 @@ const getStatusColor = (status: string) => {
       return 'bg-amber-50 dark:bg-stone-900/20 text-amber-800 dark:text-stone-400 border-amber-200 dark:border-stone-700';
     case 'confirmed':
       return 'bg-red-50 dark:bg-red-50/20 text-red-700 dark:text-red-700 border-red-200 dark:border-red-200';
-    case 'completed':
+    case 'reminder_sent':
       return 'bg-red-50 dark:bg-red-50/20 text-red-700 dark:text-red-700 border-red-200 dark:border-red-200';
+    case 'finished':
+      return 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-400 border-green-200 dark:border-green-700';
+    case 'canceled':
+      return 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-400 border-red-200 dark:border-red-700';
     case 'cancelled':
       return 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-400 border-red-200 dark:border-red-700';
     default:
@@ -487,6 +495,50 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
                             ) : null}
                             Complete & Send Reminder
                           </button>
+                        </div>
+                      ) : request.status === 'reminder_sent' ? (
+                        <div className="flex flex-col gap-2">
+                          <div className="text-xs text-blue-700 font-medium mb-2">
+                            Consultation Meeting Phase
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              disabled={updatingId === request.id}
+                              onClick={() => updateStatus(request.id, 'finished')}
+                              className="inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 active:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 disabled:opacity-25 transition"
+                            >
+                              {updatingId === request.id ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                              ) : null}
+                              Mark Finished
+                            </button>
+                            <button
+                              disabled={updatingId === request.id}
+                              onClick={() => updateStatus(request.id, 'canceled')}
+                              className="inline-flex items-center px-3 py-1 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition"
+                            >
+                              {updatingId === request.id ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                              ) : null}
+                              Mark Canceled
+                            </button>
+                          </div>
+                          {request.assigned_partner_doctor && (
+                            <div className="text-xs text-green-700 mt-1 font-medium">
+                              Assigned: {request.assigned_partner_doctor.name}
+                            </div>
+                          )}
+                        </div>
+                      ) : request.status === 'finished' || request.status === 'canceled' ? (
+                        <div className="flex flex-col gap-2">
+                          <div className={`text-xs font-medium ${request.status === 'finished' ? 'text-green-700' : 'text-red-700'}`}>
+                            {request.status === 'finished' ? '✓ Consultation Completed Successfully' : '✗ Consultation Canceled'}
+                          </div>
+                          {request.assigned_partner_doctor && (
+                            <div className="text-xs text-neutral-500">
+                              Doctor: {request.assigned_partner_doctor.name}
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div>

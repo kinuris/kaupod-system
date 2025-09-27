@@ -99,6 +99,10 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                 return 'bg-green-50 border-green-200 text-green-800';
             case 'reminder_sent':
                 return 'bg-purple-50 border-purple-200 text-purple-800';
+            case 'finished':
+                return 'bg-green-100 border-green-300 text-green-900';
+            case 'canceled':
+                return 'bg-red-50 border-red-200 text-red-800';
             default:
                 return 'bg-gray-50 border-gray-200 text-gray-800';
         }

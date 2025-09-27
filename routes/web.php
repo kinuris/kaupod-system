@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/request/consultation', function() {
         $user = request()->user();
         $ongoingConsultation = $user->consultationRequests()
-            ->whereIn('status', ['in_review', 'coordinating', 'confirmed'])
+            ->whereIn('status', ['in_review', 'coordinating', 'confirmed', 'reminder_sent'])
             ->first();
         
         return Inertia::render('request/consultation', [
