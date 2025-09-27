@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { router, Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { MessageCircle, User, Phone, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, MapPin, Users, CheckCircle } from 'lucide-react';
+import { MessageCircle, User, Phone, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, MapPin, Users, CheckCircle, AlertTriangle } from 'lucide-react';
 
 interface User {
   id: number;
@@ -114,6 +114,25 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
   const [updatingId, setUpdatingId] = useState<number|null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [assigningDoctorId, setAssigningDoctorId] = useState<number|null>(null);
+  const [showDataWarning, setShowDataWarning] = useState(false);
+
+  // Run validation on component mount and when partnerDoctors changes
+  React.useEffect(() => {
+    const validateDoctorsList = () => {
+      const doctorIds = partnerDoctors.map(d => d.id);
+      const duplicateIds = doctorIds.filter((id, index) => doctorIds.indexOf(id) !== index);
+      if (duplicateIds.length > 0) {
+        console.warn('Duplicate doctor IDs found:', duplicateIds);
+      }
+      
+      const invalidIds = partnerDoctors.filter(d => !d.id || !d.name);
+      if (invalidIds.length > 0) {
+        console.warn('Invalid doctor records found:', invalidIds);
+      }
+    };
+
+    validateDoctorsList();
+  }, [partnerDoctors]);
 
   const handleFilter = (key: string, value: string) => {
     const params = new URLSearchParams(window.location.search);
@@ -161,16 +180,54 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
   };
 
   const assignPartnerDoctor = (consultationId: number, partnerDoctorId: number) => {
+    // Validate that the doctor exists in our current list
+    const doctorExists = partnerDoctors.find(doctor => doctor.id === partnerDoctorId);
+    if (!doctorExists) {
+      setShowDataWarning(true);
+      alert('Error: The selected doctor is no longer available. Please refresh the page and try again.');
+      return;
+    }
+
+    // Add debugging information
+    console.log('Assigning doctor:', {
+      consultationId,
+      partnerDoctorId,
+      doctorName: doctorExists.name,
+      availableDoctors: partnerDoctors.map(d => ({ id: d.id, name: d.name }))
+    });
+
     setAssigningDoctorId(consultationId);
     router.post(`/admin/consultation-requests/${consultationId}/assign-partner`, { 
       partner_doctor_id: partnerDoctorId
     }, { 
       onFinish: () => setAssigningDoctorId(null),
       onSuccess: () => {
+        console.log('Successfully assigned doctor:', partnerDoctorId);
         // Success message will be handled by the backend
       },
       onError: (errors) => {
-        console.error('Error assigning partner doctor:', errors);
+        console.error('Error assigning partner doctor:', {
+          errors,
+          consultationId,
+          partnerDoctorId,
+          doctorName: doctorExists.name
+        });
+        
+        // Handle specific error cases
+        if (errors && typeof errors === 'object') {
+          const errorMessages = Object.values(errors).flat();
+          if (errorMessages.some(msg => typeof msg === 'string' && msg.includes('FOREIGN KEY constraint'))) {
+            setShowDataWarning(true);
+            alert(`Error: Doctor "${doctorExists.name}" (ID: ${partnerDoctorId}) is no longer available in the system. This doctor may have been removed. Please refresh the page and try again.`);
+          } else if (errorMessages.some(msg => typeof msg === 'string' && msg.includes('partner_doctor_id'))) {
+            alert(`Error: Invalid doctor selection for "${doctorExists.name}". Please choose a different doctor.`);
+          } else {
+            alert('Error: Failed to assign doctor. Please try again or contact support.');
+          }
+        } else {
+          setShowDataWarning(true);
+          alert('Error: Failed to assign doctor. Please try again or refresh the page.');
+        }
       }
     });
   };
@@ -199,6 +256,37 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
             {requests.total} total requests
           </div>
         </div>
+
+        {/* Data Warning Banner */}
+        {showDataWarning && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100">
+                  <AlertTriangle className="h-4 w-4 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-amber-800">Data May Be Outdated</h3>
+                  <p className="text-sm text-amber-700">Some partner doctors may no longer be available. Please refresh the page to get the latest data.</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="rounded-md bg-amber-600 px-3 py-1 text-xs font-medium text-white hover:bg-amber-700"
+                >
+                  Refresh Page
+                </button>
+                <button
+                  onClick={() => setShowDataWarning(false)}
+                  className="text-amber-600 hover:text-amber-800"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-white dark:bg-neutral-900/50 p-4">
@@ -465,8 +553,8 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
                           >
                             <option value="">Select Partner Doctor</option>
                             {partnerDoctors.map(doctor => (
-                              <option key={doctor.id} value={doctor.id}>
-                                {doctor.name} - {doctor.specialty}
+                              <option key={doctor.id} value={doctor.id} title={`Doctor ID: ${doctor.id}`}>
+                                {doctor.name} - {doctor.specialty} (ID: {doctor.id})
                               </option>
                             ))}
                           </select>
@@ -480,21 +568,47 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
                       ) : request.status === 'confirmed' && request.assigned_partner_doctor ? (
                         <div className="flex flex-col gap-2">
                           <div className="text-xs text-green-700 font-medium mb-1">
-                            ✓ Dr. {request.assigned_partner_doctor.name}
+                            ✓ {request.assigned_partner_doctor.name}
                           </div>
                           <div className="text-xs text-neutral-500 mb-2">
                             {request.assigned_partner_doctor.specialty}
                           </div>
-                          <button
-                            disabled={updatingId === request.id}
-                            onClick={() => updateStatus(request.id, 'reminder_sent')}
-                            className="inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 active:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 disabled:opacity-25 transition"
-                          >
-                            {updatingId === request.id ? (
-                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
-                            ) : null}
-                            Complete & Send Reminder
-                          </button>
+                          <div className="flex gap-2 mb-2">
+                            <button
+                              disabled={updatingId === request.id}
+                              onClick={() => updateStatus(request.id, 'reminder_sent')}
+                              className="inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 active:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 disabled:opacity-25 transition"
+                            >
+                              {updatingId === request.id ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                              ) : null}
+                              Complete & Send Reminder
+                            </button>
+                          </div>
+                          <div className="border-t border-neutral-200 pt-2">
+                            <div className="text-xs text-amber-700 font-medium mb-1">
+                              Change Doctor:
+                            </div>
+                            <select 
+                              disabled={assigningDoctorId === request.id} 
+                              onChange={e => e.target.value && assignPartnerDoctor(request.id, parseInt(e.target.value))} 
+                              className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed w-full"
+                              defaultValue=""
+                            >
+                              <option value="">Select Different Doctor</option>
+                              {partnerDoctors.filter(doctor => doctor.id !== request.assigned_partner_doctor?.id).map(doctor => (
+                                <option key={doctor.id} value={doctor.id} title={`Doctor ID: ${doctor.id}`}>
+                                  {doctor.name} - {doctor.specialty} (ID: {doctor.id})
+                                </option>
+                              ))}
+                            </select>
+                            {assigningDoctorId === request.id && (
+                              <div className="flex items-center gap-2 mt-1">
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-amber-700"></div>
+                                <span className="text-xs text-neutral-600">Changing doctor...</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       ) : request.status === 'reminder_sent' ? (
                         <div className="flex flex-col gap-2">
