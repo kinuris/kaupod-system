@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { router, Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { MessageCircle, User, Phone, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, MapPin } from 'lucide-react';
+import { MessageCircle, User, Phone, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, MapPin, Users } from 'lucide-react';
 
 interface User {
   id: number;
   name: string;
   email: string;
+}
+
+interface PartnerDoctor {
+  id: number;
+  name: string;
+  specialty: string;
 }
 
 interface ConsultationRequest { 
@@ -22,6 +28,7 @@ interface ConsultationRequest {
   reason: string;
   medical_history?: string;
   consultation_location_address?: string;
+  assigned_partner_doctor?: PartnerDoctor;
   created_at: string;
   timeline?: Record<string, string>;
 }
@@ -42,6 +49,7 @@ interface Paginated<T> {
 interface PageProps { 
   requests: Paginated<ConsultationRequest>; 
   statuses: string[]; 
+  partnerDoctors: PartnerDoctor[];
   filters: {
     status: string;
     date_from?: string;
@@ -94,9 +102,10 @@ const formatConsultationType = (type: string) => {
   return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
-export default function ConsultationRequestsIndex({ requests, statuses, filters }: PageProps) {
+export default function ConsultationRequestsIndex({ requests, statuses, partnerDoctors, filters }: PageProps) {
   const [updatingId, setUpdatingId] = useState<number|null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [assigningDoctorId, setAssigningDoctorId] = useState<number|null>(null);
 
   const handleFilter = (key: string, value: string) => {
     const params = new URLSearchParams(window.location.search);
@@ -139,6 +148,22 @@ export default function ConsultationRequestsIndex({ requests, statuses, filters 
       },
       onError: (errors) => {
         console.error('Error updating status:', errors);
+      }
+    });
+  };
+
+  const assignPartnerDoctor = (consultationId: number, partnerDoctorId: number) => {
+    setAssigningDoctorId(consultationId);
+    router.post(`/admin/consultation-requests/${consultationId}/assign-partner`, { 
+      partner_doctor_id: partnerDoctorId,
+      scheduled_datetime: new Date().toISOString()
+    }, { 
+      onFinish: () => setAssigningDoctorId(null),
+      onSuccess: () => {
+        // Success message will be handled by the backend
+      },
+      onError: (errors) => {
+        console.error('Error assigning partner doctor:', errors);
       }
     });
   };
@@ -287,6 +312,32 @@ export default function ConsultationRequestsIndex({ requests, statuses, filters 
           </div>
         </div>
 
+        {/* Partner Doctors Warning */}
+        {partnerDoctors.length === 0 && (
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0">
+                <Users className="w-5 h-5 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                  No Partner Doctors Available
+                </h3>
+                <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                  You need to add partner doctors before you can assign consultations. 
+                  Confirmed consultations cannot progress without partner doctor assignment.
+                </p>
+              </div>
+              <Link
+                href="/admin/partner-doctors"
+                className="inline-flex items-center px-3 py-2 border border-amber-300 dark:border-amber-600 rounded-md text-xs font-medium text-amber-700 dark:text-amber-200 bg-amber-100 dark:bg-amber-800 hover:bg-amber-200 dark:hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+              >
+                Manage Partner Doctors
+              </Link>
+            </div>
+          </div>
+        )}
+
         <div className="relative flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-white dark:bg-neutral-900/50 p-6">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -319,7 +370,6 @@ export default function ConsultationRequestsIndex({ requests, statuses, filters 
                     </button>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Consultation Details</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Contact</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                     <button 
                       onClick={() => handleSort('status')}
@@ -359,6 +409,10 @@ export default function ConsultationRequestsIndex({ requests, statuses, filters 
                             <Mail className="h-3 w-3" />
                             {request.user.email}
                           </div>
+                          <div className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-1">
+                            <Phone className="h-3 w-3" />
+                            {request.phone}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -382,19 +436,6 @@ export default function ConsultationRequestsIndex({ requests, statuses, filters 
                             </span>
                           </div>
                         )}
-                        {request.reason && (
-                          <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 max-w-64">
-                            <span className="font-medium">Reason:</span> {request.reason.length > 50 ? `${request.reason.substring(0, 50)}...` : request.reason}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-col space-y-1">
-                        <div className="text-xs text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
-                          <Phone className="h-3 w-3" />
-                          {request.phone}
-                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -404,21 +445,74 @@ export default function ConsultationRequestsIndex({ requests, statuses, filters 
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <select 
-                        disabled={updatingId === request.id} 
-                        value={request.status} 
-                        onChange={e => updateStatus(request.id, e.target.value)} 
-                        className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
-                      >
-                        {statuses.map(status => (
-                          <option key={status} value={status}>
-                            {formatStatusDisplay(status)}
-                          </option>
-                        ))}
-                      </select>
-                      {updatingId === request.id && (
-                        <div className="ml-2 inline-block">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-700"></div>
+                      {request.status === 'confirmed' && !request.assigned_partner_doctor ? (
+                        <div className="flex flex-col gap-2">
+                          <div className="text-xs text-amber-700 font-medium mb-1">
+                            Assign Partner Doctor First
+                          </div>
+                          <select 
+                            disabled={assigningDoctorId === request.id} 
+                            onChange={e => e.target.value && assignPartnerDoctor(request.id, parseInt(e.target.value))} 
+                            className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+                            defaultValue=""
+                          >
+                            <option value="">Select Partner Doctor</option>
+                            {partnerDoctors.map(doctor => (
+                              <option key={doctor.id} value={doctor.id}>
+                                {doctor.name} - {doctor.specialty}
+                              </option>
+                            ))}
+                          </select>
+                          {assigningDoctorId === request.id && (
+                            <div className="flex items-center gap-2">
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-red-700"></div>
+                              <span className="text-xs text-neutral-600">Assigning...</span>
+                            </div>
+                          )}
+                        </div>
+                      ) : request.status === 'confirmed' && request.assigned_partner_doctor ? (
+                        <div className="flex flex-col gap-2">
+                          <div className="text-xs text-green-700 font-medium mb-1">
+                            ✓ Dr. {request.assigned_partner_doctor.name}
+                          </div>
+                          <div className="text-xs text-neutral-500 mb-2">
+                            {request.assigned_partner_doctor.specialty}
+                          </div>
+                          <button
+                            disabled={updatingId === request.id}
+                            onClick={() => updateStatus(request.id, 'reminder_sent')}
+                            className="inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 active:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 disabled:opacity-25 transition"
+                          >
+                            {updatingId === request.id ? (
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                            ) : null}
+                            Send Reminder
+                          </button>
+                        </div>
+                      ) : (
+                        <div>
+                          <select 
+                            disabled={updatingId === request.id} 
+                            value={request.status} 
+                            onChange={e => updateStatus(request.id, e.target.value)} 
+                            className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed"
+                          >
+                            {statuses.map(status => (
+                              <option key={status} value={status}>
+                                {formatStatusDisplay(status)}
+                              </option>
+                            ))}
+                          </select>
+                          {updatingId === request.id && (
+                            <div className="ml-2 inline-block">
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-700"></div>
+                            </div>
+                          )}
+                          {request.assigned_partner_doctor && (
+                            <div className="text-xs text-green-700 mt-1 font-medium">
+                              Assigned: {request.assigned_partner_doctor.name}
+                            </div>
+                          )}
                         </div>
                       )}
                     </td>

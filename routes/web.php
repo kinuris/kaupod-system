@@ -138,7 +138,7 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
     Route::patch('/kit-orders/{kitOrder}/unmark-email-sent', [KitOrderController::class, 'unmarkEmailSent'])->name('kit-orders.unmark-email-sent');
 
     Route::get('/consultation-requests', function(Request $request) {
-        $query = \App\Models\ConsultationRequest::with('user');
+        $query = \App\Models\ConsultationRequest::with(['user', 'assignedPartnerDoctor']);
 
         // Apply filters
         if ($request->filled('status') && $request->status !== 'all') {
@@ -180,6 +180,7 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
         return Inertia::render('Admin/consultation-requests/index', [
             'requests' => $requests,
             'statuses' => array_map(fn($c)=>$c->value, \App\Enums\ConsultationStatus::cases()),
+            'partnerDoctors' => \App\Models\PartnerDoctor::where('is_active', true)->get(['id', 'name', 'specialty']),
             'filters' => [
                 'status' => $request->get('status', 'all'),
                 'date_from' => $request->get('date_from'),
@@ -192,6 +193,12 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
     })->name('consultation-requests.index');
     Route::patch('/consultation-requests/{consultationRequest}/status', [ConsultationRequestController::class, 'updateStatus'])->name('consultation-requests.update-status');
     Route::post('/consultation-requests/{consultationRequest}/assign-partner', [ConsultationRequestController::class, 'assignPartnerDoctor'])->name('consultation-requests.assign-partner');
+
+    // Partner Doctors Management
+    Route::get('/partner-doctors', [\App\Http\Controllers\Admin\PartnerDoctorController::class, 'index'])->name('partner-doctors.index');
+    Route::post('/partner-doctors', [\App\Http\Controllers\Admin\PartnerDoctorController::class, 'store'])->name('partner-doctors.store');
+    Route::patch('/partner-doctors/{partnerDoctor}', [\App\Http\Controllers\Admin\PartnerDoctorController::class, 'update'])->name('partner-doctors.update');
+    Route::delete('/partner-doctors/{partnerDoctor}', [\App\Http\Controllers\Admin\PartnerDoctorController::class, 'destroy'])->name('partner-doctors.destroy');
 
     // Pricing settings routes
     Route::get('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'index'])->name('pricing.index');
