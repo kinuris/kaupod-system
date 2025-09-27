@@ -97,7 +97,7 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
         $sortDirection = request('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
         
-        $orders = $query->paginate(20, ['id','status','price','user_id','phone','delivery_address','delivery_location_address','return_location_address','return_address','return_date','return_notes','created_at','timeline'])
+        $orders = $query->paginate(20, ['id','status','price','user_id','phone','delivery_address','delivery_location_address','return_location_address','return_address','return_date','return_notes','result_email_sent','result_email_sent_at','result_email_notes','created_at','timeline'])
                        ->withQueryString();
         
         return Inertia::render('Admin/kit-orders/index', [
@@ -114,6 +114,8 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
         ]);
     })->name('kit-orders.index');
     Route::patch('/kit-orders/{kitOrder}/status', [KitOrderController::class, 'updateStatus'])->name('kit-orders.update-status');
+    Route::patch('/kit-orders/{kitOrder}/mark-email-sent', [KitOrderController::class, 'markEmailSent'])->name('kit-orders.mark-email-sent');
+    Route::patch('/kit-orders/{kitOrder}/unmark-email-sent', [KitOrderController::class, 'unmarkEmailSent'])->name('kit-orders.unmark-email-sent');
 
     Route::get('/consultation-requests', function() {
         $requests = \App\Models\ConsultationRequest::latest()->paginate(20, ['id','status','user_id']);

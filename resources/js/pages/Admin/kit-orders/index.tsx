@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { router, Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { Package, User, Phone, MapPin, Calendar, Clock, Search, Filter, SortAsc, SortDesc, X, ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
+import { Package, User, Phone, MapPin, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface User {
   id: number;
@@ -22,6 +22,9 @@ interface Order {
   return_address?: string;
   return_date?: string;
   return_notes?: string;
+  result_email_sent: boolean;
+  result_email_sent_at?: string;
+  result_email_notes?: string;
   created_at: string;
   timeline?: Record<string, string>;
 }
@@ -165,6 +168,34 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
       },
       onError: (errors) => {
         console.error('Error updating status:', errors);
+      }
+    });
+  };
+
+  const markEmailSent = (id: number, notes?: string) => {
+    setUpdatingId(id);
+    router.patch(`/admin/kit-orders/${id}/mark-email-sent`, { 
+      result_email_notes: notes 
+    }, { 
+      onFinish: () => setUpdatingId(null),
+      onSuccess: () => {
+        // Success message will be handled by the backend
+      },
+      onError: (errors) => {
+        console.error('Error marking email as sent:', errors);
+      }
+    });
+  };
+
+  const unmarkEmailSent = (id: number) => {
+    setUpdatingId(id);
+    router.patch(`/admin/kit-orders/${id}/unmark-email-sent`, {}, { 
+      onFinish: () => setUpdatingId(null),
+      onSuccess: () => {
+        // Success message will be handled by the backend
+      },
+      onError: (errors) => {
+        console.error('Error unmarking email:', errors);
       }
     });
   };
@@ -371,6 +402,7 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                       )}
                     </button>
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Email Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Update Status</th>
                 </tr>
               </thead>
@@ -435,6 +467,53 @@ export default function KitOrdersIndex({ orders, statuses, filters }: PageProps)
                         {getStatusIcon(order.status)}
                         {formatStatusDisplay(order.status)}
                       </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {order.status === 'received' ? (
+                        <div className="flex flex-col gap-2">
+                          {order.result_email_sent ? (
+                            <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+                                <CheckCircle className="h-4 w-4" />
+                                Email Sent
+                              </div>
+                              {order.result_email_sent_at && (
+                                <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                                  {new Date(order.result_email_sent_at).toLocaleDateString()}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1 text-xs text-red-600 dark:text-red-400">
+                              <AlertCircle className="h-4 w-4" />
+                              Email Pending
+                            </div>
+                          )}
+                          {updatingId !== order.id && (
+                            <div className="flex gap-1">
+                              {!order.result_email_sent ? (
+                                <button
+                                  onClick={() => markEmailSent(order.id)}
+                                  className="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                                >
+                                  Mark Sent
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => unmarkEmailSent(order.id)}
+                                  className="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                                >
+                                  Reset
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-neutral-400 dark:text-neutral-500">
+                          N/A
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {order.status === 'accepted' ? (

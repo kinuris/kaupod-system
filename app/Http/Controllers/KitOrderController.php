@@ -157,4 +157,36 @@ class KitOrderController extends Controller
         $redirectRoute = $request->user()->isClient() ? 'home' : 'dashboard';
         return redirect()->route($redirectRoute)->with('status', 'Kit order has been cancelled successfully.');
     }
+
+    public function markEmailSent(Request $request, KitOrder $kitOrder)
+    {
+        // Only admins allowed
+        abort_unless($request->user()?->isAdmin(), 403);
+
+        $data = $request->validate([
+            'result_email_notes' => 'nullable|string|max:1000',
+        ]);
+
+        $kitOrder->update([
+            'result_email_sent' => true,
+            'result_email_sent_at' => now(),
+            'result_email_notes' => $data['result_email_notes'] ?? null,
+        ]);
+
+        return back()->with('status', 'Email marked as sent successfully.');
+    }
+
+    public function unmarkEmailSent(Request $request, KitOrder $kitOrder)
+    {
+        // Only admins allowed
+        abort_unless($request->user()?->isAdmin(), 403);
+
+        $kitOrder->update([
+            'result_email_sent' => false,
+            'result_email_sent_at' => null,
+            'result_email_notes' => null,
+        ]);
+
+        return back()->with('status', 'Email status reset successfully.');
+    }
 }
