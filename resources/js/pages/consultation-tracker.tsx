@@ -61,7 +61,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
 
     const getStatusIcon = (status: string) => {
         switch (status) {
-            case 'received':
+            case 'in_review':
                 return <Clock className="h-5 w-5 text-amber-600" />;
             case 'coordinating':
                 return <RefreshCw className="h-5 w-5 text-blue-600" />;
@@ -76,8 +76,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
 
     const getStatusText = (status: string) => {
         switch (status) {
-            case 'received':
-                return 'Request Received';
+            case 'in_review':
+                return 'Request In Review';
             case 'coordinating':
                 return 'Coordinating Appointment';
             case 'confirmed':
@@ -91,7 +91,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'received':
+            case 'in_review':
                 return 'bg-amber-50 border-amber-200 text-amber-800';
             case 'coordinating':
                 return 'bg-blue-50 border-blue-200 text-blue-800';
@@ -105,7 +105,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
     };
 
     const canReschedule = (consultation: ConsultationRequest) => {
-        return ['received', 'coordinating', 'confirmed'].includes(consultation.status);
+        return ['in_review', 'coordinating', 'confirmed'].includes(consultation.status);
     };
 
     const handleReschedule = (consultation: ConsultationRequest) => {
@@ -165,8 +165,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-sm text-gray-500">Request ID</p>
-                                            <p className="font-mono text-lg font-semibold">#{consultation.id.toString().padStart(6, '0')}</p>
+                                            <p className="text-sm text-gray-700 font-medium">Request ID</p>
+                                            <p className="font-mono text-lg font-bold text-gray-900">#{consultation.id.toString().padStart(6, '0')}</p>
                                         </div>
                                     </div>
 
@@ -175,8 +175,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                             <div className="flex items-center gap-3">
                                                 <Calendar className="h-5 w-5 text-red-700" />
                                                 <div>
-                                                    <p className="text-sm text-gray-500">Preferred Date & Time</p>
-                                                    <p className="font-medium">
+                                                    <p className="text-sm text-gray-700 font-medium">Preferred Date & Time</p>
+                                                    <p className="font-semibold text-gray-900">
                                                         {new Date(consultation.preferred_date).toLocaleDateString()} at {consultation.preferred_time}
                                                     </p>
                                                 </div>
@@ -185,8 +185,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                             <div className="flex items-center gap-3">
                                                 <MessageCircle className="h-5 w-5 text-red-700" />
                                                 <div>
-                                                    <p className="text-sm text-gray-500">Consultation Mode</p>
-                                                    <p className="font-medium capitalize">
+                                                    <p className="text-sm text-gray-700 font-medium">Consultation Mode</p>
+                                                    <p className="font-semibold text-gray-900 capitalize">
                                                         {consultation.consultation_mode.replace('-', ' ')}
                                                     </p>
                                                 </div>
@@ -196,8 +196,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 <div className="flex items-start gap-3">
                                                     <MapPin className="h-5 w-5 text-red-700 mt-0.5" />
                                                     <div>
-                                                        <p className="text-sm text-gray-500">Location</p>
-                                                        <p className="font-medium">{consultation.consultation_location_address}</p>
+                                                        <p className="text-sm text-gray-700 font-medium">Location</p>
+                                                        <p className="font-semibold text-gray-900">{consultation.consultation_location_address}</p>
                                                     </div>
                                                 </div>
                                             )}
@@ -205,8 +205,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                             <div className="flex items-center gap-3">
                                                 <Phone className="h-5 w-5 text-red-700" />
                                                 <div>
-                                                    <p className="text-sm text-gray-500">Contact Phone</p>
-                                                    <p className="font-medium">{consultation.phone}</p>
+                                                    <p className="text-sm text-gray-700 font-medium">Contact Phone</p>
+                                                    <p className="font-semibold text-gray-900">{consultation.phone}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -216,9 +216,9 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 <div className="flex items-center gap-3">
                                                     <User className="h-5 w-5 text-green-700" />
                                                     <div>
-                                                        <p className="text-sm text-gray-500">Assigned Expert</p>
-                                                        <p className="font-medium">{consultation.assigned_partner_doctor.name}</p>
-                                                        <p className="text-sm text-green-700">{consultation.assigned_partner_doctor.specialty}</p>
+                                                        <p className="text-sm text-gray-700 font-medium">Assigned Expert</p>
+                                                        <p className="font-semibold text-gray-900">{consultation.assigned_partner_doctor.name}</p>
+                                                        <p className="text-sm text-green-700 font-medium">{consultation.assigned_partner_doctor.specialty}</p>
                                                     </div>
                                                 </div>
                                             )}
@@ -227,8 +227,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 <div className="flex items-center gap-3">
                                                     <CheckCircle className="h-5 w-5 text-green-700" />
                                                     <div>
-                                                        <p className="text-sm text-gray-500">Confirmed Appointment</p>
-                                                        <p className="font-medium">
+                                                        <p className="text-sm text-gray-700 font-medium">Confirmed Appointment</p>
+                                                        <p className="font-semibold text-gray-900">
                                                             {new Date(consultation.scheduled_datetime).toLocaleString()}
                                                         </p>
                                                     </div>
@@ -239,12 +239,12 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 <div className="flex items-center gap-3">
                                                     <RefreshCw className="h-5 w-5 text-blue-700" />
                                                     <div>
-                                                        <p className="text-sm text-gray-500">Last Rescheduled</p>
-                                                        <p className="font-medium">
+                                                        <p className="text-sm text-gray-700 font-medium">Last Rescheduled</p>
+                                                        <p className="font-semibold text-gray-900">
                                                             {new Date(consultation.last_rescheduled_at).toLocaleString()}
                                                         </p>
                                                         {consultation.rescheduling_reason && (
-                                                            <p className="text-sm text-blue-700">Reason: {consultation.rescheduling_reason}</p>
+                                                            <p className="text-sm text-blue-700 font-medium">Reason: {consultation.rescheduling_reason}</p>
                                                         )}
                                                     </div>
                                                 </div>
@@ -253,8 +253,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                     </div>
 
                                     <div className="border-t pt-4">
-                                        <h4 className="font-medium text-gray-900 mb-2">Consultation Reason</h4>
-                                        <p className="text-gray-700 text-sm">{consultation.reason}</p>
+                                        <h4 className="font-semibold text-gray-900 mb-2">Consultation Reason</h4>
+                                        <p className="text-gray-800 text-sm font-medium">{consultation.reason}</p>
                                     </div>
 
                                     {canReschedule(consultation) && (

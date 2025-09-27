@@ -58,8 +58,8 @@ class ConsultationRequestController extends Controller
             'reason' => $data['reason'],
             'medical_history' => $data['medical_history'] ?? null,
             'schedule_preferences' => $schedulePreferences,
-            'status' => ConsultationStatus::Received,
-            'timeline' => [now()->toDateTimeString() => 'received'],
+            'status' => ConsultationStatus::InReview,
+            'timeline' => [now()->toDateTimeString() => 'in_review'],
         ];
 
         // Add location data if in-person consultation
@@ -133,7 +133,7 @@ class ConsultationRequestController extends Controller
             'preferred_time' => $data['new_preferred_time'],
             'rescheduling_reason' => $data['rescheduling_reason'],
             'last_rescheduled_at' => now(),
-            'status' => ConsultationStatus::Received, // Reset to received for re-coordination
+            'status' => ConsultationStatus::InReview, // Reset to in_review for re-coordination
             'timeline' => $timeline,
         ]);
 

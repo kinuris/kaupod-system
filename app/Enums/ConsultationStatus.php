@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum ConsultationStatus: string
 {
-    case Received = 'received';
+    case InReview = 'in_review';
     case Coordinating = 'coordinating';
     case Confirmed = 'confirmed';
     case ReminderSent = 'reminder_sent';
@@ -12,7 +12,7 @@ enum ConsultationStatus: string
     public function nextAllowed(): array
     {
         return match ($this) {
-            self::Received => [self::Coordinating],
+            self::InReview => [self::Coordinating],
             self::Coordinating => [self::Confirmed],
             self::Confirmed => [self::ReminderSent],
             self::ReminderSent => [],

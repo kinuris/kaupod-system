@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\KitOrderController;
@@ -136,11 +137,57 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
     Route::patch('/kit-orders/{kitOrder}/mark-email-sent', [KitOrderController::class, 'markEmailSent'])->name('kit-orders.mark-email-sent');
     Route::patch('/kit-orders/{kitOrder}/unmark-email-sent', [KitOrderController::class, 'unmarkEmailSent'])->name('kit-orders.unmark-email-sent');
 
-    Route::get('/consultation-requests', function() {
-        $requests = \App\Models\ConsultationRequest::latest()->paginate(20, ['id','status','user_id']);
+    Route::get('/consultation-requests', function(Request $request) {
+        $query = \App\Models\ConsultationRequest::with('user');
+
+        // Apply filters
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->whereHas('user', function($userQuery) use ($searchTerm) {
+                    $userQuery->where('name', 'like', "%{$searchTerm}%")
+                             ->orWhere('email', 'like', "%{$searchTerm}%");
+                })->orWhere('phone', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Apply sorting
+        $sortField = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+        
+        if ($sortField === 'name') {
+            $query->join('users', 'consultation_requests.user_id', '=', 'users.id')
+                  ->orderBy('users.name', $sortDirection)
+                  ->select('consultation_requests.*');
+        } else {
+            $query->orderBy($sortField, $sortDirection);
+        }
+
+        $requests = $query->paginate(20);
+
         return Inertia::render('Admin/consultation-requests/index', [
             'requests' => $requests,
             'statuses' => array_map(fn($c)=>$c->value, \App\Enums\ConsultationStatus::cases()),
+            'filters' => [
+                'status' => $request->get('status', 'all'),
+                'date_from' => $request->get('date_from'),
+                'date_to' => $request->get('date_to'),
+                'search' => $request->get('search'),
+                'sort' => $sortField,
+                'direction' => $sortDirection,
+            ],
         ]);
     })->name('consultation-requests.index');
     Route::patch('/consultation-requests/{consultationRequest}/status', [ConsultationRequestController::class, 'updateStatus'])->name('consultation-requests.update-status');
