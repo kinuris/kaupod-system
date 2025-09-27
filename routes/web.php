@@ -238,6 +238,14 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
     Route::patch('/partner-doctors/{partnerDoctor}', [\App\Http\Controllers\Admin\PartnerDoctorController::class, 'update'])->name('partner-doctors.update');
     Route::delete('/partner-doctors/{partnerDoctor}', [\App\Http\Controllers\Admin\PartnerDoctorController::class, 'destroy'])->name('partner-doctors.destroy');
 
+    // Client Management routes
+    Route::get('/clients', [\App\Http\Controllers\Admin\ClientController::class, 'index'])->name('clients.index');
+    Route::get('/clients/{client}', [\App\Http\Controllers\Admin\ClientController::class, 'show'])->name('clients.show');
+    Route::get('/clients/{client}/edit', [\App\Http\Controllers\Admin\ClientController::class, 'edit'])->name('clients.edit');
+    Route::patch('/clients/{client}', [\App\Http\Controllers\Admin\ClientController::class, 'update'])->name('clients.update');
+    Route::delete('/clients/{client}', [\App\Http\Controllers\Admin\ClientController::class, 'destroy'])->name('clients.destroy');
+    Route::post('/clients/{client}/toggle-status', [\App\Http\Controllers\Admin\ClientController::class, 'toggleStatus'])->name('clients.toggle-status');
+
     // Pricing settings routes
     Route::get('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'index'])->name('pricing.index');
     Route::patch('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'update'])->name('pricing.update');
