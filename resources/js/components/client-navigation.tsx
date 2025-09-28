@@ -94,6 +94,12 @@ export default function ClientNavigation() {
                                                 My Orders
                                             </Link>
                                             <Link 
+                                                href="/chat" 
+                                                className="text-purple-700 hover:text-purple-800 font-medium transition-colors"
+                                            >
+                                                AI Assistant
+                                            </Link>
+                                            <Link 
                                                 href="/about" 
                                                 className="text-blue-700 hover:text-blue-800 font-medium transition-colors"
                                             >
@@ -117,6 +123,12 @@ export default function ClientNavigation() {
                                 </>
                             ) : (
                                 <>
+                                    <a 
+                                        href="/chat" 
+                                        className="text-purple-700 hover:text-purple-800 font-medium transition-colors"
+                                    >
+                                        AI Assistant
+                                    </a>
                                     <a 
                                         href="/about" 
                                         className="text-blue-700 hover:text-blue-800 font-medium transition-colors"
@@ -219,6 +231,13 @@ export default function ClientNavigation() {
                                             My Orders
                                         </Link>
                                         <Link 
+                                            href="/chat" 
+                                            className="block text-purple-700 hover:text-purple-800 font-medium py-2 transition-colors"
+                                            onClick={closeMobileMenu}
+                                        >
+                                            AI Assistant
+                                        </Link>
+                                        <Link 
                                             href="/about" 
                                             className="block text-blue-700 hover:text-blue-800 font-medium py-2 transition-colors"
                                             onClick={closeMobileMenu}
@@ -252,6 +271,13 @@ export default function ClientNavigation() {
                             </>
                         ) : (
                             <>
+                                <a 
+                                    href="/chat" 
+                                    className="block text-purple-700 hover:text-purple-800 font-medium py-2 transition-colors"
+                                    onClick={closeMobileMenu}
+                                >
+                                    AI Assistant
+                                </a>
                                 <a 
                                     href="/about" 
                                     className="block text-blue-700 hover:text-blue-800 font-medium py-2 transition-colors"

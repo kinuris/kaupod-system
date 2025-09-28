@@ -351,53 +351,163 @@ Plus Tracker is your comprehensive activity monitoring system that provides real
 
 ## AI Chatbot Assistance
 
-### Understanding the AI Chatbot
+### Understanding the AI Health Assistant
 
-**Purpose:**
-- Confidential risk assessment
-- General health information
-- Platform guidance
-- 24/7 support availability
+**Powered by Advanced AI:**
+- Intelligent OpenAI-powered assistant specifically trained for health guidance
+- 24/7 availability for immediate support
+- Natural conversation interface for comfortable interaction
+- Expert-backed medical knowledge base
 
-**Privacy Guarantee:**
-- Conversations are never stored
-- Complete anonymity
-- No personal data retention
-- Secure communication
+**Purpose & Benefits:**
+- **Confidential Health Guidance**: Get personalized health information privately
+- **Risk Assessment Support**: Understand potential health risks and next steps
+- **Platform Navigation**: Learn how to use Kaupod services effectively
+- **Pre-Consultation Preparation**: Prepare questions for expert consultations
+- **Ongoing Support**: Receive guidance throughout your health journey
 
-### Using the Chatbot
+### Accessing the AI Assistant
 
-**Accessing the Chatbot:**
-1. Look for chat bubble icon (usually bottom-right)
-2. Click to open chat interface
-3. Start typing your questions
+**How to Start a Conversation:**
+1. Click "AI Assistant" in the main navigation menu (available on all pages)
+2. You'll be taken to the dedicated chat interface
+3. The assistant will greet you with a welcome message
+4. Start typing your health questions or concerns
+
+**Interface Features:**
+- **Real-time Messaging**: Instant responses to your questions
+- **Conversation History**: See your complete conversation thread
+- **Clear Chat Button**: Start fresh conversations anytime
+- **Mobile Friendly**: Works perfectly on phones and tablets
+- **Professional Design**: Clean, medical-grade interface
+
+### Using the AI Assistant Effectively
+
+**Getting Started:**
+1. **Describe Your Situation**: Be specific about your health concerns or questions
+2. **Ask Follow-up Questions**: The AI can provide more detailed information
+3. **Request Clarification**: Ask if you don't understand something
+4. **Explore Options**: Learn about available services and resources
+
+**Example Conversation Starters:**
+- "I'm concerned about potential HIV exposure. What should I know?"
+- "Can you explain how HIV testing works?"
+- "What are the symptoms I should watch for?"
+- "How do I prepare for an HIV test?"
+- "What's the difference between different types of HIV tests?"
+- "I'm nervous about testing. Can you help me understand the process?"
+- "What should I expect from a consultation with a doctor?"
+
+**Advanced Usage:**
+- **Symptom Discussion**: Describe symptoms for general guidance
+- **Risk Assessment**: Get help understanding your personal risk factors
+- **Treatment Information**: Learn about HIV treatment and prevention
+- **Support Resources**: Find additional resources and support services
+- **Platform Guidance**: Get help using Kaupod's services
+
+### Privacy & Security
+
+**Your Conversations Are Protected:**
+- **Encrypted Communication**: All messages are encrypted in transit
+- **No Permanent Storage**: Conversations are not saved permanently
+- **Session-Based**: Chat history clears when you close your browser
+- **Anonymous Interaction**: No personal data required to chat
+- **HIPAA-Compliant**: Follows strict healthcare privacy standards
+
+**What We Don't Store:**
+- Your specific health questions
+- Personal information shared in chat
+- Conversation histories
+- Individual chat sessions
+- Any identifying information
+
+### AI Assistant Capabilities
+
+**What the Assistant Can Help With:**
+- **General Health Information**: Evidence-based health guidance
+- **HIV/STI Education**: Comprehensive information about prevention and testing
+- **Platform Support**: How to use Kaupod services effectively
+- **Preparation Assistance**: Getting ready for tests or consultations
+- **Resource Navigation**: Finding appropriate care and support
+- **Emotional Support**: Understanding and addressing health anxiety
+
+**Advanced Features:**
+- **Context Understanding**: Remembers your conversation context
+- **Personalized Responses**: Tailored advice based on your specific situation
+- **Professional Language**: Medical terminology explained in plain English
+- **Multi-topic Support**: Can discuss various health topics in one conversation
+- **Follow-up Capabilities**: Can continue previous conversation threads
+
+### Important Limitations & Disclaimers
+
+**Medical Disclaimer:**
+⚠️ **The AI Assistant provides general health information only and is not a substitute for professional medical advice, diagnosis, or treatment.**
+
+**What the Assistant Cannot Do:**
+- **Medical Diagnosis**: Cannot diagnose medical conditions
+- **Test Result Interpretation**: Cannot interpret your specific test results
+- **Emergency Care**: Cannot provide emergency medical assistance
+- **Prescription Advice**: Cannot recommend specific medications
+- **Replace Healthcare Providers**: Cannot substitute for professional medical care
+
+**When to Seek Professional Help:**
+- **Medical Emergencies**: Call emergency services immediately
+- **Urgent Symptoms**: Contact healthcare providers or urgent care
+- **Test Results**: Always consult healthcare professionals for result interpretation
+- **Treatment Decisions**: Work with qualified healthcare providers
+- **Ongoing Care**: Maintain regular healthcare provider relationships
+
+### Getting the Most from AI Assistance
 
 **Best Practices:**
-- Be honest about your concerns
-- Ask specific questions
-- Use the chatbot for initial assessments
-- Follow up with professional consultation if needed
+1. **Be Specific**: Provide detailed information about your concerns
+2. **Ask Clarifying Questions**: Don't hesitate to ask for more information
+3. **Use Multiple Sessions**: Return for follow-up questions anytime
+4. **Combine with Professional Care**: Use AI guidance alongside healthcare providers
+5. **Stay Informed**: Use the assistant to stay educated about your health
 
-**Types of Questions You Can Ask:**
-- "What are HIV risk factors?"
-- "Should I get tested?"
-- "How do I use the testing kit?"
-- "What should I expect during consultation?"
-- "How do I interpret my results?"
+**Conversation Tips:**
+- **Start Simple**: Begin with basic questions and build complexity
+- **Provide Context**: Share relevant background information
+- **Ask for Examples**: Request specific examples or scenarios
+- **Clarify Terms**: Ask for definitions of medical terms
+- **Plan Next Steps**: Use guidance to plan your healthcare journey
 
-### Chatbot Limitations
+### Troubleshooting
 
-**What the Chatbot Can Do:**
-- Provide general health information
-- Assess risk factors
-- Guide platform usage
-- Offer support and resources
+**If the Assistant Isn't Responding:**
+1. **Check Internet Connection**: Ensure stable internet connection
+2. **Refresh Page**: Try reloading the chat page
+3. **Clear Chat**: Use the "Clear Chat" button to start fresh
+4. **Try Again Later**: Service may be temporarily busy
 
-**What the Chatbot Cannot Do:**
-- Provide medical diagnosis
-- Interpret test results
-- Replace professional medical advice
-- Store personal conversations
+**If You're Not Getting Helpful Responses:**
+1. **Be More Specific**: Provide more detailed information
+2. **Rephrase Questions**: Try asking in different ways
+3. **Break Down Complex Questions**: Ask one thing at a time
+4. **Provide Context**: Share relevant background information
+
+**Technical Issues:**
+- **Browser Compatibility**: Use modern browsers (Chrome, Firefox, Safari)
+- **JavaScript Enabled**: Ensure JavaScript is enabled in your browser
+- **Pop-up Blockers**: Disable pop-up blockers if necessary
+- **Cache Issues**: Clear browser cache if experiencing problems
+
+### Transitioning to Professional Care
+
+**When AI Guidance Points to Professional Care:**
+1. **Schedule Consultation**: Use our Expert Consultation Service
+2. **Order Testing Kit**: Get HIV testing kit delivered privately
+3. **Contact Healthcare Provider**: Reach out to your primary care doctor
+4. **Visit Urgent Care**: For time-sensitive health concerns
+
+**Preparing for Professional Consultations:**
+- **Document Concerns**: Note key points from AI conversations
+- **Prepare Questions**: List specific questions for healthcare providers
+- **Gather Information**: Collect relevant health history
+- **Plan Follow-up**: Schedule necessary follow-up appointments
+
+The AI Health Assistant is your first step toward better health. Use it confidently, knowing that professional care is always available when needed.
 
 ---
 

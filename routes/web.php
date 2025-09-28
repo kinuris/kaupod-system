@@ -15,7 +15,13 @@ Route::get('/about', function () {
     return Inertia::render('about');
 })->name('about');
 
+Route::get('/chat', function () {
+    return Inertia::render('chat');
+})->name('chat');
+
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
+Route::post('/chatbot/message/stream', [ChatbotController::class, 'messageStream'])->name('chatbot.message.stream');
+Route::post('/chatbot/clear', [ChatbotController::class, 'clearConversation'])->name('chatbot.clear');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard - only for admin users
