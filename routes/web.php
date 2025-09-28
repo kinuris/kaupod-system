@@ -19,6 +19,7 @@ Route::get('/chat', function () {
     return Inertia::render('chat');
 })->name('chat');
 
+Route::get('/chatbot/messages', [ChatbotController::class, 'getMessages'])->name('chatbot.messages');
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
 Route::post('/chatbot/message/stream', [ChatbotController::class, 'messageStream'])->name('chatbot.message.stream');
 Route::post('/chatbot/clear', [ChatbotController::class, 'clearConversation'])->name('chatbot.clear');

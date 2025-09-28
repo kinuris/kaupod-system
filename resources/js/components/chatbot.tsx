@@ -39,14 +39,45 @@ export default function Chatbot({ className }: ChatbotProps) {
     // Removed auto-scroll to prevent scrolling during bot responses
 
     useEffect(() => {
-        // Add welcome message when component mounts
-        if (messages.length === 0) {
+        // Load messages from database on component mount
+        loadMessages();
+    }, []);
+
+    const loadMessages = async () => {
+        try {
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            const response = await fetch('/chatbot/messages', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token || '',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.messages && data.messages.length > 0) {
+                    setMessages(data.messages);
+                } else {
+                    // Add welcome message if no messages exist
+                    setMessages([{
+                        role: 'assistant',
+                        content: 'Hello! I\'m here to help you with any health-related questions or concerns you might have. Feel free to share what\'s on your mind, and I\'ll do my best to provide helpful information and guidance.'
+                    }]);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load messages:', error);
+            // Add welcome message as fallback
             setMessages([{
                 role: 'assistant',
                 content: 'Hello! I\'m here to help you with any health-related questions or concerns you might have. Feel free to share what\'s on your mind, and I\'ll do my best to provide helpful information and guidance.'
             }]);
         }
-    }, [messages.length]);
+    };
 
     const sendMessage = async (userMessage: string) => {
         if (!userMessage.trim()) return;
@@ -57,9 +88,6 @@ export default function Chatbot({ className }: ChatbotProps) {
         setInputValue('');
         setIsLoading(true);
         setError(null);
-        
-        // Scroll to bottom when user sends a message
-        setTimeout(() => scrollToBottom(), 100);
 
         try {
             // Get CSRF token from meta tag
@@ -161,12 +189,9 @@ export default function Chatbot({ className }: ChatbotProps) {
             });
 
             if (response.ok) {
-                setMessages([{
-                    role: 'assistant',
-                    content: 'Hello! I\'m here to help you with any health-related questions or concerns you might have. Feel free to share what\'s on your mind, and I\'ll do my best to provide helpful information and guidance.'
-                }]);
+                // Reload messages from database (should get welcome message)
+                await loadMessages();
                 setError(null);
-                setTimeout(() => scrollToBottom(), 100);
             }
         } catch {
             setError('Failed to clear conversation');
@@ -188,7 +213,7 @@ export default function Chatbot({ className }: ChatbotProps) {
     };
 
     return (
-        <Card className={cn('flex flex-col h-[600px] bg-white border-gray-200 shadow-sm', className)}>
+        <Card className={cn('flex flex-col h-[80vh] max-h-[700px] min-h-[500px] bg-white border-gray-200 shadow-sm', className)}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 bg-white">
                 <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-900">
                     <Bot className="h-5 w-5 text-red-600" />
@@ -206,8 +231,8 @@ export default function Chatbot({ className }: ChatbotProps) {
                 </Button>
             </CardHeader>
             
-            <CardContent className="flex flex-col flex-1 p-4 space-y-4 bg-white">
-                <div className="flex-1 overflow-y-auto pr-4 relative" ref={messagesContainerRef} onScroll={handleScroll}>
+            <CardContent className="flex flex-col flex-1 p-4 space-y-4 bg-white overflow-hidden">
+                <div className="flex-1 overflow-y-auto pr-4 relative min-h-0" ref={messagesContainerRef} onScroll={handleScroll}>
                     <div className="space-y-4">
                         {messages.map((message, index) => (
                             <div

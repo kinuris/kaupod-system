@@ -31,10 +31,10 @@ export default function ChatbotPage() {
                     </div>
 
                     {/* Main Content */}
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-900">
-                        <div className="grid gap-8 lg:grid-cols-3">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-gray-900">
+                        <div className="grid gap-8 lg:grid-cols-3 min-h-0">
                             {/* Chatbot Interface */}
-                            <div className="lg:col-span-2">
+                            <div className="lg:col-span-2 min-h-0">
                                 <Chatbot />
                             </div>
                     

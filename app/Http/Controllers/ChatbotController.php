@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\OpenAIService;
+use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ChatbotController extends Controller
 {
@@ -15,9 +17,55 @@ class ChatbotController extends Controller
         $this->openAIService = $openAIService;
     }
 
+    /**
+     * Get or create a chat session ID
+     */
+    private function getChatSessionId()
+    {
+        $sessionId = session()->get('chat_session_id');
+        
+        if (!$sessionId) {
+            $sessionId = Str::uuid()->toString();
+            session()->put('chat_session_id', $sessionId);
+        }
+        
+        return $sessionId;
+    }
+
+    /**
+     * Get chat messages from database
+     */
+    public function getMessages(Request $request)
+    {
+        $sessionId = $this->getChatSessionId();
+        
+        $messages = ChatMessage::where('session_id', $sessionId)
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(function ($message) {
+                return [
+                    'role' => $message->role,
+                    'content' => $message->content
+                ];
+            });
+
+        return response()->json([
+            'messages' => $messages
+        ]);
+    }
+
     public function message(Request $request)
     {
         $validated = $request->validate(['message' => 'required|string|max:2000']);
+        
+                // Get session ID and save user message to database
+        $sessionId = $this->getChatSessionId();
+        
+        ChatMessage::create([
+            'session_id' => $sessionId,
+            'role' => 'user',
+            'content' => $validated['message']
+        ]);
         
         // Get or create thread ID for this session
         $threadId = session()->get('chat_thread_id');
@@ -25,9 +73,11 @@ class ChatbotController extends Controller
         if (!$threadId) {
             $threadId = $this->openAIService->createThread();
             if (!$threadId) {
-                return response()->json([
-                    'error' => 'Unable to start conversation. Please try again.',
-                ], 500);
+                echo "data: " . json_encode([
+                    'type' => 'error',
+                    'content' => 'Unable to start conversation. Please try again.'
+                ]) . "\n\n";
+                return;
             }
             session()->put('chat_thread_id', $threadId);
         }
@@ -40,6 +90,13 @@ class ChatbotController extends Controller
                 'error' => 'Sorry, I am having trouble processing your message. Please try again.',
             ], 500);
         }
+
+        // Save assistant response to database
+        ChatMessage::create([
+            'session_id' => $sessionId,
+            'role' => 'assistant',
+            'content' => $assistantReply
+        ]);
 
         // Get conversation history to return to frontend
         $history = $this->openAIService->getConversationHistory($threadId);
@@ -66,6 +123,15 @@ class ChatbotController extends Controller
     {
         $validated = $request->validate(['message' => 'required|string|max:2000']);
         
+        // Get session ID and save user message to database
+        $sessionId = $this->getChatSessionId();
+        
+        ChatMessage::create([
+            'session_id' => $sessionId,
+            'role' => 'user',
+            'content' => $validated['message']
+        ]);
+        
         // Get or create thread ID for this session
         $threadId = session()->get('chat_thread_id');
         
@@ -77,7 +143,7 @@ class ChatbotController extends Controller
             session()->put('chat_thread_id', $threadId);
         }
 
-        return response()->stream(function () use ($threadId, $validated) {
+        return response()->stream(function () use ($threadId, $validated, $sessionId) {
             // Set up Server-Sent Events headers
             echo "data: " . json_encode(['type' => 'start']) . "\n\n";
             ob_flush();
@@ -112,6 +178,13 @@ class ChatbotController extends Controller
                     usleep(50000); // 50ms delay
                 }
 
+                // Save assistant response to database
+                ChatMessage::create([
+                    'session_id' => $sessionId,
+                    'role' => 'assistant',
+                    'content' => $fullResponse
+                ]);
+                
                 // Send completion event
                 echo "data: " . json_encode([
                     'type' => 'complete',
@@ -138,20 +211,15 @@ class ChatbotController extends Controller
     /**
      * Clear the current conversation
      */
-    public function clearConversation(Request $request)
+    public function clearConversation()
     {
-        $threadId = session()->get('chat_thread_id');
+        // Clear the thread from session
+        session()->forget('chat_thread_id');
         
-        if ($threadId) {
-            $this->openAIService->deleteThread($threadId);
-            session()->forget('chat_thread_id');
-        }
+        // Clear messages from database
+        $sessionId = $this->getChatSessionId();
+        ChatMessage::where('session_id', $sessionId)->delete();
         
-        session()->forget('chat_convo'); // Clear old session format if exists
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Conversation cleared successfully.',
-        ]);
+        return response()->json(['success' => true]);
     }
 }
