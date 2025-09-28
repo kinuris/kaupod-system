@@ -111,9 +111,9 @@ export default function Welcome() {
                                     All conversations are completely private and never stored.
                                 </p>
                                 {auth.user ? (
-                                    <button className="inline-block bg-stone-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-stone-800 transition-colors">
+                                    <Link href={'/chat'} className="inline-block bg-stone-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-stone-800 transition-colors">
                                         Try AI Companion
-                                    </button>
+                                    </Link>
                                 ) : (
                                     <a href="/register" className="inline-block bg-stone-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-stone-800 transition-colors">
                                         Try AI Companion

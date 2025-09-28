@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ClientNavigation from '@/components/client-navigation';
 import { Head, router } from '@inertiajs/react';
-import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck, MapPin, Trash2, FileText, Undo2 } from 'lucide-react';
+import { Package, MessageCircle, Clock, CheckCircle, XCircle, Truck, MapPin, Trash2, FileText, Undo2, Calendar, UserCheck, Stethoscope, ClipboardCheck } from 'lucide-react';
 import LocationMapModal from '@/components/location-map-modal';
 import ReturnKitModal from '@/components/ReturnKitModal';
 
@@ -185,6 +185,72 @@ const getTimelineStatusDetails = (status: string) => {
         default:
             return {
                 icon: <Clock className="h-4 w-4" />,
+                color: 'text-gray-600',
+                bgColor: 'bg-gray-100',
+                borderColor: 'border-gray-200',
+                description: formatStatusDisplay(status)
+            };
+    }
+};
+
+const getConsultationTimelineStatusDetails = (status: string) => {
+    const statusLower = status.toLowerCase();
+    switch (statusLower) {
+        case 'pending':
+        case 'in_review':
+            return {
+                icon: <Clock className="h-4 w-4" />,
+                color: 'text-amber-700',
+                bgColor: 'bg-amber-100',
+                borderColor: 'border-amber-200',
+                description: 'Consultation request submitted'
+            };
+        case 'confirmed':
+        case 'accepted':
+            return {
+                icon: <Calendar className="h-4 w-4" />,
+                color: 'text-red-700',
+                bgColor: 'bg-red-50',
+                borderColor: 'border-red-200',
+                description: 'Consultation confirmed'
+            };
+        case 'assigned':
+            return {
+                icon: <UserCheck className="h-4 w-4" />,
+                color: 'text-red-700',
+                bgColor: 'bg-red-50',
+                borderColor: 'border-red-200',
+                description: 'Doctor assigned to consultation'
+            };
+        case 'in_progress':
+            return {
+                icon: <Stethoscope className="h-4 w-4" />,
+                color: 'text-amber-700',
+                bgColor: 'bg-amber-100',
+                borderColor: 'border-amber-200',
+                description: 'Consultation in progress'
+            };
+        case 'finished':
+        case 'completed':
+            return {
+                icon: <ClipboardCheck className="h-4 w-4" />,
+                color: 'text-red-700',
+                bgColor: 'bg-red-50',
+                borderColor: 'border-red-200',
+                description: 'Consultation completed successfully'
+            };
+        case 'cancelled':
+        case 'rejected':
+            return {
+                icon: <XCircle className="h-4 w-4" />,
+                color: 'text-red-600',
+                bgColor: 'bg-red-100',
+                borderColor: 'border-red-200',
+                description: 'Consultation was cancelled'
+            };
+        default:
+            return {
+                icon: <MessageCircle className="h-4 w-4" />,
                 color: 'text-gray-600',
                 bgColor: 'bg-gray-100',
                 borderColor: 'border-gray-200',
@@ -555,14 +621,44 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
 
                                             {request.timeline && Object.keys(request.timeline).length > 0 && (
                                                 <div className="mt-3 pt-3 border-t border-gray-100">
-                                                    <div className="text-xs font-medium text-gray-700 mb-2">Timeline:</div>
-                                                    <div className="space-y-1">
-                                                        {Object.entries(request.timeline).map(([timestamp, status]) => (
-                                                            <div key={timestamp} className="flex justify-between text-xs text-gray-500">
-                                                                <span>{status}</span>
-                                                                <span>{new Date(timestamp).toLocaleString()}</span>
-                                                            </div>
-                                                        ))}
+                                                    <div className="text-xs font-medium text-gray-700 mb-3">
+                                                        Consultation Timeline
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        {Object.entries(request.timeline)
+                                                            .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
+                                                            .map(([timestamp, status], index, array) => {
+                                                                const statusDetails = getConsultationTimelineStatusDetails(status);
+                                                                const isLast = index === array.length - 1;
+                                                                return (
+                                                                    <div key={timestamp} className="flex items-start gap-3 relative">
+                                                                        {/* Timeline line */}
+                                                                        {!isLast && (
+                                                                            <div className="absolute left-2 top-6 w-0.5 h-6 bg-gray-200"></div>
+                                                                        )}
+                                                                        
+                                                                        {/* Status icon */}
+                                                                        <div className={`flex-shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center ${statusDetails.bgColor} ${statusDetails.borderColor} ${statusDetails.color}`}>
+                                                                            {statusDetails.icon}
+                                                                        </div>
+                                                                        
+                                                                        {/* Status content */}
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <div className="flex items-center justify-between">
+                                                                                <p className={`text-xs font-medium ${statusDetails.color}`}>
+                                                                                    {formatStatusDisplay(status)}
+                                                                                </p>
+                                                                                <span className="text-xs text-gray-400">
+                                                                                    {new Date(timestamp).toLocaleDateString()}
+                                                                                </span>
+                                                                            </div>
+                                                                            <p className="text-xs text-gray-500 mt-0.5">
+                                                                                {statusDetails.description}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
                                                     </div>
                                                 </div>
                                             )}
