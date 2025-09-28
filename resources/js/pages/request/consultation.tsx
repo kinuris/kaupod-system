@@ -110,7 +110,7 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                                             <div className="space-y-1 text-xs">
                                                 <div>• 1. Submit your consultation request</div>
                                                 <div>• 2. We coordinate with partner experts</div>
-                                                <div>• 3. Receive confirmation via Plus Tracker</div>
+                                                <div>• 3. Receive confirmation via Consultation Tracker</div>
                                                 <div>• 4. Attend your scheduled consultation</div>
                                             </div>
                                         </div>
@@ -169,7 +169,7 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                                     <div className="font-semibold text-amber-700 mb-1">✓ Support Features</div>
                                     <div className="text-gray-700 space-y-1">
                                         <div>• Flexible scheduling</div>
-                                        <div>• Plus Tracker updates</div>
+                                        <div>• Consultation Tracker updates</div>
                                         <div>• Complete confidentiality</div>
                                     </div>
                                 </div>
@@ -203,7 +203,7 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                                         <div className="space-y-2">
                                             <div className="font-medium text-amber-700">✓ Support & Follow-up</div>
                                             <div className="text-xs space-y-1">
-                                                <div>• Plus Tracker for updates</div>
+                                                <div>• Consultation Tracker for updates</div>
                                                 <div>• Rescheduling if needed</div>
                                                 <div>• Complete confidentiality</div>
                                             </div>

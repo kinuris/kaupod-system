@@ -128,7 +128,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
 
     return (
         <>
-            <Head title="Plus Tracker - Expert Consultations - Kaupod" />
+            <Head title="Consultation Tracker - Expert Consultations - Kaupod" />
             
             <ClientNavigation />
 
@@ -141,8 +141,8 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                 <MessageCircle className="h-8 w-8 text-white" />
                             </div>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Plus Tracker
+                                                    <h1 className="text-4xl text-red-800 font-bold mb-4">
+                            Consultation Tracker
                         </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                             Track your expert consultation appointments and receive updates from our partner doctors

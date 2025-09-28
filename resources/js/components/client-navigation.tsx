@@ -85,7 +85,7 @@ export default function ClientNavigation() {
                                                 href="/plus-tracker" 
                                                 className="text-stone-700 hover:text-stone-800 font-medium transition-colors"
                                             >
-                                                Plus Tracker
+                                                Consultation Tracker
                                             </Link>
                                             <Link 
                                                 href="/my-orders" 
@@ -221,7 +221,7 @@ export default function ClientNavigation() {
                                             className="block text-stone-700 hover:text-stone-800 font-medium py-2 transition-colors"
                                             onClick={closeMobileMenu}
                                         >
-                                            Plus Tracker
+                                            Consultation Tracker
                                         </Link>
                                         <Link 
                                             href="/my-orders" 
