@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\OpenAIService;
 use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ChatbotController extends Controller
@@ -22,6 +23,11 @@ class ChatbotController extends Controller
      */
     private function getChatSessionId()
     {
+        // Use user ID for authenticated users, session ID for guests
+        if (Auth::check()) {
+            return 'user_' . Auth::id();
+        }
+        
         $sessionId = session()->get('chat_session_id');
         
         if (!$sessionId) {
@@ -29,7 +35,19 @@ class ChatbotController extends Controller
             session()->put('chat_session_id', $sessionId);
         }
         
-        return $sessionId;
+        return 'session_' . $sessionId;
+    }
+
+    /**
+     * Get chat query based on authentication status
+     */
+    private function getChatQuery()
+    {
+        // Query messages by user_id for authenticated users, session_id for guests
+        if (Auth::check()) {
+            return ChatMessage::where('user_id', Auth::id());
+        }
+        return ChatMessage::where('session_id', $this->getChatSessionId());
     }
 
     /**
@@ -37,9 +55,7 @@ class ChatbotController extends Controller
      */
     public function getMessages(Request $request)
     {
-        $sessionId = $this->getChatSessionId();
-        
-        $messages = ChatMessage::where('session_id', $sessionId)
+        $messages = $this->getChatQuery()
             ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($message) {
@@ -61,11 +77,18 @@ class ChatbotController extends Controller
                 // Get session ID and save user message to database
         $sessionId = $this->getChatSessionId();
         
-        ChatMessage::create([
+        $messageData = [
             'session_id' => $sessionId,
             'role' => 'user',
             'content' => $validated['message']
-        ]);
+        ];
+        
+        // Add user_id for authenticated users
+        if (Auth::check()) {
+            $messageData['user_id'] = Auth::id();
+        }
+        
+        ChatMessage::create($messageData);
         
         // Get or create thread ID for this session
         $threadId = session()->get('chat_thread_id');
@@ -92,11 +115,18 @@ class ChatbotController extends Controller
         }
 
         // Save assistant response to database
-        ChatMessage::create([
+        $assistantMessageData = [
             'session_id' => $sessionId,
             'role' => 'assistant',
             'content' => $assistantReply
-        ]);
+        ];
+        
+        // Add user_id for authenticated users
+        if (Auth::check()) {
+            $assistantMessageData['user_id'] = Auth::id();
+        }
+        
+        ChatMessage::create($assistantMessageData);
 
         // Get conversation history to return to frontend
         $history = $this->openAIService->getConversationHistory($threadId);
@@ -126,11 +156,18 @@ class ChatbotController extends Controller
         // Get session ID and save user message to database
         $sessionId = $this->getChatSessionId();
         
-        ChatMessage::create([
+        $userMessageData = [
             'session_id' => $sessionId,
             'role' => 'user',
             'content' => $validated['message']
-        ]);
+        ];
+        
+        // Add user_id for authenticated users
+        if (Auth::check()) {
+            $userMessageData['user_id'] = Auth::id();
+        }
+        
+        ChatMessage::create($userMessageData);
         
         // Get or create thread ID for this session
         $threadId = session()->get('chat_thread_id');
@@ -179,11 +216,18 @@ class ChatbotController extends Controller
                 }
 
                 // Save assistant response to database
-                ChatMessage::create([
+                $assistantResponseData = [
                     'session_id' => $sessionId,
                     'role' => 'assistant',
                     'content' => $fullResponse
-                ]);
+                ];
+                
+                // Add user_id for authenticated users
+                if (Auth::check()) {
+                    $assistantResponseData['user_id'] = Auth::id();
+                }
+                
+                ChatMessage::create($assistantResponseData);
                 
                 // Send completion event
                 echo "data: " . json_encode([
@@ -217,8 +261,7 @@ class ChatbotController extends Controller
         session()->forget('chat_thread_id');
         
         // Clear messages from database
-        $sessionId = $this->getChatSessionId();
-        ChatMessage::where('session_id', $sessionId)->delete();
+        $this->getChatQuery()->delete();
         
         return response()->json(['success' => true]);
     }

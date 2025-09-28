@@ -10,6 +10,7 @@ class ChatMessage extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'session_id',
         'role',
         'content'
@@ -18,4 +19,9 @@ class ChatMessage extends Model
     protected $casts = [
         'role' => 'string'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
 }
