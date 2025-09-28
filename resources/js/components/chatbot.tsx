@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Send, Trash2, Bot, User, ChevronDown } from 'lucide-react';
+import { Loader2, Send, Trash2, Bot, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -19,22 +19,11 @@ export default function Chatbot({ className }: ChatbotProps) {
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [showScrollButton, setShowScrollButton] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    };
 
-    const handleScroll = () => {
-        if (messagesContainerRef.current) {
-            const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
-            const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
-            setShowScrollButton(!isNearBottom);
-        }
-    };
 
     // Removed auto-scroll to prevent scrolling during bot responses
 
@@ -232,7 +221,7 @@ export default function Chatbot({ className }: ChatbotProps) {
             </CardHeader>
             
             <CardContent className="flex flex-col flex-1 p-4 space-y-4 bg-white overflow-hidden">
-                <div className="flex-1 overflow-y-auto pr-4 relative min-h-0" ref={messagesContainerRef} onScroll={handleScroll}>
+                <div className="flex-1 overflow-y-auto pr-4 relative min-h-0" ref={messagesContainerRef}>
                     <div className="space-y-4">
                         {messages.map((message, index) => (
                             <div
@@ -285,17 +274,6 @@ export default function Chatbot({ className }: ChatbotProps) {
                         
                         <div ref={messagesEndRef} />
                     </div>
-                    
-                    {showScrollButton && (
-                        <Button
-                            onClick={scrollToBottom}
-                            size="sm"
-                            variant="outline"
-                            className="absolute bottom-4 right-8 h-8 w-8 p-0 rounded-full bg-white shadow-lg border-red-200 hover:bg-red-50"
-                        >
-                            <ChevronDown className="h-4 w-4 text-red-600" />
-                        </Button>
-                    )}
                 </div>
 
                 {error && (
