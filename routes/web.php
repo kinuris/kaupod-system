@@ -19,6 +19,18 @@ Route::get('/chat', function () {
     return Inertia::render('chat');
 })->name('chat');
 
+Route::get('/hiv-counseling-capiz', function () {
+    return Inertia::render('hiv-counseling-capiz');
+})->name('hiv-counseling-capiz');
+
+Route::get('/precounseling', function () {
+    return Inertia::render('precounseling');
+})->name('precounseling');
+
+Route::get('/postcounseling', function () {
+    return Inertia::render('postcounseling');
+})->name('postcounseling');
+
 Route::get('/chatbot/messages', [ChatbotController::class, 'getMessages'])->name('chatbot.messages');
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
 Route::post('/chatbot/message/stream', [ChatbotController::class, 'messageStream'])->name('chatbot.message.stream');

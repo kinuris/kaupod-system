@@ -144,8 +144,15 @@ export default function ClientNavigation() {
                                                 {isSupportDropdownOpen && (
                                                     <div className="absolute top-full left-0 mt-1 w-40 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                                                         <Link 
-                                                            href="/precounseling" 
+                                                            href="/hiv-counseling-capiz" 
                                                             className="block px-3 py-1.5 text-green-700 hover:bg-green-50 hover:text-green-800 transition-colors text-sm"
+                                                            onClick={() => setIsSupportDropdownOpen(false)}
+                                                        >
+                                                            HIV Counseling Hubs
+                                                        </Link>
+                                                        <Link 
+                                                            href="/precounseling" 
+                                                            className="block px-3 py-1.5 text-blue-700 hover:bg-blue-50 hover:text-blue-800 transition-colors text-sm"
                                                             onClick={() => setIsSupportDropdownOpen(false)}
                                                         >
                                                             Precounseling
@@ -311,8 +318,15 @@ export default function ClientNavigation() {
                                                 Support Services
                                             </div>
                                             <Link 
-                                                href="/precounseling" 
+                                                href="/hiv-counseling-capiz" 
                                                 className="block text-green-700 hover:text-green-800 font-medium py-1 pl-4 transition-colors"
+                                                onClick={closeMobileMenu}
+                                            >
+                                                HIV Counseling Hubs
+                                            </Link>
+                                            <Link 
+                                                href="/precounseling" 
+                                                className="block text-blue-700 hover:text-blue-800 font-medium py-1 pl-4 transition-colors"
                                                 onClick={closeMobileMenu}
                                             >
                                                 Precounseling
