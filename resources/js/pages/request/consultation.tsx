@@ -41,6 +41,14 @@ interface ConsultationRequestProps {
 }
 
 export default function ConsultationRequest({ hasOngoingConsultation = false, ongoingConsultation, errors, consultationPrice, platformFee, expertFee }: ConsultationRequestProps) {
+    // Calculate tomorrow's date for default values (current day + 1)
+    // This ensures consultations default to next day, handling month/year transitions automatically
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const defaultMonth = String(tomorrow.getMonth() + 1).padStart(2, '0'); // getMonth() returns 0-11, so add 1
+    const defaultDay = String(tomorrow.getDate()).padStart(2, '0');
+    const defaultYear = String(tomorrow.getFullYear());
+
     const [consultationMode, setConsultationMode] = useState<'online' | 'in-person' | ''>('');
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
     const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
@@ -279,7 +287,7 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                                             id="preferred_month"
                                             name="preferred_month"
                                             required
-                                            defaultValue="09"
+                                            defaultValue={defaultMonth}
                                             className="border-input flex h-10 w-full min-w-0 rounded-md border bg-white text-gray-900 px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
                                         >
                                             <option value="01">January</option>
@@ -302,7 +310,7 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                                             id="preferred_day"
                                             name="preferred_day"
                                             required
-                                            defaultValue="28"
+                                            defaultValue={defaultDay}
                                             className="border-input flex h-10 w-full min-w-0 rounded-md border bg-white text-gray-900 px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
                                         >
                                             <option value="">Day</option>
@@ -319,11 +327,11 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                                             id="preferred_year"
                                             name="preferred_year"
                                             required
-                                            defaultValue="2025"
+                                            defaultValue={defaultYear}
                                             className="border-input flex h-10 w-full min-w-0 rounded-md border bg-white text-gray-900 px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
                                         >
-                                            <option value="2025">2025</option>
-                                            <option value="2026">2026</option>
+                                            <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
+                                            <option value={new Date().getFullYear() + 1}>{new Date().getFullYear() + 1}</option>
                                         </select>
                                     </div>
                                 </div>
