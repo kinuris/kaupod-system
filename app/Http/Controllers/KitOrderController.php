@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\KitOrderStatus;
+use App\Enums\SubscriptionTier;
 use App\Models\KitOrder;
+use App\Models\Subscription;
 use App\Services\PriceCalculator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Enum;
 
 class KitOrderController extends Controller
@@ -21,10 +24,15 @@ class KitOrderController extends Controller
             'delivery_address' => 'nullable|string|max:2000',
             'phone' => 'required|string|max:20',
             'special_instructions' => 'nullable|string|max:1000',
+            'purchase_type' => 'required|in:one_time,subscription',
+            'subscription_tier' => 'nullable|in:one_time,annual_moderate,annual_high',
         ]);
 
+        $user = Auth::user();
+        $purchaseType = $data['purchase_type'];
+        
         // Check if user has an ongoing kit order
-        $ongoingKitOrder = KitOrder::where('user_id', Auth::id())
+        $ongoingKitOrder = $user->kitOrders()
             ->whereNotIn('status', ['cancelled', 'sent_result'])
             ->first();
 
@@ -34,18 +42,79 @@ class KitOrderController extends Controller
             ])->withInput();
         }
 
-        KitOrder::create([
-            'user_id' => Auth::id(),
-            'phone' => $data['phone'],
-            'price' => $calculator->kitPrice(),
-            'delivery_notes' => $data['special_instructions'] ?? null,
-            'delivery_latitude' => $data['delivery_latitude'] ?? null,
-            'delivery_longitude' => $data['delivery_longitude'] ?? null,
-            'delivery_location_address' => $data['delivery_location_address'] ?? null,
-            'delivery_address' => $data['delivery_address'] ?? null,
-            'status' => KitOrderStatus::InReview,
-            'timeline' => [now()->toDateTimeString() => 'in_review'],
-        ]);
+        // Check if user has active subscription with remaining kits
+        $activeSubscription = $user->getActiveSubscription();
+        $hasRemainingKits = $activeSubscription && $activeSubscription->hasRemainingKits();
+        
+        // If user has remaining subscription kits, they must use subscription purchase type
+        if ($hasRemainingKits && $purchaseType !== 'subscription') {
+            return back()->withErrors([
+                'purchase_type' => 'You have an active subscription with remaining kits. You must use your subscription before purchasing additional kits.'
+            ])->withInput();
+        }
+        
+        // If user doesn't have remaining kits but tries to use subscription purchase type
+        if (!$hasRemainingKits && $purchaseType === 'subscription' && empty($data['subscription_tier'])) {
+            return back()->withErrors([
+                'subscription_tier' => 'You must select a subscription tier to create a new subscription.'
+            ])->withInput();
+        }
+        $subscriptionId = null;
+        $price = $calculator->kitPrice(); // Default one-time price
+        
+        DB::transaction(function () use ($user, $data, $calculator, $purchaseType, &$subscriptionId, &$price) {
+            if ($purchaseType === 'subscription') {
+                // Handle subscription purchase
+                $activeSubscription = $user->getActiveSubscription();
+                
+                if ($activeSubscription && $activeSubscription->hasRemainingKits()) {
+                    // Use existing subscription
+                    $subscriptionId = $activeSubscription->id;
+                    $price = 0; // No additional charge for subscription users
+                    $activeSubscription->useKit();
+                } else {
+                    // Create new subscription if tier is provided
+                    if (!empty($data['subscription_tier'])) {
+                        $tier = SubscriptionTier::from($data['subscription_tier']);
+                        $subscriptionPrice = $calculator->subscriptionPrice($tier);
+                        $expiresAt = $tier->isAnnual() ? now()->addYear() : null;
+                        
+                        $subscription = Subscription::create([
+                            'user_id' => $user->id,
+                            'tier' => $tier,
+                            'price' => $subscriptionPrice,
+                            'kits_allowed' => $tier->getKitsAllowed(),
+                            'kits_used' => 1, // First kit
+                            'expires_at' => $expiresAt,
+                            'status' => 'active',
+                            'timeline' => [now()->toDateTimeString() => 'subscription_created'],
+                        ]);
+                        
+                        $subscriptionId = $subscription->id;
+                        $price = $subscriptionPrice;
+                    } else {
+                        return back()->withErrors([
+                            'subscription_tier' => 'Please select a subscription tier.'
+                        ])->withInput();
+                    }
+                }
+            }
+            
+            KitOrder::create([
+                'user_id' => $user->id,
+                'subscription_id' => $subscriptionId,
+                'purchase_type' => $purchaseType,
+                'phone' => $data['phone'],
+                'price' => $price,
+                'delivery_notes' => $data['special_instructions'] ?? null,
+                'delivery_latitude' => $data['delivery_latitude'] ?? null,
+                'delivery_longitude' => $data['delivery_longitude'] ?? null,
+                'delivery_location_address' => $data['delivery_location_address'] ?? null,
+                'delivery_address' => $data['delivery_address'] ?? null,
+                'status' => KitOrderStatus::InReview,
+                'timeline' => [now()->toDateTimeString() => 'in_review'],
+            ]);
+        });
 
         // For clients, redirect to home instead of dashboard
         $redirectRoute = $request->user()->isClient() ? 'home' : 'dashboard';

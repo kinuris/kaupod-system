@@ -18,6 +18,8 @@ class PricingController extends Controller
         Cache::forget('setting_shipping_fee');
         Cache::forget('setting_consultation_platform_fee');
         Cache::forget('setting_consultation_expert_fee');
+        Cache::forget('setting_annual_moderate_subscription_price');
+        Cache::forget('setting_annual_high_subscription_price');
         
         return Inertia::render('Admin/Pricing/Index', [
             'pricing' => [
@@ -25,6 +27,8 @@ class PricingController extends Controller
                 'shipping_fee' => Setting::get('shipping_fee', '0.00'),
                 'consultation_platform_fee' => Setting::get('consultation_platform_fee', '0.00'),
                 'consultation_expert_fee' => Setting::get('consultation_expert_fee', '0.00'),
+                'annual_moderate_subscription_price' => Setting::get('annual_moderate_subscription_price', '0.00'),
+                'annual_high_subscription_price' => Setting::get('annual_high_subscription_price', '0.00'),
             ]
         ]);
     }
@@ -41,16 +45,22 @@ class PricingController extends Controller
             'shipping_fee' => 'required|numeric|min:0',
             'consultation_platform_fee' => 'required|numeric|min:0',
             'consultation_expert_fee' => 'required|numeric|min:0',
+            'annual_moderate_subscription_price' => 'required|numeric|min:0',
+            'annual_high_subscription_price' => 'required|numeric|min:0',
         ]);
 
         Setting::set('kit_base_price', $request->kit_base_price);
         Setting::set('shipping_fee', $request->shipping_fee);
         Setting::set('consultation_platform_fee', $request->consultation_platform_fee);
         Setting::set('consultation_expert_fee', $request->consultation_expert_fee);
+        Setting::set('annual_moderate_subscription_price', $request->annual_moderate_subscription_price);
+        Setting::set('annual_high_subscription_price', $request->annual_high_subscription_price);
 
         Log::info('Pricing settings updated successfully', [
             'kit_base_price' => $request->kit_base_price,
             'shipping_fee' => $request->shipping_fee,
+            'annual_moderate_subscription_price' => $request->annual_moderate_subscription_price,
+            'annual_high_subscription_price' => $request->annual_high_subscription_price,
             'consultation_platform_fee' => $request->consultation_platform_fee,
             'consultation_expert_fee' => $request->consultation_expert_fee
         ]);

@@ -8,6 +8,8 @@ interface PricingData {
   shipping_fee: string;
   consultation_platform_fee: string;
   consultation_expert_fee: string;
+  annual_moderate_subscription_price: string;
+  annual_high_subscription_price: string;
 }
 
 interface PageProps {
@@ -20,6 +22,8 @@ export default function PricingIndex({ pricing }: PageProps) {
     shipping_fee: pricing.shipping_fee,
     consultation_platform_fee: pricing.consultation_platform_fee,
     consultation_expert_fee: pricing.consultation_expert_fee,
+    annual_moderate_subscription_price: pricing.annual_moderate_subscription_price,
+    annual_high_subscription_price: pricing.annual_high_subscription_price,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | string[]>>({});
@@ -179,6 +183,69 @@ export default function PricingIndex({ pricing }: PageProps) {
 
               {/* Section Divider */}
               <div className="border-t border-neutral-200 dark:border-neutral-600 pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Subscription Pricing</h3>
+              </div>
+
+              {/* Annual Moderate Subscription Price */}
+              <div className="space-y-2">
+                <label 
+                  htmlFor="annual_moderate_subscription_price" 
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Annual Moderate Subscription (2 kits/year)
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-neutral-500 dark:text-neutral-400 text-sm">₱</span>
+                  </div>
+                  <input
+                    type="number"
+                    id="annual_moderate_subscription_price"
+                    step="0.01"
+                    min="0"
+                    value={formData.annual_moderate_subscription_price}
+                    onChange={(e) => handleInputChange('annual_moderate_subscription_price', e.target.value)}
+                    className="block w-full pl-8 pr-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  Annual subscription allowing 2 kit purchases per year
+                </p>
+              </div>
+
+              {/* Annual High Subscription Price */}
+              <div className="space-y-2">
+                <label 
+                  htmlFor="annual_high_subscription_price" 
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Annual High Subscription (4 kits/year)
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-neutral-500 dark:text-neutral-400 text-sm">₱</span>
+                  </div>
+                  <input
+                    type="number"
+                    id="annual_high_subscription_price"
+                    step="0.01"
+                    min="0"
+                    value={formData.annual_high_subscription_price}
+                    onChange={(e) => handleInputChange('annual_high_subscription_price', e.target.value)}
+                    className="block w-full pl-8 pr-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  Annual subscription allowing 4 kit purchases per year
+                </p>
+              </div>
+
+              {/* Section Divider */}
+              <div className="border-t border-neutral-200 dark:border-neutral-600 pt-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Consultation Pricing</h3>
               </div>
 
@@ -242,7 +309,7 @@ export default function PricingIndex({ pricing }: PageProps) {
 
               {/* Total Preview */}
               <div className="bg-neutral-50 dark:bg-neutral-800/40 rounded-lg p-4">
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-3 gap-6">
                   {/* Kit Pricing */}
                   <div className="space-y-2">
                     <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Kit Pricing</h4>
@@ -265,6 +332,33 @@ export default function PricingIndex({ pricing }: PageProps) {
                           <span className="font-bold text-red-700 dark:text-red-700">
                             ₱{(parseFloat(formData.kit_base_price || '0') + parseFloat(formData.shipping_fee || '0')).toFixed(2)}
                           </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Subscription Pricing */}
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Subscription Pricing</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-neutral-600 dark:text-neutral-400">Moderate (2 kits):</span>
+                        <span className="font-medium text-gray-900 dark:text-white text-xs">
+                          ₱{parseFloat(formData.annual_moderate_subscription_price || '0').toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-neutral-600 dark:text-neutral-400">High (4 kits):</span>
+                        <span className="font-medium text-gray-900 dark:text-white text-xs">
+                          ₱{parseFloat(formData.annual_high_subscription_price || '0').toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="border-t border-neutral-200 dark:border-neutral-600 pt-1 mt-1">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-gray-900 dark:text-white">Per Kit Cost:</span>
+                          <div className="text-xs font-bold text-red-700 dark:text-red-700">
+                            <div>₱{(parseFloat(formData.annual_moderate_subscription_price || '0') / 2).toFixed(2)} / ₱{(parseFloat(formData.annual_high_subscription_price || '0') / 4).toFixed(2)}</div>
+                          </div>
                         </div>
                       </div>
                     </div>

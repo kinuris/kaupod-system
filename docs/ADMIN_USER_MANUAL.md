@@ -493,6 +493,11 @@ As a Kaupod administrator, you have comprehensive access to manage the platform'
 - **Shipping Fee**: ₱120.00 (configurable)
 - **Total Kit Price**: ₱470.00 (auto-calculated)
 
+**Subscription Pricing Structure:**
+- **Annual Moderate Subscription**: ₱800.00 (configurable) - 2 kits per year
+- **Annual High Subscription**: ₱1400.00 (configurable) - 4 kits per year
+- **One-Time Purchase**: Uses standard kit pricing (₱470.00)
+
 **Kit Pricing Controls:**
 1. **Update Base Price**:
    - Enter new kit base price
@@ -504,10 +509,23 @@ As a Kaupod administrator, you have comprehensive access to manage the platform'
    - Account for logistics costs
    - Regional pricing considerations
 
-3. **Price Preview**:
+3. **Update Subscription Pricing**:
+   - **Annual Moderate Subscription**: Price for 2 kits per year
+   - **Annual High Subscription**: Price for 4 kits per year
+   - Pricing shows savings compared to individual purchases
+   - Changes affect new subscriptions immediately
+
+4. **Price Preview**:
    - Real-time total calculation
    - Impact assessment on clients
    - Historical pricing comparison
+   - Subscription savings calculation
+
+**Subscription Benefits for Clients:**
+- **Annual Moderate**: Save ₱140 compared to buying 2 individual kits
+- **Annual High**: Save ₱480 compared to buying 4 individual kits
+- Subscriptions allow clients to order kits throughout the year without additional payment
+- Automatic kit usage tracking and subscription management
 
 ### Consultation Pricing Management
 

@@ -12,7 +12,7 @@ class KitOrder extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'phone', 'price', 'delivery_notes', 'delivery_latitude', 'delivery_longitude', 
+        'user_id', 'subscription_id', 'purchase_type', 'phone', 'price', 'delivery_notes', 'delivery_latitude', 'delivery_longitude', 
         'delivery_location_address', 'delivery_address', 'status', 'timeline',
         'return_location_address', 'return_latitude', 'return_longitude', 'return_address',
         'return_date', 'return_notes', 'result_email_sent', 'result_email_sent_at', 'result_email_notes'
@@ -29,5 +29,18 @@ class KitOrder extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function subscription(): BelongsTo
+    {
+        return $this->belongsTo(Subscription::class);
+    }
+
+    /**
+     * Check if this is a subscription-based order.
+     */
+    public function isSubscriptionOrder(): bool
+    {
+        return $this->purchase_type === 'subscription' && $this->subscription_id !== null;
     }
 }

@@ -6,16 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle, Package, MapPin, Info, Calendar } from 'lucide-react';
+import { LoaderCircle, Package, MapPin } from 'lucide-react';
 
 interface DeliveryLocation {
     lat: number;
@@ -29,50 +21,51 @@ interface OngoingKitOrder {
     created_at: string;
 }
 
+interface SubscriptionOption {
+    tier: string;
+    name: string;
+    description: string;
+    price: number;
+    kits_allowed: number;
+    annual: boolean;
+}
+
+interface ActiveSubscription {
+    id: number;
+    tier: string;
+    kits_allowed: number;
+    kits_used: number;
+    expires_at: string | null;
+    status: string;
+}
+
 interface KitRequestProps {
     hasOngoingKitOrder: boolean;
     ongoingKitOrder?: OngoingKitOrder;
-    kitPrice: number;
+    subscriptionOptions: Record<string, SubscriptionOption>;
+    activeSubscription?: ActiveSubscription;
+    hasActiveSubscription: boolean;
 }
 
-export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder, kitPrice }: KitRequestProps) {
+export default function KitRequest({ 
+    hasOngoingKitOrder = false, 
+    ongoingKitOrder, 
+    subscriptionOptions, 
+    activeSubscription, 
+    hasActiveSubscription = false 
+}: KitRequestProps) {
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
-    const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
-    const [ageConfirmed, setAgeConfirmed] = useState(false);
-    const [submitCallback, setSubmitCallback] = useState<(() => void) | null>(null);
+    
+    // Check if user has active subscription with remaining kits
+    const hasRemainingKits = hasActiveSubscription && activeSubscription && (activeSubscription.kits_used < activeSubscription.kits_allowed);
+    
+    const [purchaseType, setPurchaseType] = useState<'one_time' | 'subscription'>(
+        hasRemainingKits ? 'subscription' : 'one_time'
+    );
+    const [selectedSubscriptionTier, setSelectedSubscriptionTier] = useState<string>('annual_moderate');
     
     const handleLocationSelect = (location: DeliveryLocation) => {
         setSelectedLocation(location);
-    };
-
-    const handleFormSubmit = (submit: () => void) => {
-        // Prevent submission if there's an ongoing kit order
-        if (hasOngoingKitOrder) {
-            return;
-        }
-
-        if (!ageConfirmed) {
-            setSubmitCallback(() => submit);
-            setShowAgeConfirmModal(true);
-        } else {
-            submit();
-        }
-    };
-
-    const confirmAge = () => {
-        setAgeConfirmed(true);
-        setShowAgeConfirmModal(false);
-        
-        // Execute the stored submit callback
-        if (submitCallback) {
-            submitCallback();
-            setSubmitCallback(null);
-        }
-    };
-
-    const cancelAgeConfirmation = () => {
-        setShowAgeConfirmModal(false);
-        setSubmitCallback(null);
     };
 
     return (
@@ -90,122 +83,257 @@ export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder
                                 <Package className="h-8 w-8 text-white" />
                             </div>
                         </div>
-                        <div className="flex items-center justify-center gap-3 mb-4">
-                            <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-                                Privacy Kit Request
-                            </h1>
-                            <div className="group relative">
-                                <Info className="h-6 w-6 text-red-700 cursor-help" />
-                                <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-80 p-4 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 shadow-lg">
-                                    <div className="space-y-3">
-                                        <div className="font-semibold text-red-300">What's in the Privacy Kit?</div>
-                                        <div>HIV testing kits delivered discreetly to your specified location with complete confidentiality.</div>
-                                        <div className="space-y-2">
-                                            <div className="font-medium text-amber-300">How it works:</div>
-                                            <div className="space-y-1 text-xs">
-                                                <div>• 1. Receive your kit at the pinpointed location</div>
-                                                <div>• 2. Complete the testing procedure privately</div>
-                                                <div>• 3. Schedule a pickup using our platform</div>
-                                                <div>• 4. Get your results securely in Kaupod</div>
-                                            </div>
-                                        </div>
-                                        <div className="text-xs text-gray-300 italic">Complete privacy guaranteed throughout the entire process.</div>
-                                    </div>
-                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                            Privacy Kit Request
+                        </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                             Confidential HIV testing kits delivered to your exact location with secure result delivery
                         </p>
                     </div>
 
-                    {/* Pricing Card */}
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 max-w-2xl mx-auto mb-8">
-                        <div className="text-center">
+                    {/* Active Subscription Status */}
+                    {hasActiveSubscription && activeSubscription && (
+                        <div className={`border rounded-2xl p-6 max-w-2xl mx-auto mb-6 ${
+                            hasRemainingKits 
+                                ? 'bg-blue-50 border-blue-200' 
+                                : 'bg-green-50 border-green-200'
+                        }`}>
+                            <div className="text-center">
+                                <div className="flex items-center justify-center gap-2 mb-3">
+                                    <Package className={`h-5 w-5 ${
+                                        hasRemainingKits ? 'text-blue-700' : 'text-green-700'
+                                    }`} />
+                                    <h3 className={`text-lg font-semibold ${
+                                        hasRemainingKits ? 'text-blue-900' : 'text-green-900'
+                                    }`}>
+                                        {hasRemainingKits ? 'You Must Use Your Active Subscription' : 'Active Subscription'}
+                                    </h3>
+                                </div>
+                                <div className={`space-y-2 ${
+                                    hasRemainingKits ? 'text-blue-800' : 'text-green-800'
+                                }`}>
+                                    <div className="text-sm">
+                                        <strong>{subscriptionOptions[activeSubscription.tier]?.name || 'Subscription'}</strong>
+                                    </div>
+                                    <div className="text-xs">
+                                        Kits remaining: <strong>{activeSubscription.kits_allowed - activeSubscription.kits_used}</strong> of {activeSubscription.kits_allowed}
+                                    </div>
+                                    {activeSubscription.expires_at && (
+                                        <div className="text-xs">
+                                            Expires: <strong>{new Date(activeSubscription.expires_at).toLocaleDateString()}</strong>
+                                        </div>
+                                    )}
+                                    {hasRemainingKits && (
+                                        <div className="text-xs font-medium text-blue-900 bg-blue-100 rounded px-2 py-1 mt-2">
+                                            You must use all remaining subscription kits before purchasing additional kits
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Pricing Options */}
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 max-w-4xl mx-auto mb-8">
+                        <div className="text-center mb-6">
                             <div className="flex items-center justify-center gap-2 mb-4">
                                 <Package className="h-6 w-6 text-red-700" />
-                                <h3 className="text-2xl font-bold text-gray-900">Kit Pricing</h3>
+                                <h3 className="text-2xl font-bold text-gray-900">Choose Your Plan</h3>
                             </div>
-                            <div className="mb-4">
-                                <div className="text-4xl font-bold text-red-700 mb-2">
-                                    ₱{kitPrice.toFixed(2)}
-                                </div>
-                                <div className="text-sm text-gray-600 mb-3">
-                                    Complete kit package with delivery and processing
-                                </div>
-                                <div className="text-xs text-gray-500 space-y-1">
-                                    <div className="flex justify-between items-center max-w-xs mx-auto">
-                                        <span>Testing Kit:</span>
-                                        <span>₱350.00</span>
+                        </div>
+                        
+                        {/* Subscription Options */}
+                        <div className="grid md:grid-cols-3 gap-4 mb-6">
+                            {/* One-time Purchase */}
+                            <div className={`border rounded-lg p-4 transition-all relative ${
+                                hasRemainingKits 
+                                    ? 'border-gray-300 bg-gray-100 cursor-not-allowed opacity-60' 
+                                    : purchaseType === 'one_time' 
+                                        ? 'border-red-500 bg-red-50 cursor-pointer' 
+                                        : 'border-gray-200 hover:border-red-300 cursor-pointer'
+                            }`} onClick={() => !hasRemainingKits && setPurchaseType('one_time')}>
+                                {hasRemainingKits && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 rounded-lg">
+                                        <span className="text-white text-sm font-medium">Use Active Subscription</span>
                                     </div>
-                                    <div className="flex justify-between items-center max-w-xs mx-auto">
-                                        <span>Delivery & Processing:</span>
-                                        <span>₱120.00</span>
+                                )}
+                                <div className="text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <input 
+                                            type="radio" 
+                                            name="purchase_type" 
+                                            value="one_time" 
+                                            checked={purchaseType === 'one_time'}
+                                            onChange={() => !hasRemainingKits && setPurchaseType('one_time')}
+                                            disabled={hasRemainingKits}
+                                            className="mr-2"
+                                        />
+                                        <h4 className={`font-semibold ${
+                                            hasRemainingKits ? 'text-gray-500' : 'text-gray-900'
+                                        }`}>{subscriptionOptions.one_time.name}</h4>
                                     </div>
-                                    <div className="border-t border-gray-200 pt-1 mt-2">
-                                        <div className="flex justify-between items-center max-w-xs mx-auto font-semibold">
-                                            <span>Total:</span>
-                                            <span>₱{kitPrice.toFixed(2)}</span>
-                                        </div>
+                                    <div className="text-2xl font-bold text-red-700 mb-2">
+                                        ₱{subscriptionOptions.one_time.price.toFixed(2)}
+                                    </div>
+                                    <div className="text-sm text-gray-600 mb-3">
+                                        {subscriptionOptions.one_time.description}
+                                    </div>
+                                    <div className="text-xs text-gray-500">
+                                        • Single kit purchase<br/>
+                                        • Pay per use<br/>
+                                        • No commitment
                                     </div>
                                 </div>
                             </div>
-                            <div className="grid md:grid-cols-2 gap-4 text-sm">
-                                <div className="bg-red-50 rounded-lg p-3">
-                                    <div className="font-semibold text-red-700 mb-1">✓ What's Included</div>
-                                    <div className="text-gray-700 space-y-1">
-                                        <div>• FDA-approved HIV test kit</div>
-                                        <div>• Discreet packaging & delivery</div>
-                                        <div>• Secure result processing</div>
+                            
+                            {/* Annual Moderate */}
+                            <div className={`border rounded-lg p-4 transition-all relative ${
+                                hasRemainingKits 
+                                    ? 'border-gray-300 bg-gray-100 cursor-not-allowed opacity-60'
+                                    : purchaseType === 'subscription' && selectedSubscriptionTier === 'annual_moderate' 
+                                        ? 'border-red-500 bg-red-50 cursor-pointer' 
+                                        : 'border-gray-200 hover:border-red-300 cursor-pointer'
+                            }`} onClick={() => {
+                                if (!hasRemainingKits) {
+                                    setPurchaseType('subscription');
+                                    setSelectedSubscriptionTier('annual_moderate');
+                                }
+                            }}>
+                                {hasRemainingKits && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 rounded-lg">
+                                        <span className="text-white text-sm font-medium">Use Active Subscription</span>
+                                    </div>
+                                )}
+                                <div className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs px-2 py-1 rounded-full">
+                                    Save ₱{((subscriptionOptions.one_time.price * 2) - subscriptionOptions.annual_moderate.price).toFixed(0)}
+                                </div>
+                                <div className="text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <input 
+                                            type="radio" 
+                                            name="purchase_type" 
+                                            value="subscription" 
+                                            checked={purchaseType === 'subscription' && selectedSubscriptionTier === 'annual_moderate'}
+                                            onChange={() => {
+                                                if (!hasRemainingKits) {
+                                                    setPurchaseType('subscription');
+                                                    setSelectedSubscriptionTier('annual_moderate');
+                                                }
+                                            }}
+                                            disabled={hasRemainingKits}
+                                            className="mr-2"
+                                        />
+                                        <h4 className="font-semibold text-gray-900">{subscriptionOptions.annual_moderate.name}</h4>
+                                    </div>
+                                    <div className="text-2xl font-bold text-red-700 mb-1">
+                                        ₱{subscriptionOptions.annual_moderate.price.toFixed(2)}
+                                    </div>
+                                    <div className="text-xs text-gray-500 mb-2">
+                                        ₱{(subscriptionOptions.annual_moderate.price / 2).toFixed(2)} per kit
+                                    </div>
+                                    <div className="text-sm text-gray-600 mb-3">
+                                        {subscriptionOptions.annual_moderate.description}
+                                    </div>
+                                    <div className="text-xs text-gray-500">
+                                        • 2 kits per year<br/>
+                                        • Order anytime<br/>
+                                        • 12-month validity
                                     </div>
                                 </div>
-                                <div className="bg-amber-50 rounded-lg p-3">
-                                    <div className="font-semibold text-amber-700 mb-1">✓ Privacy Features</div>
-                                    <div className="text-gray-700 space-y-1">
-                                        <div>• Unmarked packages</div>
-                                        <div>• GPS-precise delivery</div>
-                                        <div>• Confidential results</div>
+                            </div>
+                            
+                            {/* Annual High */}
+                            <div className={`border rounded-lg p-4 transition-all relative ${
+                                hasRemainingKits 
+                                    ? 'border-gray-300 bg-gray-100 cursor-not-allowed opacity-60'
+                                    : purchaseType === 'subscription' && selectedSubscriptionTier === 'annual_high' 
+                                        ? 'border-red-500 bg-red-50 cursor-pointer' 
+                                        : 'border-gray-200 hover:border-red-300 cursor-pointer'
+                            }`} onClick={() => {
+                                if (!hasRemainingKits) {
+                                    setPurchaseType('subscription');
+                                    setSelectedSubscriptionTier('annual_high');
+                                }
+                            }}>
+                                {hasRemainingKits && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 rounded-lg">
+                                        <span className="text-white text-sm font-medium">Use Active Subscription</span>
+                                    </div>
+                                )}
+                                <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                    Save ₱{((subscriptionOptions.one_time.price * 4) - subscriptionOptions.annual_high.price).toFixed(0)}
+                                </div>
+                                <div className="absolute -top-2 -left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                                    BEST VALUE
+                                </div>
+                                <div className="text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <input 
+                                            type="radio" 
+                                            name="purchase_type" 
+                                            value="subscription" 
+                                            checked={purchaseType === 'subscription' && selectedSubscriptionTier === 'annual_high'}
+                                            onChange={() => {
+                                                if (!hasRemainingKits) {
+                                                    setPurchaseType('subscription');
+                                                    setSelectedSubscriptionTier('annual_high');
+                                                }
+                                            }}
+                                            disabled={hasRemainingKits}
+                                            className="mr-2"
+                                        />
+                                        <h4 className="font-semibold text-gray-900">{subscriptionOptions.annual_high.name}</h4>
+                                    </div>
+                                    <div className="text-2xl font-bold text-red-700 mb-1">
+                                        ₱{subscriptionOptions.annual_high.price.toFixed(2)}
+                                    </div>
+                                    <div className="text-xs text-gray-500 mb-2">
+                                        ₱{(subscriptionOptions.annual_high.price / 4).toFixed(2)} per kit
+                                    </div>
+                                    <div className="text-sm text-gray-600 mb-3">
+                                        {subscriptionOptions.annual_high.description}
+                                    </div>
+                                    <div className="text-xs text-gray-500">
+                                        • 4 kits per year<br/>
+                                        • Order anytime<br/>
+                                        • 12-month validity
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Information Card */}
-                    <div className="bg-gradient-to-r from-red-50 to-amber-50 rounded-2xl border border-red-200 p-6 max-w-2xl mx-auto mb-8">
-                        <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                                    <Info className="h-5 w-5 text-red-700" />
-                                </div>
+                        
+                        {/* Current Selection Summary */}
+                        <div className={`rounded-lg p-4 text-center ${
+                            hasRemainingKits 
+                                ? 'bg-blue-50 border border-blue-200' 
+                                : 'bg-gray-50'
+                        }`}>
+                            <div className="text-sm text-gray-600 mb-2">
+                                {hasRemainingKits ? 'Using your active subscription:' : 'You\'re ordering:'}
                             </div>
-                            <div className="flex-1">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">HIV Testing Kit Information</h3>
-                                <div className="space-y-3 text-gray-700">
-                                    <p className="text-sm">
-                                        Our privacy kits contain professional-grade HIV testing materials delivered discreetly to your chosen location.
-                                    </p>
-                                    <div className="grid md:grid-cols-2 gap-4 text-sm">
-                                        <div className="space-y-2">
-                                            <div className="font-medium text-red-700">✓ Delivery Process</div>
-                                            <div className="text-xs space-y-1">
-                                                <div>• Unmarked, discrete packaging</div>
-                                                <div>• GPS-precise delivery location</div>
-                                                <div>• No signature required options</div>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="font-medium text-amber-700">✓ Testing & Results</div>
-                                            <div className="text-xs space-y-1">
-                                                <div>• Complete testing in privacy</div>
-                                                <div>• Schedule pickup via platform</div>
-                                                <div>• Secure results in your account</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="font-semibold text-gray-900">
+                                {hasRemainingKits 
+                                    ? `${subscriptionOptions[activeSubscription?.tier || 'one_time']?.name || 'Subscription'} (Existing Subscription)`
+                                    : purchaseType === 'one_time' 
+                                        ? subscriptionOptions.one_time.name
+                                        : subscriptionOptions[selectedSubscriptionTier]?.name
+                                }
                             </div>
+                            <div className={`text-lg font-bold ${
+                                hasRemainingKits ? 'text-green-700' : 'text-red-700'
+                            }`}>
+                                {hasRemainingKits 
+                                    ? '₱0.00 (Free with subscription)'
+                                    : purchaseType === 'one_time'
+                                        ? `₱${subscriptionOptions.one_time.price.toFixed(2)}`
+                                        : `₱${subscriptionOptions[selectedSubscriptionTier]?.price.toFixed(2) || '0.00'}`
+                                }
+                            </div>
+                            {hasRemainingKits && (
+                                <div className="text-xs text-blue-600 mt-2">
+                                    This will use 1 of your {activeSubscription?.kits_allowed - activeSubscription?.kits_used} remaining kits
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -246,16 +374,13 @@ export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder
                         >
                             {({ processing, errors, submit }) => (
                                 <>
-                                    <div className="space-y-6">
+                                    <div className="grid gap-6">
                                         <div className="grid gap-3">
-                                            <Label className="text-base font-semibold text-gray-900 flex items-center gap-2">
-                                                <MapPin className="h-5 w-5 text-red-700" />
-                                                Delivery Location
+                                            <Label htmlFor="delivery-map" className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                                                <MapPin className="h-4 w-4" />
+                                                Pin Your Delivery Location
                                             </Label>
-                                            <p className="text-sm text-gray-600 mb-3">
-                                                Click on the map to pinpoint your exact delivery location for maximum privacy and accuracy.
-                                            </p>
-                                            <DeliveryLocationMap 
+                                            <DeliveryLocationMap
                                                 onLocationSelect={handleLocationSelect}
                                                 initialLocation={selectedLocation || undefined}
                                             />
@@ -283,6 +408,18 @@ export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder
                                                 name="delivery_location_address" 
                                                 value={selectedLocation?.address || ''} 
                                             />
+                                            <input 
+                                                type="hidden" 
+                                                name="purchase_type" 
+                                                value={purchaseType} 
+                                            />
+                                            {purchaseType === 'subscription' && (
+                                                <input 
+                                                    type="hidden" 
+                                                    name="subscription_tier" 
+                                                    value={selectedSubscriptionTier} 
+                                                />
+                                            )}
                                         </div>
 
                                         <div className="grid gap-3">
@@ -314,60 +451,24 @@ export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder
                                         </div>
 
                                         <div className="grid gap-3">
-                                            <Label htmlFor="special_instructions" className="text-base font-semibold text-gray-900">Special Instructions (Optional)</Label>
+                                            <Label htmlFor="special_instructions" className="text-base font-semibold text-gray-900">Special Instructions</Label>
                                             <Textarea
                                                 id="special_instructions"
                                                 name="special_instructions"
-                                                placeholder="Any special delivery instructions or privacy requirements"
+                                                placeholder="Any special delivery instructions or notes"
                                                 rows={3}
                                                 className="text-base"
                                             />
+                                            <p className="text-xs text-gray-500">
+                                                Optional: Add any special instructions for our delivery team.
+                                            </p>
                                             <InputError message={errors.special_instructions} />
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                                        <h3 className="font-semibold text-red-800 mb-3">Complete Privacy & Process</h3>
-                                        <div className="space-y-4">
-                                            <div>
-                                                <div className="font-medium text-red-800 mb-2">Delivery Guarantee:</div>
-                                                <ul className="text-red-700 space-y-1 text-sm">
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="text-red-700 font-bold">•</span>
-                                                        All packages are unmarked and discreet
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="text-red-700 font-bold">•</span>
-                                                        No identifying information on exterior packaging
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="text-red-700 font-bold">•</span>
-                                                        GPS-precise delivery to your chosen location
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div>
-                                                <div className="font-medium text-red-700 mb-2">After Testing:</div>\n                                                <ul className="text-amber-700 space-y-1 text-sm">
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="text-red-700 font-bold">•</span>
-                                                        Complete the HIV test in complete privacy
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="text-red-700 font-bold">•</span>
-                                                        Use the platform to specify a pickup location
-                                                    </li>
-                                                    <li className="flex items-start gap-2">
-                                                        <span className="text-red-700 font-bold">•</span>
-                                                        Receive secure results directly in Kaupod
-                                                    </li>
-                                                </ul>
-                                            </div>
                                         </div>
                                     </div>
 
                                     <Button
                                         type="button"
-                                        onClick={() => handleFormSubmit(submit)}
+                                        onClick={submit}
                                         className="w-full bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-700 hover:to-amber-700 text-lg py-4 font-semibold"
                                         disabled={processing || hasOngoingKitOrder}
                                     >
@@ -382,48 +483,6 @@ export default function KitRequest({ hasOngoingKitOrder = false, ongoingKitOrder
                     </div>
                 </div>
             </section>
-
-            {/* Age Confirmation Modal */}
-            <Dialog open={showAgeConfirmModal} onOpenChange={setShowAgeConfirmModal}>
-                <DialogContent className="sm:max-w-md bg-gradient-to-br from-red-50 via-amber-50 to-stone-50 border border-red-200">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2 text-red-700">
-                            <Calendar className="h-5 w-5" />
-                            Age Verification Required
-                        </DialogTitle>
-                        <DialogDescription className="text-gray-600 pt-2">
-                            HIV testing kits are only available to individuals who are 18 years of age or older. 
-                            Please confirm that you meet this age requirement to proceed with your kit request.
-                        </DialogDescription>
-                    </DialogHeader>
-                    
-                    <div className="bg-gradient-to-r from-red-50 to-amber-50 border border-red-200 rounded-lg p-4 mt-4">
-                        <div className="flex items-start gap-3">
-                            <Info className="h-5 w-5 text-red-700 flex-shrink-0 mt-0.5" />
-                            <div className="text-sm text-gray-700">
-                                <p className="font-medium mb-1 text-red-700">Why do we ask for age verification?</p>
-                                <p>Age verification ensures compliance with healthcare regulations and helps us provide appropriate care and support.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <DialogFooter className="mt-6">
-                        <Button
-                            variant="outline"
-                            onClick={cancelAgeConfirmation}
-                            className="flex-1 border-stone-300 text-stone-700 hover:bg-stone-50"
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={confirmAge}
-                            className="flex-1 bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-800 hover:to-amber-800 text-white font-semibold"
-                        >
-                            I confirm I am 18+
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
 
             {/* Footer */}
             <footer className="bg-gray-900 text-white py-12">

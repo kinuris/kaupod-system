@@ -79,6 +79,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/kit-orders/{kitOrder}/cancel', [KitOrderController::class, 'cancel'])->name('kit-order.cancel');
     Route::post('/request/consultation', [ConsultationRequestController::class, 'store'])->name('consultation-request.store');
     Route::post('/consultations/{consultationRequest}/reschedule', [ConsultationRequestController::class, 'reschedule'])->name('consultation-request.reschedule');
+    
+    // Subscription routes
+    Route::get('/subscriptions', [\App\Http\Controllers\SubscriptionController::class, 'index'])->name('subscriptions.index');
+    Route::get('/subscriptions/create', [\App\Http\Controllers\SubscriptionController::class, 'create'])->name('subscriptions.create');
+    Route::post('/subscriptions', [\App\Http\Controllers\SubscriptionController::class, 'store'])->name('subscriptions.store');
+    Route::get('/subscriptions/{subscription}', [\App\Http\Controllers\SubscriptionController::class, 'show'])->name('subscriptions.show');
+    Route::patch('/subscriptions/{subscription}/cancel', [\App\Http\Controllers\SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
     Route::get('/request/kit', function() {
         $user = request()->user();
         $ongoingKitOrder = $user->kitOrders()
@@ -86,11 +93,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->first();
         
         $priceCalculator = new \App\Services\PriceCalculator();
+        $activeSubscription = $user->getActiveSubscription();
         
         return Inertia::render('request/kit', [
             'hasOngoingKitOrder' => !!$ongoingKitOrder,
             'ongoingKitOrder' => $ongoingKitOrder,
             'kitPrice' => $priceCalculator->kitPrice(),
+            'subscriptionOptions' => $priceCalculator->getSubscriptionOptions(),
+            'activeSubscription' => $activeSubscription,
+            'hasActiveSubscription' => !!$activeSubscription,
         ]);
     })->name('kit-order.form');
     Route::get('/request/consultation', function() {

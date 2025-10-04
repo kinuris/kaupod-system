@@ -8,8 +8,10 @@ export default function ClientNavigation() {
     const { auth } = usePage<SharedData>().props;
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [isTestingDropdownOpen, setIsTestingDropdownOpen] = useState(false);
     const [isConsultationDropdownOpen, setIsConsultationDropdownOpen] = useState(false);
     const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
+    const testingDropdownRef = useRef<HTMLDivElement>(null);
     const consultationDropdownRef = useRef<HTMLDivElement>(null);
     const supportDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -20,6 +22,7 @@ export default function ClientNavigation() {
             setIsMobile(mobile);
             if (!mobile) {
                 setIsMobileMenuOpen(false);
+                setIsTestingDropdownOpen(false);
                 setIsConsultationDropdownOpen(false);
                 setIsSupportDropdownOpen(false);
             }
@@ -35,6 +38,9 @@ export default function ClientNavigation() {
     // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
+            if (testingDropdownRef.current && !testingDropdownRef.current.contains(event.target as Node)) {
+                setIsTestingDropdownOpen(false);
+            }
             if (consultationDropdownRef.current && !consultationDropdownRef.current.contains(event.target as Node)) {
                 setIsConsultationDropdownOpen(false);
             }
@@ -49,7 +55,7 @@ export default function ClientNavigation() {
 
     // Prevent body scroll when mobile menu is open
     useEffect(() => {
-        if (isMobileMenuOpen) {``
+        if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -90,18 +96,45 @@ export default function ClientNavigation() {
                                     </span>
                                     {auth.user.role === 'client' ? (
                                         <>
-                                            <Link 
-                                                href="/request/kit" 
-                                                className="text-red-700 hover:text-red-800 font-medium transition-colors text-sm whitespace-nowrap"
-                                            >
-                                                Testing Kits
-                                            </Link>
+                                            {/* Testing Services Dropdown */}
+                                            <div className="relative" ref={testingDropdownRef}>
+                                                <button
+                                                    onClick={() => {
+                                                        setIsTestingDropdownOpen(!isTestingDropdownOpen);
+                                                        setIsConsultationDropdownOpen(false);
+                                                        setIsSupportDropdownOpen(false);
+                                                    }}
+                                                    className="flex items-center text-red-700 hover:text-red-800 font-medium transition-colors text-sm"
+                                                >
+                                                    Testing Services
+                                                    <ChevronDown className={`ml-0.5 h-3 w-3 transition-transform ${isTestingDropdownOpen ? 'rotate-180' : ''}`} />
+                                                </button>
+                                                {isTestingDropdownOpen && (
+                                                    <div className="absolute top-full left-0 mt-1 w-40 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+                                                        <Link 
+                                                            href="/request/kit" 
+                                                            className="block px-3 py-1.5 text-red-700 hover:bg-red-50 hover:text-red-800 transition-colors text-sm"
+                                                            onClick={() => setIsTestingDropdownOpen(false)}
+                                                        >
+                                                            Testing Kits
+                                                        </Link>
+                                                        <Link 
+                                                            href="/subscriptions" 
+                                                            className="block px-3 py-1.5 text-orange-700 hover:bg-orange-50 hover:text-orange-800 transition-colors text-sm"
+                                                            onClick={() => setIsTestingDropdownOpen(false)}
+                                                        >
+                                                            Subscriptions
+                                                        </Link>
+                                                    </div>
+                                                )}
+                                            </div>
                                             
                                             {/* Consultation Services Dropdown */}
                                             <div className="relative" ref={consultationDropdownRef}>
                                                 <button
                                                     onClick={() => {
                                                         setIsConsultationDropdownOpen(!isConsultationDropdownOpen);
+                                                        setIsTestingDropdownOpen(false);
                                                         setIsSupportDropdownOpen(false);
                                                     }}
                                                     className="flex items-center text-amber-700 hover:text-amber-800 font-medium transition-colors text-sm"
@@ -134,6 +167,7 @@ export default function ClientNavigation() {
                                                 <button
                                                     onClick={() => {
                                                         setIsSupportDropdownOpen(!isSupportDropdownOpen);
+                                                        setIsTestingDropdownOpen(false);
                                                         setIsConsultationDropdownOpen(false);
                                                     }}
                                                     className="flex items-center text-green-700 hover:text-green-800 font-medium transition-colors text-sm"
@@ -283,13 +317,26 @@ export default function ClientNavigation() {
                                 </div>
                                 {auth.user.role === 'client' ? (
                                     <>
-                                        <Link 
-                                            href="/request/kit" 
-                                            className="block text-red-700 hover:text-red-800 font-medium py-2 transition-colors"
-                                            onClick={closeMobileMenu}
-                                        >
-                                            Testing Kits
-                                        </Link>
+                                        {/* Testing Services Group */}
+                                        <div className="py-2">
+                                            <div className="text-red-700 font-semibold text-sm uppercase tracking-wide mb-2">
+                                                Testing Services
+                                            </div>
+                                            <Link 
+                                                href="/request/kit" 
+                                                className="block text-red-700 hover:text-red-800 font-medium py-1 pl-4 transition-colors"
+                                                onClick={closeMobileMenu}
+                                            >
+                                                Testing Kits
+                                            </Link>
+                                            <Link 
+                                                href="/subscriptions" 
+                                                className="block text-orange-700 hover:text-orange-800 font-medium py-1 pl-4 transition-colors"
+                                                onClick={closeMobileMenu}
+                                            >
+                                                Subscriptions
+                                            </Link>
+                                        </div>
                                         
                                         {/* Consultation Services Group */}
                                         <div className="py-2">
