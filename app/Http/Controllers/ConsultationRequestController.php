@@ -15,7 +15,7 @@ class ConsultationRequestController extends Controller
     {
         $user = $request->user();
 
-        // Check if user has an ongoing consultation
+        // Check if user has an ongoing consultation (exclude finished and canceled)
         $ongoingConsultation = ConsultationRequest::where('user_id', Auth::id())
             ->whereIn('status', ['in_review', 'coordinating', 'confirmed', 'reminder_sent'])
             ->first();
@@ -26,16 +26,30 @@ class ConsultationRequestController extends Controller
             ])->withInput();
         }
 
-        // Check if user has an active annual consultation subscription that needs to be used
+        // Check if user has an active annual consultation subscription
         $activeConsultationSubscription = $user->getActiveConsultationSubscription();
-        if ($activeConsultationSubscription) {
+        
+        // Get the subscription tier from the request
+        $requestedTier = $request->input('subscription_tier');
+        
+        // If user has active subscription but is trying to buy a new subscription instead of using the active one
+        if ($activeConsultationSubscription && $requestedTier !== $activeConsultationSubscription['subscription']['subscription_tier']) {
             $remainingConsultations = $activeConsultationSubscription['remaining_consultations'];
             $subscriptionTier = $activeConsultationSubscription['subscription']['subscription_tier'];
             $tierName = $subscriptionTier === 'moderate_annual' ? 'Moderate Annual' : 'High Annual';
             
             return back()->withErrors([
-                'consultation' => "You have an active {$tierName} subscription with {$remainingConsultations} consultation(s) remaining. Please use your existing subscription before ordering a new one. Your subscription expires on " . $activeConsultationSubscription['expires_at']->format('M d, Y') . "."
+                'consultation' => "You have an active {$tierName} subscription with {$remainingConsultations} consultation(s) remaining. Please use your existing subscription before purchasing a new one. Your subscription expires on " . $activeConsultationSubscription['expires_at']->format('M d, Y') . "."
             ])->withInput();
+        }
+        
+        // If user has active subscription and is using it, check if they have remaining consultations
+        if ($activeConsultationSubscription && $requestedTier === $activeConsultationSubscription['subscription']['subscription_tier']) {
+            if ($activeConsultationSubscription['remaining_consultations'] <= 0) {
+                return back()->withErrors([
+                    'consultation' => 'You have used all consultations in your current subscription. Please purchase a new subscription to continue.'
+                ])->withInput();
+            }
         }
 
         $data = $request->validate([

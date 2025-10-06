@@ -115,35 +115,39 @@ class User extends Authenticatable
      */
     public function getActiveConsultationSubscription()
     {
-        // Get the most recent annual consultation subscription
-        $annualSubscription = $this->consultationRequests()
+        // Get the most recent annual consultation subscription (the base subscription)
+        $baseSubscription = $this->consultationRequests()
             ->whereIn('subscription_tier', ['moderate_annual', 'high_annual'])
-            ->whereIn('status', ['confirmed', 'completed'])
+            ->whereIn('status', ['confirmed', 'finished'])
             ->orderBy('created_at', 'desc')
             ->first();
 
-        if (!$annualSubscription) {
+        if (!$baseSubscription) {
             return null;
         }
 
-        // Count completed consultations for this subscription period (within 1 year)
-        $subscriptionDate = $annualSubscription->created_at;
+        $subscriptionDate = $baseSubscription->created_at;
         $oneYearLater = $subscriptionDate->copy()->addYear();
         
+        // Check if subscription has expired
+        if (now() > $oneYearLater) {
+            return null;
+        }
+        
+        // Count all finished annual consultations (regardless of exact tier match)
+        // This counts all annual consultations as using the active subscription
         $completedConsultations = $this->consultationRequests()
             ->whereIn('subscription_tier', ['moderate_annual', 'high_annual'])
-            ->whereIn('status', ['completed'])
-            ->where('created_at', '>=', $subscriptionDate)
-            ->where('created_at', '<=', $oneYearLater)
+            ->whereIn('status', ['finished'])
             ->count();
 
-        // Determine allowed consultations based on tier
-        $allowedConsultations = $annualSubscription->subscription_tier === 'moderate_annual' ? 2 : 4;
+        // Determine allowed consultations based on the base subscription tier
+        $allowedConsultations = $baseSubscription->subscription_tier === 'moderate_annual' ? 2 : 4;
         
-        // Check if subscription is still active and has remaining consultations
-        if (now() <= $oneYearLater && $completedConsultations < $allowedConsultations) {
+        // Check if subscription still has remaining consultations
+        if ($completedConsultations < $allowedConsultations) {
             return [
-                'subscription' => $annualSubscription,
+                'subscription' => $baseSubscription,
                 'completed_consultations' => $completedConsultations,
                 'allowed_consultations' => $allowedConsultations,
                 'remaining_consultations' => $allowedConsultations - $completedConsultations,
@@ -151,6 +155,7 @@ class User extends Authenticatable
             ];
         }
 
+        // Subscription is exhausted
         return null;
     }
 
