@@ -109,4 +109,56 @@ class User extends Authenticatable
     {
         return $this->role === 'client';
     }
+
+    /**
+     * Get the active annual consultation subscription with remaining consultations.
+     */
+    public function getActiveConsultationSubscription()
+    {
+        // Get the most recent annual consultation subscription
+        $annualSubscription = $this->consultationRequests()
+            ->whereIn('subscription_tier', ['moderate_annual', 'high_annual'])
+            ->whereIn('status', ['confirmed', 'completed'])
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$annualSubscription) {
+            return null;
+        }
+
+        // Count completed consultations for this subscription period (within 1 year)
+        $subscriptionDate = $annualSubscription->created_at;
+        $oneYearLater = $subscriptionDate->copy()->addYear();
+        
+        $completedConsultations = $this->consultationRequests()
+            ->whereIn('subscription_tier', ['moderate_annual', 'high_annual'])
+            ->whereIn('status', ['completed'])
+            ->where('created_at', '>=', $subscriptionDate)
+            ->where('created_at', '<=', $oneYearLater)
+            ->count();
+
+        // Determine allowed consultations based on tier
+        $allowedConsultations = $annualSubscription->subscription_tier === 'moderate_annual' ? 2 : 4;
+        
+        // Check if subscription is still active and has remaining consultations
+        if (now() <= $oneYearLater && $completedConsultations < $allowedConsultations) {
+            return [
+                'subscription' => $annualSubscription,
+                'completed_consultations' => $completedConsultations,
+                'allowed_consultations' => $allowedConsultations,
+                'remaining_consultations' => $allowedConsultations - $completedConsultations,
+                'expires_at' => $oneYearLater
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if user has an active annual consultation subscription with remaining consultations.
+     */
+    public function hasActiveConsultationSubscription(): bool
+    {
+        return $this->getActiveConsultationSubscription() !== null;
+    }
 }

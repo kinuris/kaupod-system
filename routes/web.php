@@ -110,14 +110,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->whereIn('status', ['in_review', 'coordinating', 'confirmed', 'reminder_sent'])
             ->first();
         
+        $activeConsultationSubscription = $user->getActiveConsultationSubscription();
+        
         $priceCalculator = new \App\Services\PriceCalculator();
         
         return Inertia::render('request/consultation', [
             'hasOngoingConsultation' => !!$ongoingConsultation,
             'ongoingConsultation' => $ongoingConsultation,
+            'activeConsultationSubscription' => $activeConsultationSubscription,
             'consultationPrice' => $priceCalculator->consultationPrice(),
             'platformFee' => $priceCalculator->consultationPlatformFee(),
             'expertFee' => $priceCalculator->consultationExpertFee(),
+            'moderateDiscount' => $priceCalculator->consultationModerateDiscount(),
+            'highDiscount' => $priceCalculator->consultationHighDiscount(),
+            'consultationOptions' => $priceCalculator->getConsultationOptions(),
         ]);
     })->name('consultation-request.form');
     
@@ -131,7 +137,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'consultation_mode', 'consultation_latitude', 'consultation_longitude', 
                 'consultation_location_address', 'reason', 'medical_history', 'scheduled_datetime',
                 'assigned_partner_doctor_id', 'rescheduling_reason', 'last_rescheduled_at', 
-                'timeline', 'created_at'
+                'timeline', 'created_at', 'subscription_tier', 'tier_price'
             ]);
         
         return Inertia::render('consultation-tracker', [

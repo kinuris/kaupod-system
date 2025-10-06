@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ConsultationStatus;
 use App\Models\ConsultationRequest;
+use App\Services\PriceCalculator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
@@ -12,6 +13,8 @@ class ConsultationRequestController extends Controller
 {
     public function store(Request $request)
     {
+        $user = $request->user();
+
         // Check if user has an ongoing consultation
         $ongoingConsultation = ConsultationRequest::where('user_id', Auth::id())
             ->whereIn('status', ['in_review', 'coordinating', 'confirmed', 'reminder_sent'])
@@ -23,12 +26,25 @@ class ConsultationRequestController extends Controller
             ])->withInput();
         }
 
+        // Check if user has an active annual consultation subscription that needs to be used
+        $activeConsultationSubscription = $user->getActiveConsultationSubscription();
+        if ($activeConsultationSubscription) {
+            $remainingConsultations = $activeConsultationSubscription['remaining_consultations'];
+            $subscriptionTier = $activeConsultationSubscription['subscription']['subscription_tier'];
+            $tierName = $subscriptionTier === 'moderate_annual' ? 'Moderate Annual' : 'High Annual';
+            
+            return back()->withErrors([
+                'consultation' => "You have an active {$tierName} subscription with {$remainingConsultations} consultation(s) remaining. Please use your existing subscription before ordering a new one. Your subscription expires on " . $activeConsultationSubscription['expires_at']->format('M d, Y') . "."
+            ])->withInput();
+        }
+
         $data = $request->validate([
             'preferred_month' => 'required|string|in:01,02,03,04,05,06,07,08,09,10,11,12',
             'preferred_day' => 'required|string|in:01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31',
             'preferred_year' => 'required|string|in:2025,2026',
             'preferred_time' => 'required|string',
             'consultation_type' => 'required|string',
+            'subscription_tier' => 'required|string|in:one_time,moderate_annual,high_annual',
             'consultation_mode' => 'required|in:online,in-person',
             'consultation_latitude' => 'nullable|numeric|required_if:consultation_mode,in-person',
             'consultation_longitude' => 'nullable|numeric|required_if:consultation_mode,in-person',
@@ -51,12 +67,18 @@ class ConsultationRequestController extends Controller
             return back()->withErrors(['preferred_day' => 'Preferred date must be after today.']);
         }
 
+        // Calculate tier price
+        $priceCalculator = new PriceCalculator();
+        $tierPrice = $priceCalculator->consultationTierPrice($data['subscription_tier']);
+
         // Create schedule preferences JSON
         $schedulePreferences = [
             'preferred_date' => $preferredDate,
             'preferred_time' => $data['preferred_time'],
             'consultation_type' => $data['consultation_type'],
             'consultation_mode' => $data['consultation_mode'],
+            'subscription_tier' => $data['subscription_tier'],
+            'tier_price' => $tierPrice,
         ];
 
         $consultationData = [
@@ -65,6 +87,8 @@ class ConsultationRequestController extends Controller
             'preferred_date' => $preferredDate,
             'preferred_time' => $data['preferred_time'],
             'consultation_type' => $data['consultation_type'],
+            'subscription_tier' => $data['subscription_tier'],
+            'tier_price' => $tierPrice,
             'consultation_mode' => $data['consultation_mode'],
             'reason' => $data['reason'],
             'medical_history' => $data['medical_history'] ?? null,

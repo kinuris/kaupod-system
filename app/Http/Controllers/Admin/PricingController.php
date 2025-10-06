@@ -20,6 +20,8 @@ class PricingController extends Controller
         Cache::forget('setting_consultation_expert_fee');
         Cache::forget('setting_annual_moderate_subscription_price');
         Cache::forget('setting_annual_high_subscription_price');
+        Cache::forget('setting_consultation_moderate_discount');
+        Cache::forget('setting_consultation_high_discount');
         
         return Inertia::render('Admin/Pricing/Index', [
             'pricing' => [
@@ -29,6 +31,8 @@ class PricingController extends Controller
                 'consultation_expert_fee' => Setting::get('consultation_expert_fee', '0.00'),
                 'annual_moderate_subscription_price' => Setting::get('annual_moderate_subscription_price', '0.00'),
                 'annual_high_subscription_price' => Setting::get('annual_high_subscription_price', '0.00'),
+                'consultation_moderate_discount' => Setting::get('consultation_moderate_discount', '15.00'),
+                'consultation_high_discount' => Setting::get('consultation_high_discount', '25.00'),
             ]
         ]);
     }
@@ -47,6 +51,8 @@ class PricingController extends Controller
             'consultation_expert_fee' => 'required|numeric|min:0',
             'annual_moderate_subscription_price' => 'required|numeric|min:0',
             'annual_high_subscription_price' => 'required|numeric|min:0',
+            'consultation_moderate_discount' => 'required|numeric|min:0|max:100',
+            'consultation_high_discount' => 'required|numeric|min:0|max:100',
         ]);
 
         Setting::set('kit_base_price', $request->kit_base_price);
@@ -55,6 +61,8 @@ class PricingController extends Controller
         Setting::set('consultation_expert_fee', $request->consultation_expert_fee);
         Setting::set('annual_moderate_subscription_price', $request->annual_moderate_subscription_price);
         Setting::set('annual_high_subscription_price', $request->annual_high_subscription_price);
+        Setting::set('consultation_moderate_discount', $request->consultation_moderate_discount);
+        Setting::set('consultation_high_discount', $request->consultation_high_discount);
 
         Log::info('Pricing settings updated successfully', [
             'kit_base_price' => $request->kit_base_price,
@@ -62,7 +70,9 @@ class PricingController extends Controller
             'annual_moderate_subscription_price' => $request->annual_moderate_subscription_price,
             'annual_high_subscription_price' => $request->annual_high_subscription_price,
             'consultation_platform_fee' => $request->consultation_platform_fee,
-            'consultation_expert_fee' => $request->consultation_expert_fee
+            'consultation_expert_fee' => $request->consultation_expert_fee,
+            'consultation_moderate_discount' => $request->consultation_moderate_discount,
+            'consultation_high_discount' => $request->consultation_high_discount
         ]);
 
         return back()->with('success', 'Pricing settings updated successfully.');

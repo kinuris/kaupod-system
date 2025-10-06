@@ -17,5 +17,9 @@ class SettingsSeeder extends Seeder
         // Subscription pricing - configurable by admin
         Setting::set('annual_moderate_subscription_price', '800.00'); // 2 kits per year
         Setting::set('annual_high_subscription_price', '1400.00');    // 4 kits per year
+        
+        // Consultation tier discount percentages
+        Setting::set('consultation_moderate_discount', '15.00'); // 15% discount for moderate tier
+        Setting::set('consultation_high_discount', '25.00');    // 25% discount for high tier
     }
 }

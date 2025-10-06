@@ -31,16 +31,55 @@ interface OngoingConsultation {
     consultation_type: string;
 }
 
+interface ConsultationOption {
+    name: string;
+    description: string;
+    price: number;
+    consultations_allowed: number;
+    discount_percent: number;
+    savings: number;
+}
+
+interface ActiveConsultationSubscription {
+    subscription: {
+        subscription_tier: string;
+        created_at: string;
+    };
+    completed_consultations: number;
+    allowed_consultations: number;
+    remaining_consultations: number;
+    expires_at: string;
+}
+
 interface ConsultationRequestProps {
     hasOngoingConsultation?: boolean;
     ongoingConsultation?: OngoingConsultation;
+    activeConsultationSubscription?: ActiveConsultationSubscription;
     errors?: Record<string, string>;
     consultationPrice: number;
     platformFee: number;
     expertFee: number;
+    moderateDiscount: number;
+    highDiscount: number;
+    consultationOptions: {
+        one_time: ConsultationOption;
+        moderate_annual: ConsultationOption;
+        high_annual: ConsultationOption;
+    };
 }
 
-export default function ConsultationRequest({ hasOngoingConsultation = false, ongoingConsultation, errors, consultationPrice, platformFee, expertFee }: ConsultationRequestProps) {
+export default function ConsultationRequest({ 
+    hasOngoingConsultation = false, 
+    ongoingConsultation, 
+    activeConsultationSubscription,
+    errors, 
+    consultationPrice, 
+    platformFee, 
+    expertFee, 
+    moderateDiscount = 15, 
+    highDiscount = 25, 
+    consultationOptions 
+}: ConsultationRequestProps) {
     // Calculate tomorrow's date for default values (current day + 1)
     // This ensures consultations default to next day, handling month/year transitions automatically
     const tomorrow = new Date();
@@ -51,9 +90,38 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
 
     const [consultationMode, setConsultationMode] = useState<'online' | 'in-person' | ''>('');
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
+    const [selectedTier, setSelectedTier] = useState<string>('');
     const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
     const [ageConfirmed, setAgeConfirmed] = useState(false);
     const [submitCallback, setSubmitCallback] = useState<(() => void) | null>(null);
+
+    // Fallback consultation options if not provided
+    const safeConsultationOptions = consultationOptions || {
+        one_time: {
+            name: 'Single Consultation',
+            description: 'One professional consultation',
+            price: consultationPrice || 700,
+            consultations_allowed: 1,
+            discount_percent: 0,
+            savings: 0,
+        },
+        moderate_annual: {
+            name: 'Annual Moderate (2 consultations)',
+            description: '2 consultations per year with discount',
+            price: (consultationPrice || 700) * 2 * (1 - moderateDiscount / 100),
+            consultations_allowed: 2,
+            discount_percent: moderateDiscount,
+            savings: (consultationPrice || 700) * 2 * (moderateDiscount / 100),
+        },
+        high_annual: {
+            name: 'Annual High (4 consultations)',
+            description: '4 consultations per year with discount',
+            price: (consultationPrice || 700) * 4 * (1 - highDiscount / 100),
+            consultations_allowed: 4,
+            discount_percent: highDiscount,
+            savings: (consultationPrice || 700) * 4 * (highDiscount / 100),
+        },
+    };
 
     const handleLocationSelect = (location: DeliveryLocation) => {
         setSelectedLocation(location);
@@ -62,6 +130,17 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
     const handleFormSubmit = (submit: () => void) => {
         // Prevent submission if there's an ongoing consultation
         if (hasOngoingConsultation) {
+            return;
+        }
+
+        // Prevent submission if there's an active consultation subscription
+        if (activeConsultationSubscription) {
+            return;
+        }
+
+        // Validate subscription tier selection
+        if (!selectedTier) {
+            alert('Please select a Plus Plan tier before submitting your consultation request.');
             return;
         }
 
@@ -133,54 +212,162 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                         </p>
                     </div>
 
-                    {/* Pricing Card */}
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 max-w-2xl mx-auto mb-8">
-                        <div className="text-center">
+                    {/* Plus Plan Tiers */}
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 max-w-5xl mx-auto mb-8">
+                        <div className="text-center mb-8">
                             <div className="flex items-center justify-center gap-2 mb-4">
-                                <MessageCircle className="h-6 w-6 text-red-700" />
-                                <h3 className="text-2xl font-bold text-gray-900">Consultation Pricing</h3>
+                                <MessageCircle className="h-6 w-6 text-amber-700" />
+                                <h3 className="text-2xl font-bold text-gray-900">Choose Your Plus Plan</h3>
                             </div>
-                            <div className="mb-4">
-                                <div className="text-4xl font-bold text-red-700 mb-2">
-                                    ₱{consultationPrice.toFixed(2)}
+                            <p className="text-gray-600">Select the consultation plan that best fits your healthcare needs</p>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {/* One-time Purchase */}
+                            <div className="border-2 border-amber-200 rounded-2xl p-6 relative">
+                                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                                    <span className="bg-amber-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                                        One-time
+                                    </span>
                                 </div>
-                                <div className="text-sm text-gray-600 mb-3">
-                                    Professional consultation with qualified experts
-                                </div>
-                                <div className="text-xs text-gray-500 space-y-1">
-                                    <div className="flex justify-between items-center max-w-xs mx-auto">
-                                        <span>Platform Fee:</span>
-                                        <span>₱{platformFee.toFixed(2)}</span>
+                                <div className="text-center mt-3">
+                                    <h4 className="text-xl font-bold text-gray-900 mb-2">{safeConsultationOptions.one_time.name}</h4>
+                                    <div className="text-3xl font-bold text-amber-700 mb-2">
+                                        ₱{safeConsultationOptions.one_time.price.toFixed(2)}
                                     </div>
-                                    <div className="flex justify-between items-center max-w-xs mx-auto">
-                                        <span>Expert Fee:</span>
-                                        <span>₱{expertFee.toFixed(2)}</span>
+                                    <div className="text-sm text-gray-600 mb-4">
+                                        {safeConsultationOptions.one_time.description}
                                     </div>
-                                    <div className="border-t border-gray-200 pt-1 mt-2">
-                                        <div className="flex justify-between items-center max-w-xs mx-auto font-semibold">
-                                            <span>Total:</span>
-                                            <span>₱{consultationPrice.toFixed(2)}</span>
+                                    <div className="space-y-2 text-sm text-left text-gray-600">
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-amber-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>1 Expert consultation</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-amber-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>Online or in-person</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-amber-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>Consultation tracker</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="grid md:grid-cols-2 gap-4 text-sm">
-                                <div className="bg-red-50 rounded-lg p-3">
-                                    <div className="font-semibold text-red-700 mb-1">✓ What's Included</div>
-                                    <div className="text-gray-700 space-y-1">
-                                        <div>• Professional consultation</div>
-                                        <div>• Expert partner network access</div>
-                                        <div>• Online or in-person options</div>
+
+                            {/* Annual Subscription - Moderate */}
+                            <div className="border-2 border-blue-300 rounded-2xl p-6 relative bg-blue-50">
+                                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                                    <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                                        Moderate
+                                    </span>
+                                </div>
+                                <div className="text-center mt-3">
+                                    <h4 className="text-xl font-bold text-gray-900 mb-2">Annual Subscription</h4>
+                                    <div className="text-3xl font-bold text-blue-700 mb-1">
+                                        ₱{safeConsultationOptions.moderate_annual.price.toFixed(2)}
+                                    </div>
+                                    <div className="text-xs text-blue-600 mb-2">
+                                        Save {safeConsultationOptions.moderate_annual.discount_percent}% • ₱{safeConsultationOptions.moderate_annual.savings.toFixed(2)} saved
+                                    </div>
+                                    <div className="text-sm text-gray-600 mb-4">
+                                        {safeConsultationOptions.moderate_annual.consultations_allowed} consultations per year
+                                    </div>
+                                    <div className="space-y-2 text-sm text-left text-gray-600">
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>{safeConsultationOptions.moderate_annual.consultations_allowed} Expert consultations/year</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>Priority scheduling</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>{safeConsultationOptions.moderate_annual.discount_percent}% annual savings</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>Follow-up support</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="bg-amber-50 rounded-lg p-3">
-                                    <div className="font-semibold text-amber-700 mb-1">✓ Support Features</div>
-                                    <div className="text-gray-700 space-y-1">
-                                        <div>• Flexible scheduling</div>
-                                        <div>• Consultation Tracker updates</div>
-                                        <div>• Complete confidentiality</div>
+                            </div>
+
+                            {/* Annual Subscription - High */}
+                            <div className="border-2 border-purple-300 rounded-2xl p-6 relative bg-purple-50">
+                                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                                    <span className="bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                                        High
+                                    </span>
+                                </div>
+                                <div className="text-center mt-3">
+                                    <h4 className="text-xl font-bold text-gray-900 mb-2">Annual Subscription</h4>
+                                    <div className="text-3xl font-bold text-purple-700 mb-1">
+                                        ₱{safeConsultationOptions.high_annual.price.toFixed(2)}
+                                    </div>
+                                    <div className="text-xs text-purple-600 mb-2">
+                                        Save {safeConsultationOptions.high_annual.discount_percent}% • ₱{safeConsultationOptions.high_annual.savings.toFixed(2)} saved
+                                    </div>
+                                    <div className="text-sm text-gray-600 mb-4">
+                                        {safeConsultationOptions.high_annual.consultations_allowed} consultations per year
+                                    </div>
+                                    <div className="space-y-2 text-sm text-left text-gray-600">
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>{safeConsultationOptions.high_annual.consultations_allowed} Expert consultations/year</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>VIP priority scheduling</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>{safeConsultationOptions.high_annual.discount_percent}% annual savings</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>Extended follow-up care</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <svg className="w-4 h-4 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>Quarterly health check-ins</span>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 text-center">
+                            <div className="bg-gray-50 rounded-xl p-4 max-w-3xl mx-auto">
+                                <p className="text-sm text-gray-600">
+                                    <strong>Note:</strong> Select your preferred plan during the consultation request process below. 
+                                    All plans include access to qualified healthcare professionals from our partner network.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -257,6 +444,45 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                         </div>
                     )}
 
+                    {/* Active Subscription Warning */}
+                    {!hasOngoingConsultation && activeConsultationSubscription && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 max-w-2xl mx-auto">
+                            <div className="flex items-start gap-3">
+                                <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                                        You have an active consultation subscription
+                                    </h3>
+                                    <p className="text-blue-700 mb-3">
+                                        You have {activeConsultationSubscription.remaining_consultations} consultation(s) remaining in your{' '}
+                                        <span className="font-medium">
+                                            {activeConsultationSubscription.subscription.subscription_tier === 'moderate_annual' ? 'Moderate Annual' : 'High Annual'}
+                                        </span> subscription. Please use your existing consultations before ordering a new subscription.
+                                    </p>
+                                    <div className="bg-blue-100 rounded-md p-3 text-sm">
+                                        <div className="font-medium text-blue-800 mb-1">Subscription Details:</div>
+                                        <div className="text-blue-700 space-y-1">
+                                            <div>Plan: <span className="font-medium">
+                                                {activeConsultationSubscription.subscription.subscription_tier === 'moderate_annual' ? 'Moderate Annual (2 consultations)' : 'High Annual (4 consultations)'}
+                                            </span></div>
+                                            <div>Used: <span className="font-medium">{activeConsultationSubscription.completed_consultations} of {activeConsultationSubscription.allowed_consultations}</span></div>
+                                            <div>Remaining: <span className="font-medium text-green-600">{activeConsultationSubscription.remaining_consultations}</span></div>
+                                            <div>Expires: <span className="font-medium">{new Date(activeConsultationSubscription.expires_at).toLocaleDateString()}</span></div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4">
+                                        <a 
+                                            href="/plus-tracker" 
+                                            className="inline-flex items-center text-blue-700 hover:text-blue-800 font-medium text-sm underline"
+                                        >
+                                            Use your existing consultation →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* General Error Messages */}
                     {errors?.consultation && (
                         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
@@ -267,7 +493,7 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                         </div>
                     )}
 
-                    <div className={`bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto ${hasOngoingConsultation ? 'opacity-60 pointer-events-none' : ''}`}>
+                    <div className={`bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto ${(hasOngoingConsultation || activeConsultationSubscription) ? 'opacity-60 pointer-events-none' : ''}`}>
                         <Form
                             action="/request/consultation"
                             method="post"
@@ -358,6 +584,52 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                                 <InputError message={errors.preferred_time} />
                             </div>
                         </div>                                        <div className="grid gap-3">
+                                            <Label htmlFor="subscription_tier" className="text-base font-semibold text-gray-900">
+                                                Plus Plan Tier <span className="text-red-500">*</span>
+                                            </Label>
+                                            <select
+                                                id="subscription_tier"
+                                                name="subscription_tier"
+                                                value={selectedTier}
+                                                onChange={(e) => setSelectedTier(e.target.value)}
+                                                required
+                                                className="border-input flex h-10 w-full min-w-0 rounded-md border bg-white text-gray-900 px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+                                            >
+                                                <option value="">Select your plan</option>
+                                                <option value="one_time">{safeConsultationOptions.one_time.name} - ₱{safeConsultationOptions.one_time.price.toFixed(2)}</option>
+                                                <option value="moderate_annual">{safeConsultationOptions.moderate_annual.name} - ₱{safeConsultationOptions.moderate_annual.price.toFixed(2)}</option>
+                                                <option value="high_annual">{safeConsultationOptions.high_annual.name} - ₱{safeConsultationOptions.high_annual.price.toFixed(2)}</option>
+                                            </select>
+                                            <InputError message={errors.subscription_tier} />
+                                            
+                                            {/* Selected Tier Confirmation */}
+                                            {selectedTier && (
+                                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-3">
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="flex-shrink-0">
+                                                            <svg className="w-5 h-5 text-amber-700 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                            </svg>
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <h4 className="text-sm font-medium text-amber-800 mb-1">
+                                                                Selected: {safeConsultationOptions[selectedTier as keyof typeof safeConsultationOptions]?.name}
+                                                            </h4>
+                                                            <p className="text-sm text-amber-700">
+                                                                Price: ₱{safeConsultationOptions[selectedTier as keyof typeof safeConsultationOptions]?.price.toFixed(2)}
+                                                                {selectedTier !== 'one_time' && (
+                                                                    <span className="ml-2 text-amber-600">
+                                                                        (Save {safeConsultationOptions[selectedTier as keyof typeof safeConsultationOptions]?.discount_percent}%)
+                                                                    </span>
+                                                                )}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="grid gap-3">
                                             <Label htmlFor="consultation_type" className="text-base font-semibold text-gray-900">Type of Consultation</Label>
                                             <select
                                                 id="consultation_type"
@@ -508,7 +780,7 @@ export default function ConsultationRequest({ hasOngoingConsultation = false, on
                                         type="button"
                                         onClick={() => handleFormSubmit(submit)}
                                         className="w-full bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-700 hover:to-amber-700 text-lg py-4 font-semibold"
-                                        disabled={processing || hasOngoingConsultation}
+                                        disabled={processing || hasOngoingConsultation || activeConsultationSubscription}
                                     >
                                         {processing && (
                                             <LoaderCircle className="h-5 w-5 animate-spin mr-3" />

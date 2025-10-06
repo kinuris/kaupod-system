@@ -50,6 +50,8 @@ interface ConsultationRequest {
     last_rescheduled_at: string | null;
     timeline: Record<string, string>;
     created_at: string;
+    subscription_tier: string;
+    tier_price: number;
 }
 
 interface Props {
@@ -126,6 +128,65 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
         setShowRescheduleModal(true);
     };
 
+    const getSubscriptionTypeDisplay = (consultation: ConsultationRequest) => {
+        if (!consultation.subscription_tier) {
+            return {
+                type: 'One Time Purchase',
+                description: 'Single consultation payment',
+                color: 'bg-gray-50 border-gray-200 text-gray-800',
+                icon: '💰'
+            };
+        }
+
+        switch (consultation.subscription_tier) {
+            case 'one_time':
+                return {
+                    type: 'One Time Purchase',
+                    description: 'Single consultation payment',
+                    color: 'bg-gray-50 border-gray-200 text-gray-800',
+                    icon: '💰'
+                };
+            case 'moderate_annual':
+                return {
+                    type: 'Annual Subscription Purchase',
+                    description: 'Moderate Annual Plan (2 consultations)',
+                    color: 'bg-blue-50 border-blue-200 text-blue-800',
+                    icon: '📅'
+                };
+            case 'high_annual':
+                return {
+                    type: 'Annual Subscription Purchase',
+                    description: 'High Annual Plan (4 consultations)',
+                    color: 'bg-purple-50 border-purple-200 text-purple-800',
+                    icon: '👑'
+                };
+            default:
+                return {
+                    type: 'Unknown',
+                    description: 'Unknown subscription type',
+                    color: 'bg-gray-50 border-gray-200 text-gray-800',
+                    icon: '❓'
+                };
+        }
+    };
+
+    const isSubscriptionUsage = (consultation: ConsultationRequest, allConsultations: ConsultationRequest[]) => {
+        // If it's a one-time purchase, it's not subscription usage
+        if (!consultation.subscription_tier || consultation.subscription_tier === 'one_time') {
+            return false;
+        }
+
+        // Find all consultations with the same subscription tier, sorted by date
+        const sameTimeConsultations = allConsultations
+            .filter(c => c.subscription_tier === consultation.subscription_tier)
+            .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+        // If this is the first consultation with this tier, it's the subscription purchase
+        // Otherwise, it's using the existing subscription
+        const consultationIndex = sameTimeConsultations.findIndex(c => c.id === consultation.id);
+        return consultationIndex > 0;
+    };
+
     return (
         <>
             <Head title="Consultation Tracker - Expert Consultations - Kaupod" />
@@ -148,6 +209,45 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                             Track your expert consultation appointments and receive updates from our partner doctors
                         </p>
                     </div>
+
+                    {/* Subscription Summary */}
+                    {consultationRequests.length > 0 && (() => {
+                        const annualConsultations = consultationRequests.filter(c => 
+                            c.subscription_tier && ['moderate_annual', 'high_annual'].includes(c.subscription_tier)
+                        );
+                        
+                        if (annualConsultations.length === 0) return null;
+
+                        const moderateCount = annualConsultations.filter(c => c.subscription_tier === 'moderate_annual').length;
+                        const highCount = annualConsultations.filter(c => c.subscription_tier === 'high_annual').length;
+                        const usageCount = annualConsultations.filter(c => isSubscriptionUsage(c, consultationRequests)).length;
+                        const purchaseCount = annualConsultations.length - usageCount;
+
+                        return (
+                            <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                    <span>📊</span> Subscription Summary
+                                </h3>
+                                <div className="grid md:grid-cols-3 gap-4 text-sm">
+                                    <div className="bg-blue-50 rounded-lg p-4">
+                                        <div className="font-medium text-blue-800">Moderate Annual Consultations</div>
+                                        <div className="text-2xl font-bold text-blue-600">{moderateCount}</div>
+                                        <div className="text-xs text-blue-600">2 consultations per subscription</div>
+                                    </div>
+                                    <div className="bg-purple-50 rounded-lg p-4">
+                                        <div className="font-medium text-purple-800">High Annual Consultations</div>
+                                        <div className="text-2xl font-bold text-purple-600">{highCount}</div>
+                                        <div className="text-xs text-purple-600">4 consultations per subscription</div>
+                                    </div>
+                                    <div className="bg-green-50 rounded-lg p-4">
+                                        <div className="font-medium text-green-800">Subscription Efficiency</div>
+                                        <div className="text-2xl font-bold text-green-600">{purchaseCount} purchases</div>
+                                        <div className="text-xs text-green-600">{usageCount} from existing subscriptions</div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                     {consultationRequests.length === 0 ? (
                         <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
@@ -172,9 +272,33 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 <h3 className="text-xl font-semibold text-gray-900">
                                                     {consultation.consultation_type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                                 </h3>
-                                                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(consultation.status)}`}>
-                                                    {getStatusText(consultation.status)}
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(consultation.status)}`}>
+                                                        {getStatusText(consultation.status)}
+                                                    </div>
+                                                    {(() => {
+                                                        const subscriptionInfo = getSubscriptionTypeDisplay(consultation);
+                                                        const isUsage = isSubscriptionUsage(consultation, consultationRequests);
+                                                        
+                                                        return (
+                                                            <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${subscriptionInfo.color}`}>
+                                                                <span className="mr-1">{subscriptionInfo.icon}</span>
+                                                                {isUsage ? 'Request from Active Subscription' : subscriptionInfo.type}
+                                                            </div>
+                                                        );
+                                                    })()}
                                                 </div>
+                                                {(() => {
+                                                    const subscriptionInfo = getSubscriptionTypeDisplay(consultation);
+                                                    const isUsage = isSubscriptionUsage(consultation, consultationRequests);
+                                                    
+                                                    return (
+                                                        <p className="text-xs text-gray-600">
+                                                            {isUsage ? 'Using existing subscription benefits' : subscriptionInfo.description}
+                                                            {consultation.tier_price && ` • ₱${consultation.tier_price.toLocaleString()}`}
+                                                        </p>
+                                                    );
+                                                })()}
                                             </div>
                                         </div>
                                         <div className="text-right">

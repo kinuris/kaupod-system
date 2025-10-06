@@ -315,15 +315,15 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                     </div>
 
                     <div className="grid lg:grid-cols-2 gap-8">
-                        {/* HIV Testing Kits */}
-                                                {/* Pro Plan Orders */}
+                        {/* Pro Plan Orders */}
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                             <div className="bg-gradient-to-r from-red-600 to-red-700 px-8 py-6">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center">
                                         <Package className="h-6 w-6 text-white mr-3" />
-                                        <h2 className="text-2xl font-bold text-gray-900">Pro Plan Orders</h2>
-                                
+                                        <h2 className="text-2xl font-bold text-white">Pro Plan Orders</h2>
+                                    </div>
+                                </div>
                                 <div className="flex items-center gap-2">
                                     <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
                                         <input
@@ -677,7 +677,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                     href="/request/kit"
                                     className="inline-block bg-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors"
                                 >
-                                                                            Order New Pro Plan
+                                    Order New Pro Plan
                                 </a>
                                 <a 
                                     href="/request/consultation"

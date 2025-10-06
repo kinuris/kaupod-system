@@ -31,6 +31,62 @@ class PriceCalculator
         return (float) Setting::get('consultation_expert_fee', 0);
     }
 
+    public function consultationModerateDiscount(): float
+    {
+        return (float) Setting::get('consultation_moderate_discount', 15.00);
+    }
+
+    public function consultationHighDiscount(): float
+    {
+        return (float) Setting::get('consultation_high_discount', 25.00);
+    }
+
+    public function consultationTierPrice(string $tier): float
+    {
+        $basePrice = $this->consultationPrice();
+        
+        return match($tier) {
+            'one_time' => $basePrice,
+            'moderate_annual' => $basePrice * 2 * (1 - $this->consultationModerateDiscount() / 100),
+            'high_annual' => $basePrice * 4 * (1 - $this->consultationHighDiscount() / 100),
+            default => $basePrice,
+        };
+    }
+
+    public function getConsultationOptions(): array
+    {
+        $basePrice = $this->consultationPrice();
+        $moderateDiscount = $this->consultationModerateDiscount();
+        $highDiscount = $this->consultationHighDiscount();
+
+        return [
+            'one_time' => [
+                'name' => 'Single Consultation',
+                'description' => 'One professional consultation',
+                'price' => $basePrice,
+                'consultations_allowed' => 1,
+                'discount_percent' => 0,
+                'savings' => 0,
+            ],
+            'moderate_annual' => [
+                'name' => 'Annual Moderate (2 consultations)',
+                'description' => '2 consultations per year with discount',
+                'price' => $basePrice * 2 * (1 - $moderateDiscount / 100),
+                'consultations_allowed' => 2,
+                'discount_percent' => $moderateDiscount,
+                'savings' => $basePrice * 2 * ($moderateDiscount / 100),
+            ],
+            'high_annual' => [
+                'name' => 'Annual High (4 consultations)',
+                'description' => '4 consultations per year with discount',
+                'price' => $basePrice * 4 * (1 - $highDiscount / 100),
+                'consultations_allowed' => 4,
+                'discount_percent' => $highDiscount,
+                'savings' => $basePrice * 4 * ($highDiscount / 100),
+            ],
+        ];
+    }
+
     public function subscriptionPrice(SubscriptionTier $tier): float
     {
         return match($tier) {

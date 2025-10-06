@@ -10,6 +10,8 @@ interface PricingData {
   consultation_expert_fee: string;
   annual_moderate_subscription_price: string;
   annual_high_subscription_price: string;
+  consultation_moderate_discount: string;
+  consultation_high_discount: string;
 }
 
 interface PageProps {
@@ -24,6 +26,8 @@ export default function PricingIndex({ pricing }: PageProps) {
     consultation_expert_fee: pricing.consultation_expert_fee,
     annual_moderate_subscription_price: pricing.annual_moderate_subscription_price,
     annual_high_subscription_price: pricing.annual_high_subscription_price,
+    consultation_moderate_discount: pricing.consultation_moderate_discount,
+    consultation_high_discount: pricing.consultation_high_discount,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | string[]>>({});
@@ -249,6 +253,67 @@ export default function PricingIndex({ pricing }: PageProps) {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Consultation Pricing</h3>
               </div>
 
+              {/* Consultation Discount Percentages */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label 
+                    htmlFor="consultation_moderate_discount" 
+                    className="block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Moderate Tier Discount (%)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="consultation_moderate_discount"
+                      step="0.01"
+                      min="0"
+                      max="100"
+                      value={formData.consultation_moderate_discount}
+                      onChange={(e) => handleInputChange('consultation_moderate_discount', e.target.value)}
+                      className="block w-full pr-8 pl-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      placeholder="15.00"
+                      required
+                    />
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <span className="text-neutral-500 dark:text-neutral-400 text-sm">%</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Discount percentage for 2 consultations annual plan
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label 
+                    htmlFor="consultation_high_discount" 
+                    className="block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    High Tier Discount (%)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="consultation_high_discount"
+                      step="0.01"
+                      min="0"
+                      max="100"
+                      value={formData.consultation_high_discount}
+                      onChange={(e) => handleInputChange('consultation_high_discount', e.target.value)}
+                      className="block w-full pr-8 pl-3 py-3 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      placeholder="25.00"
+                      required
+                    />
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <span className="text-neutral-500 dark:text-neutral-400 text-sm">%</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Discount percentage for 4 consultations annual plan
+                  </p>
+                </div>
+              </div>
+
               {/* Consultation Platform Fee */}
               <div className="space-y-2">
                 <label 
@@ -382,9 +447,27 @@ export default function PricingIndex({ pricing }: PageProps) {
                       </div>
                       <div className="border-t border-neutral-200 dark:border-neutral-600 pt-1 mt-1">
                         <div className="flex justify-between items-center">
-                          <span className="font-medium text-gray-900 dark:text-white">Consultation Total:</span>
+                          <span className="font-medium text-gray-900 dark:text-white">Single Consultation:</span>
                           <span className="font-bold text-red-700 dark:text-red-700">
                             ₱{(parseFloat(formData.consultation_platform_fee || '0') + parseFloat(formData.consultation_expert_fee || '0')).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="space-y-0.5 mt-2 pt-1 border-t border-neutral-200 dark:border-neutral-600">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-neutral-500 dark:text-neutral-400">
+                            Moderate (2) - {parseFloat(formData.consultation_moderate_discount || '0').toFixed(1)}% off:
+                          </span>
+                          <span className="font-medium text-blue-600">
+                            ₱{((parseFloat(formData.consultation_platform_fee || '0') + parseFloat(formData.consultation_expert_fee || '0')) * 2 * (1 - parseFloat(formData.consultation_moderate_discount || '0') / 100)).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-neutral-500 dark:text-neutral-400">
+                            High (4) - {parseFloat(formData.consultation_high_discount || '0').toFixed(1)}% off:
+                          </span>
+                          <span className="font-medium text-purple-600">
+                            ₱{((parseFloat(formData.consultation_platform_fee || '0') + parseFloat(formData.consultation_expert_fee || '0')) * 4 * (1 - parseFloat(formData.consultation_high_discount || '0') / 100)).toFixed(2)}
                           </span>
                         </div>
                       </div>
