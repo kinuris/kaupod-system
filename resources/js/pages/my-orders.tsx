@@ -310,20 +310,19 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                             My Orders & Requests
                         </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Track the status of your HIV testing kits and consultation requests
+                            Track the status of your Pro Plan orders and consultation requests
                         </p>
                     </div>
 
                     <div className="grid lg:grid-cols-2 gap-8">
                         {/* HIV Testing Kits */}
-                        <div className="bg-white rounded-2xl shadow-xl p-8">
-                            <div className="flex items-center justify-between mb-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                                        <Package className="h-5 w-5 text-red-700" />
-                                    </div>
-                                    <h2 className="text-2xl font-bold text-gray-900">HIV Testing Kits</h2>
-                                </div>
+                                                {/* Pro Plan Orders */}
+                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                            <div className="bg-gradient-to-r from-red-600 to-red-700 px-8 py-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center">
+                                        <Package className="h-6 w-6 text-white mr-3" />
+                                        <h2 className="text-2xl font-bold text-gray-900">Pro Plan Orders</h2>
                                 
                                 <div className="flex items-center gap-2">
                                     <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
@@ -367,7 +366,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                             <div className="flex items-start justify-between mb-3">
                                                 <div>
                                                     <div className="font-semibold text-gray-900">
-                                                        HIV Testing Kit #{order.id}
+                                                        Pro Plan Order #{order.id}
                                                     </div>
                                                     <div className="text-sm text-gray-500">
                                                         Ordered: {new Date(order.created_at).toLocaleDateString()}
@@ -678,7 +677,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                     href="/request/kit"
                                     className="inline-block bg-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors"
                                 >
-                                    Order New HIV Testing Kit
+                                                                            Order New Pro Plan
                                 </a>
                                 <a 
                                     href="/request/consultation"

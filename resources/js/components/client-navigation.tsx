@@ -116,7 +116,7 @@ export default function ClientNavigation() {
                                                             className="block px-3 py-1.5 text-red-700 hover:bg-red-50 hover:text-red-800 transition-colors text-sm"
                                                             onClick={() => setIsTestingDropdownOpen(false)}
                                                         >
-                                                            Testing Kits
+                                                            Pro Plan
                                                         </Link>
                                                         <Link 
                                                             href="/subscriptions" 
@@ -327,7 +327,7 @@ export default function ClientNavigation() {
                                                 className="block text-red-700 hover:text-red-800 font-medium py-1 pl-4 transition-colors"
                                                 onClick={closeMobileMenu}
                                             >
-                                                Testing Kits
+                                                Pro Plan
                                             </Link>
                                             <Link 
                                                 href="/subscriptions" 

@@ -84,7 +84,7 @@ export default function KitRequest({
                             </div>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Privacy Kit Request
+                            Pro Plan Request
                         </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                             Confidential HIV testing kits delivered to your exact location with secure result delivery

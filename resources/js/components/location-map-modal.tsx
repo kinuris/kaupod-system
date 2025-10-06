@@ -68,7 +68,7 @@ export default function LocationMapModal({
                                 Delivery Location
                             </h2>
                             <p className="text-sm text-gray-600">
-                                {orderType === 'kit' ? 'HIV Testing Kit' : 'Consultation'} #{orderId}
+                                {orderType === 'kit' ? 'Pro Plan Order' : 'Consultation'} #{orderId}
                             </p>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ export default function LocationMapModal({
                                 <Popup>
                                     <div className="text-center">
                                         <div className="font-semibold mb-1">
-                                            {orderType === 'kit' ? 'HIV Testing Kit' : 'Consultation'} Delivery
+                                            {orderType === 'kit' ? 'Pro Plan' : 'Consultation'} Delivery
                                         </div>
                                         <div className="text-sm text-gray-600">
                                             {locationAddress}
