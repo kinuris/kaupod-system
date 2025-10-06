@@ -248,7 +248,7 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
               <MessageCircle className="h-5 w-5 text-red-700 dark:text-red-400" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Expert Consultation Requests</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Plus Plan Requests</h1>
               <p className="text-sm text-gray-600 dark:text-neutral-400">Manage and coordinate consultation requests</p>
             </div>
           </div>

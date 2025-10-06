@@ -170,7 +170,7 @@ export default function ConsultationRequest({
 
     return (
         <>
-            <Head title="Expert Consultation Request - Kaupod" />
+            <Head title="Plus Plan Request - Kaupod" />
             
             <ClientNavigation />
 
@@ -185,13 +185,13 @@ export default function ConsultationRequest({
                         </div>
                         <div className="flex items-center justify-center gap-3 mb-4">
                             <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-                                Expert Consultation
+                                Plus Plan
                             </h1>
                             <div className="group relative">
                                 <Info className="h-6 w-6 text-red-700 cursor-help" />
                                 <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-80 p-4 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 shadow-lg">
                                     <div className="space-y-3">
-                                        <div className="font-semibold text-red-300">What's Expert Consultation?</div>
+                                        <div className="font-semibold text-red-300">What's Plus Plan?</div>
                                         <div>Professional healthcare consultations with qualified doctors from our partner network in complete confidentiality.</div>
                                         <div className="space-y-2">
                                             <div className="font-medium text-amber-300">How it works:</div>
@@ -252,7 +252,7 @@ export default function ConsultationRequest({
                                             <svg className="w-4 h-4 text-amber-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
-                                            <span>1 Expert consultation</span>
+                                            <span>1 Plus Plan consultation</span>
                                         </div>
                                         <div className="flex items-center">
                                             <svg className="w-4 h-4 text-amber-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -305,7 +305,7 @@ export default function ConsultationRequest({
                                             <svg className="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
-                                            <span>{safeConsultationOptions.moderate_annual.consultations_allowed} Expert consultations/year</span>
+                                            <span>{safeConsultationOptions.moderate_annual.consultations_allowed} Plus Plan consultations/year</span>
                                         </div>
                                         <div className="flex items-center">
                                             <svg className="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -364,7 +364,7 @@ export default function ConsultationRequest({
                                             <svg className="w-4 h-4 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
-                                            <span>{safeConsultationOptions.high_annual.consultations_allowed} Expert consultations/year</span>
+                                            <span>{safeConsultationOptions.high_annual.consultations_allowed} Plus Plan consultations/year</span>
                                         </div>
                                         <div className="flex items-center">
                                             <svg className="w-4 h-4 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -428,10 +428,10 @@ export default function ConsultationRequest({
                                 </div>
                             </div>
                             <div className="flex-1">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Expert Consultation Information</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Plus Plan Information</h3>
                                 <div className="space-y-3 text-gray-700">
                                     <p className="text-sm">
-                                        Our expert consultations connect you with qualified healthcare professionals from our trusted partner network.
+                                        Our Plus Plan consultations connect you with qualified healthcare professionals from our trusted partner network.
                                     </p>
                                     <div className="grid md:grid-cols-2 gap-4 text-sm">
                                         <div className="space-y-2">
@@ -887,7 +887,7 @@ export default function ConsultationRequest({
                                         {processing && (
                                             <LoaderCircle className="h-5 w-5 animate-spin mr-3" />
                                         )}
-                                        Request Expert Consultation
+                                        Request Plus Plan
                                     </Button>
                                 </>
                             )}
@@ -905,7 +905,7 @@ export default function ConsultationRequest({
                             Age Verification Required
                         </DialogTitle>
                         <DialogDescription className="text-gray-600 pt-2">
-                            Expert consultations are only available to individuals who are 18 years of age or older. 
+                            Plus Plan consultations are only available to individuals who are 18 years of age or older. 
                             Please confirm that you meet this age requirement to proceed with your consultation request.
                         </DialogDescription>
                     </DialogHeader>

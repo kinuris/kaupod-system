@@ -85,7 +85,7 @@ export default function About() {
                                         <div className="bg-amber-100 p-3 rounded-lg mr-4">
                                             <Stethoscope className="h-6 w-6 text-amber-600" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-gray-900">Expert Consultation Service</h3>
+                                        <h3 className="text-xl font-bold text-gray-900">Plus Plan Service</h3>
                                     </div>
                                     <p className="text-gray-700 leading-relaxed">
                                         Taking the next step can be daunting. We make it easier by arranging appointments with trusted, licensed medical specialists within the province. We coordinate the schedule based on your preference, ensuring you get access to expert care without the stress and hassle.

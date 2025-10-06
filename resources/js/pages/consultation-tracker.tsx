@@ -189,7 +189,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
 
     return (
         <>
-            <Head title="Consultation Tracker - Expert Consultations - Kaupod" />
+            <Head title="Consultation Tracker - Plus Plan - Kaupod" />
             
             <ClientNavigation />
 
@@ -206,7 +206,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                             Consultation Tracker
                         </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Track your expert consultation appointments and receive updates from our partner doctors
+                            Track your Plus Plan appointments and receive updates from our partner doctors
                         </p>
                     </div>
 
@@ -253,12 +253,12 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                         <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
                             <MessageCircle className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">No Consultations Yet</h3>
-                            <p className="text-gray-600 mb-6">You haven't requested any expert consultations yet.</p>
+                            <p className="text-gray-600 mb-6">You haven't requested any Plus Plan consultations yet.</p>
                             <Button
                                 onClick={() => window.location.href = '/request/consultation'}
                                 className="bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-800 hover:to-amber-800"
                             >
-                                Request Expert Consultation
+                                Request Plus Plan
                             </Button>
                         </div>
                     ) : (

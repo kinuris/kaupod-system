@@ -9,7 +9,7 @@
 1. [Getting Started](#getting-started)
 2. [Account Management](#account-management)
 3. [Privacy Testing Kit Service](#privacy-testing-kit-service)
-4. [Expert Consultation Service](#expert-consultation-service)
+4. [Plus Plan Service](#plus-plan-service)
 5. [Plus Tracker](#plus-tracker)
 6. [Order Management](#order-management)
 7. [AI Chatbot Assistance](#ai-chatbot-assistance)
@@ -27,7 +27,7 @@ Kaupod is a comprehensive HIV intervention platform designed to serve the commun
 
 - **Confidential Risk Assessment** via AI chatbot
 - **Privacy Kit Delivery Service** for HIV self-testing
-- **Expert Consultation Service** with licensed medical professionals
+- **Plus Plan Service** with licensed medical professionals
 - **Community Partnership** with DOH and local healthcare providers
 
 ### Creating Your Account
@@ -175,13 +175,13 @@ Kaupod is a comprehensive HIV intervention platform designed to serve the commun
 
 ---
 
-## Expert Consultation Service
+## Plus Plan Service
 
 ### Understanding the Service
 
 **What's Included:**
 - Platform service coordination (₱200.00)
-- Professional expert consultation (₱500.00)
+- Professional Plus Plan consultation (₱500.00)
 - **Total Cost: ₱700.00**
 
 **Consultation Types:**
@@ -363,7 +363,7 @@ Plus Tracker is your comprehensive activity monitoring system that provides real
 - **Confidential Health Guidance**: Get personalized health information privately
 - **Risk Assessment Support**: Understand potential health risks and next steps
 - **Platform Navigation**: Learn how to use Kaupod services effectively
-- **Pre-Consultation Preparation**: Prepare questions for expert consultations
+- **Pre-Consultation Preparation**: Prepare questions for Plus Plan consultations
 - **Ongoing Support**: Receive guidance throughout your health journey
 
 ### Accessing the AI Assistant
@@ -496,7 +496,7 @@ Plus Tracker is your comprehensive activity monitoring system that provides real
 ### Transitioning to Professional Care
 
 **When AI Guidance Points to Professional Care:**
-1. **Schedule Consultation**: Use our Expert Consultation Service
+1. **Schedule Consultation**: Use our Plus Plan Service
 2. **Order Testing Kit**: Get HIV testing kit delivered privately
 3. **Contact Healthcare Provider**: Reach out to your primary care doctor
 4. **Visit Urgent Care**: For time-sensitive health concerns
@@ -702,7 +702,7 @@ A: Yes, complete confidentiality is our top priority. We use encrypted communica
 **Q: How much do services cost?**
 A: 
 - Testing Kit: ₱470.00 (includes kit, delivery, and processing)
-- Expert Consultation: ₱700.00 (includes platform and expert fees)
+- Plus Plan: ₱700.00 (includes platform and expert fees)
 
 **Q: How long does kit delivery take?**
 A: Typically 2-3 business days, depending on location and availability.
