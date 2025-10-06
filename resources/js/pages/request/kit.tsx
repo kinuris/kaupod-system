@@ -468,7 +468,11 @@ export default function KitRequest({
 
                                     <Button
                                         type="button"
-                                        onClick={submit}
+                                        onClick={() => {
+                                            submit();
+                                            // Open GCash in new tab after successful submission
+                                            window.open('https://gcash.com', '_blank');
+                                        }}
                                         className="w-full bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-700 hover:to-amber-700 text-lg py-4 font-semibold"
                                         disabled={processing || hasOngoingKitOrder}
                                     >

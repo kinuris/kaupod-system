@@ -146,10 +146,16 @@ export default function ConsultationRequest({
         }
 
         if (!ageConfirmed) {
-            setSubmitCallback(() => submit);
+            setSubmitCallback(() => () => {
+                submit();
+                // Open GCash in new tab after successful submission
+                window.open('https://gcash.com', '_blank');
+            });
             setShowAgeConfirmModal(true);
         } else {
             submit();
+            // Open GCash in new tab after successful submission
+            window.open('https://gcash.com', '_blank');
         }
     };
 
