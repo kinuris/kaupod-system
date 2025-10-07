@@ -133,6 +133,13 @@ export default function ConsultationRequest({
             return;
         }
 
+        // Validate terms and conditions acceptance
+        const termsCheckbox = document.getElementById('terms_accepted') as HTMLInputElement;
+        if (!termsCheckbox?.checked) {
+            alert('Please accept the Plus Plan Terms and Conditions to proceed with your request.');
+            return;
+        }
+
         // Validate subscription tier selection
         if (activeConsultationSubscription) {
             // User has active subscription - no tier selection needed, it's automatically set
@@ -878,6 +885,62 @@ export default function ConsultationRequest({
                                                                 <li>• Compassionate support</li>
                                                             </ul>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Plus Plan Terms and Conditions */}
+                                    <div className="bg-gradient-to-r from-gray-50 to-stone-50 border border-gray-200 rounded-lg p-6">
+                                        <div className="flex items-start gap-3">
+                                            <div className="flex-shrink-0">
+                                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
+                                                    <Info className="h-4 w-4 text-gray-700" />
+                                                </div>
+                                            </div>
+                                            <div className="flex-1">
+                                                <h3 className="text-lg font-semibold text-gray-900 mb-3">Plus Plan Terms and Conditions</h3>
+                                                <div className="text-sm text-gray-700 space-y-3">
+                                                    <p>
+                                                        The Plus Plan enhances the services of the Pro Plan by providing facilitated access to medical consultations with specialists. Team Kaupod will coordinate and secure appointments on behalf of the subscriber, using the details obtained from the Pro Plan as the basis for booking.
+                                                    </p>
+                                                    
+                                                    <div className="grid md:grid-cols-3 gap-4 text-xs">
+                                                        <div className="space-y-2">
+                                                            <div className="font-medium text-red-700">Low-Risk Users</div>
+                                                            <p>One-time purchase grants <strong>one (1) medical consultation</strong> within twelve (12) months.</p>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <div className="font-medium text-amber-700">Moderate-Risk Users</div>
+                                                            <p>Annual subscription provides <strong>two (2) consultations per year</strong>, scheduled every six (6) months.</p>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <div className="font-medium text-green-700">High-Risk Users</div>
+                                                            <p>Comprehensive subscription grants <strong>four (4) consultations annually</strong>, scheduled every three (3) months.</p>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className="border-t border-gray-200 pt-3 space-y-2">
+                                                        <p className="text-xs">
+                                                            <strong>Privacy & Confidentiality:</strong> All personal information provided by subscribers will be handled with strict confidentiality and used solely for the purpose of facilitating their appointments.
+                                                        </p>
+                                                        <p className="text-xs">
+                                                            <strong>Cancellation & Refunds:</strong> Subscribers may discontinue their subscription at any time; however, all purchases and subscriptions under the Plus Plan are <strong>strictly non-refundable</strong>, ensuring fairness and consistency in the platform's operational and financial processes.
+                                                        </p>
+                                                    </div>
+                                                    
+                                                    <div className="flex items-center gap-2 pt-2">
+                                                        <input 
+                                                            type="checkbox" 
+                                                            id="terms_accepted" 
+                                                            name="terms_accepted" 
+                                                            required
+                                                            className="h-4 w-4 text-red-700 border-gray-300 rounded focus:ring-red-700"
+                                                        />
+                                                        <label htmlFor="terms_accepted" className="text-xs font-medium text-gray-900">
+                                                            I acknowledge and accept the Plus Plan Terms and Conditions
+                                                        </label>
                                                     </div>
                                                 </div>
                                             </div>
