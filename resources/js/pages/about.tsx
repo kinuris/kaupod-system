@@ -19,10 +19,10 @@ export default function About() {
                                 <Heart className="h-16 w-16 text-red-200" />
                             </div>
                             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                                About Kaupod: Together We Heal
+                                About Kaupod
                             </h1>
                             <p className="text-xl md:text-2xl text-red-100 max-w-3xl mx-auto leading-relaxed">
-                                Our Mission: Compassionate and Confidential HIV Care for Capiz
+                                Enhancing Risk Awareness and Reducing Stigma Through Accessible Healthcare
                             </p>
                         </div>
                     </div>
@@ -30,18 +30,18 @@ export default function About() {
                     {/* Main Content */}
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                         
-                        {/* Mission Statement */}
+                        {/* About Kaupod */}
                         <div className="mb-16">
                             <div className="prose prose-lg max-w-none">
                                 <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                                    In the heart of Capiz, a community thrives on connection and care. Yet, when it comes to HIV, fear and stigma can create silence, forcing individuals to face their worries alone. Kaupod was born from a simple, powerful idea: <strong>that no one should have to choose between their privacy and their health.</strong> We are here to dismantle those barriers, one confidential conversation at a time.
+                                    Kaupod is a Capiz-based HIV platform dedicated to <strong>enhancing risk awareness and reducing stigma</strong> through accessible and structured services. Our core feature is a chatbot that conducts risk assessments and determines each user's risk level. Based on the assessment, the platform provides a detailed map of HIV hubs in Capiz, guiding individuals to appropriate health services.
                                 </p>
                                 <div className="bg-red-50 border-l-4 border-red-500 p-6 my-8">
                                     <p className="text-red-800 text-xl font-semibold mb-2">
-                                        "Kaupod Mo Kami"—we are with you.
+                                        Our Mission
                                     </p>
                                     <p className="text-red-700">
-                                        This is more than our name; it is our promise. We have created a safe, digital space where your journey to peace of mind is handled with the utmost dignity, compassion, and confidentiality.
+                                        We are designed to encourage timely testing, support informed decisions, and promote equitable access to healthcare within the community.
                                     </p>
                                 </div>
                             </div>
@@ -49,9 +49,9 @@ export default function About() {
 
                         {/* What We Do Section */}
                         <div className="mb-16">
-                            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">What We Do</h2>
+                            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Our Services</h2>
                             <p className="text-gray-700 text-lg mb-12 text-center max-w-3xl mx-auto">
-                                Kaupod is a modern, all-in-one HIV intervention platform designed to serve the needs of our community here in Capiz. We bridge the gap between uncertainty and care by providing accessible, structured services that put you in control.
+                                Kaupod offers two service tiers tailored to different needs, providing comprehensive support from risk assessment to medical consultation.
                             </p>
 
                             {/* Services Grid */}
@@ -61,10 +61,10 @@ export default function About() {
                                         <div className="bg-blue-100 p-3 rounded-lg mr-4">
                                             <Shield className="h-6 w-6 text-blue-600" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-gray-900">Confidential Risk Assessment</h3>
+                                        <h3 className="text-xl font-bold text-gray-900">Risk Assessment Chatbot</h3>
                                     </div>
                                     <p className="text-gray-700 leading-relaxed">
-                                        Our friendly and intelligent AI-powered chatbot is here to listen. It offers a safe space to discuss your concerns through a natural conversation, helping you understand your risk level without judgment. Your conversation is always private and is never stored.
+                                        Our core feature is an intelligent chatbot that conducts comprehensive risk assessments and determines each user's risk level. The assessment helps guide individuals to the most appropriate health services and care options.
                                     </p>
                                 </div>
 
@@ -73,10 +73,10 @@ export default function About() {
                                         <div className="bg-green-100 p-3 rounded-lg mr-4">
                                             <Heart className="h-6 w-6 text-green-600" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-gray-900">Privacy Kit Delivery Service</h3>
+                                        <h3 className="text-xl font-bold text-gray-900">Pro Plan</h3>
                                     </div>
                                     <p className="text-gray-700 leading-relaxed">
-                                        We provide a discreet, end-to-end service to bring an FDA-approved HIV self-test kit directly to you. From procurement at a partner hub to delivery in unmarked packaging and scheduled collection, we handle all the logistics so you can focus on your well-being in the comfort of your own home.
+                                        The Pro Plan ensures the discreet delivery and pick-up of HIV self-test kits, providing a seamless and confidential process. We handle all logistics from procurement to collection, ensuring your complete privacy and convenience.
                                     </p>
                                 </div>
 
@@ -85,10 +85,10 @@ export default function About() {
                                         <div className="bg-amber-100 p-3 rounded-lg mr-4">
                                             <Stethoscope className="h-6 w-6 text-amber-600" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-gray-900">Plus Plan Service</h3>
+                                        <h3 className="text-xl font-bold text-gray-900">Plus Plan</h3>
                                     </div>
                                     <p className="text-gray-700 leading-relaxed">
-                                        Taking the next step can be daunting. We make it easier by arranging appointments with trusted, licensed medical specialists within the province. We coordinate the schedule based on your preference, ensuring you get access to expert care without the stress and hassle.
+                                        The Plus Plan extends our Pro Plan service by arranging medical consultations with licensed doctors. We use information from the Pro Plan to facilitate bookings, making it easier to access professional medical care when needed.
                                     </p>
                                 </div>
 
@@ -97,27 +97,27 @@ export default function About() {
                                         <div className="bg-red-100 p-3 rounded-lg mr-4">
                                             <Users className="h-6 w-6 text-red-600" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-gray-900">Community Partnership</h3>
+                                        <h3 className="text-xl font-bold text-gray-900">HIV Hub Locator</h3>
                                     </div>
                                     <p className="text-gray-700 leading-relaxed">
-                                        We are proud to work hand-in-hand with local partners like the Department of Health (DOH) and Capiz Shells. Through these collaborations, we connect you to vital pre- and post-counseling services, ensuring you are supported by the full strength of our community's healthcare network.
+                                        Based on your risk assessment, our platform provides a detailed map of HIV hubs in Capiz, guiding individuals to appropriate health services and connecting them with local healthcare resources.
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Commitment Section */}
+                        {/* Our Impact Section */}
                         <div className="text-center">
                             <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl p-12 text-white">
-                                <h2 className="text-3xl font-bold mb-6">Our Commitment to You</h2>
+                                <h2 className="text-3xl font-bold mb-6">Our Impact</h2>
                                 <p className="text-lg text-red-100 leading-relaxed max-w-3xl mx-auto mb-8">
-                                    Your trust is our highest priority. Every service we offer is built on a foundation of strict confidentiality and respect for your privacy. We are committed to providing a stigma-free experience that empowers you to make informed decisions about your health with confidence and dignity.
+                                    Both our Pro Plan and Plus Plan are designed to encourage timely testing, support informed decisions, and promote equitable access to healthcare within the Capiz community. We are committed to reducing stigma and making quality HIV care accessible to everyone.
                                 </p>
                                 <div className="text-2xl font-bold text-red-200 mb-2">
-                                    Because together, we heal.
+                                    Accessible. Confidential. Community-Focused.
                                 </div>
                                 <div className="text-xl text-red-300">
-                                    And in every step, #KaupodKami.
+                                    #KaupodKami - We're here for Capiz.
                                 </div>
                             </div>
                         </div>
