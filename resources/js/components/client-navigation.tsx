@@ -12,9 +12,11 @@ export default function ClientNavigation() {
     const [isTestingDropdownOpen, setIsTestingDropdownOpen] = useState(false);
     const [isConsultationDropdownOpen, setIsConsultationDropdownOpen] = useState(false);
     const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
+    const [isOrdersDropdownOpen, setIsOrdersDropdownOpen] = useState(false);
     const testingDropdownRef = useRef<HTMLDivElement>(null);
     const consultationDropdownRef = useRef<HTMLDivElement>(null);
     const supportDropdownRef = useRef<HTMLDivElement>(null);
+    const ordersDropdownRef = useRef<HTMLDivElement>(null);
 
     // Close mobile menu when window is resized to desktop size
     useEffect(() => {
@@ -26,6 +28,7 @@ export default function ClientNavigation() {
                 setIsTestingDropdownOpen(false);
                 setIsConsultationDropdownOpen(false);
                 setIsSupportDropdownOpen(false);
+                setIsOrdersDropdownOpen(false);
             }
         };
 
@@ -47,6 +50,9 @@ export default function ClientNavigation() {
             }
             if (supportDropdownRef.current && !supportDropdownRef.current.contains(event.target as Node)) {
                 setIsSupportDropdownOpen(false);
+            }
+            if (ordersDropdownRef.current && !ordersDropdownRef.current.contains(event.target as Node)) {
+                setIsOrdersDropdownOpen(false);
             }
         };
 
@@ -209,12 +215,40 @@ export default function ClientNavigation() {
                                                 )}
                                             </div>
 
-                                            <Link 
-                                                href="/my-orders" 
-                                                className="text-gray-900 hover:text-gray-700 font-medium transition-colors text-sm whitespace-nowrap"
-                                            >
-                                                My Orders
-                                            </Link>
+                                            {/* Orders Dropdown */}
+                                            <div className="relative" ref={ordersDropdownRef}>
+                                                <button
+                                                    onClick={() => {
+                                                        setIsOrdersDropdownOpen(!isOrdersDropdownOpen);
+                                                        setIsTestingDropdownOpen(false);
+                                                        setIsConsultationDropdownOpen(false);
+                                                        setIsSupportDropdownOpen(false);
+                                                    }}
+                                                    className="flex items-center text-gray-900 hover:text-gray-700 font-medium transition-colors text-sm whitespace-nowrap"
+                                                >
+                                                    Orders
+                                                    <ChevronDown className={`ml-0.5 h-3 w-3 transition-transform ${isOrdersDropdownOpen ? 'rotate-180' : ''}`} />
+                                                </button>
+                                                {isOrdersDropdownOpen && (
+                                                    <div className="absolute top-full left-0 mt-1 w-36 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+                                                        <Link 
+                                                            href="/my-orders" 
+                                                            className="block px-3 py-1.5 text-gray-900 hover:bg-gray-50 hover:text-gray-700 transition-colors text-sm"
+                                                            onClick={() => setIsOrdersDropdownOpen(false)}
+                                                        >
+                                                            My Orders
+                                                        </Link>
+                                                        <Link 
+                                                            href="/order-item" 
+                                                            className="block px-3 py-1.5 text-blue-700 hover:bg-blue-50 hover:text-blue-800 transition-colors text-sm"
+                                                            onClick={() => setIsOrdersDropdownOpen(false)}
+                                                        >
+                                                            Order Item
+                                                        </Link>
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             <Link 
                                                 href="/chat" 
                                                 className="text-purple-700 hover:text-purple-800 font-medium transition-colors text-sm whitespace-nowrap"
@@ -401,13 +435,27 @@ export default function ClientNavigation() {
                                             </Link>
                                         </div>
 
-                                        <Link 
-                                            href="/my-orders" 
-                                            className="block text-gray-900 hover:text-gray-700 font-medium py-2 transition-colors"
-                                            onClick={closeMobileMenu}
-                                        >
-                                            My Orders
-                                        </Link>
+                                        {/* Orders Group */}
+                                        <div className="py-2">
+                                            <div className="text-gray-700 font-semibold text-sm uppercase tracking-wide mb-2">
+                                                Orders
+                                            </div>
+                                            <Link 
+                                                href="/my-orders" 
+                                                className="block text-gray-900 hover:text-gray-700 font-medium py-1 pl-4 transition-colors"
+                                                onClick={closeMobileMenu}
+                                            >
+                                                My Orders
+                                            </Link>
+                                            <Link 
+                                                href="/order-item" 
+                                                className="block text-blue-700 hover:text-blue-800 font-medium py-1 pl-4 transition-colors"
+                                                onClick={closeMobileMenu}
+                                            >
+                                                Order Item
+                                            </Link>
+                                        </div>
+
                                         <Link 
                                             href="/chat" 
                                             className="block text-purple-700 hover:text-purple-800 font-medium py-2 transition-colors"

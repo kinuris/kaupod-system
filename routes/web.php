@@ -31,6 +31,10 @@ Route::get('/postcounseling', function () {
     return Inertia::render('postcounseling');
 })->name('postcounseling');
 
+Route::get('/order-item', function () {
+    return Inertia::render('order-item');
+})->name('order-item');
+
 Route::get('/chatbot/messages', [ChatbotController::class, 'getMessages'])->name('chatbot.messages');
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
 Route::post('/chatbot/message/stream', [ChatbotController::class, 'messageStream'])->name('chatbot.message.stream');
