@@ -570,84 +570,74 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
                           )}
                         </div>
                       ) : request.status === 'confirmed' && request.assigned_partner_doctor ? (
-                        <div className="flex flex-col gap-2">
-                          <div className="text-xs text-green-700 font-medium mb-1">
-                            ✓ {request.assigned_partner_doctor.name}
+                        <div className="flex flex-col gap-1">
+                          <div className="text-xs text-green-700 font-medium">
+                            ✓ {request.assigned_partner_doctor.name} - {request.assigned_partner_doctor.specialty}
                           </div>
-                          <div className="text-xs text-neutral-500 mb-2">
-                            {request.assigned_partner_doctor.specialty}
-                          </div>
+                          
                           {request.consultation_mode === 'online' && request.meeting_link && (
-                            <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
-                              <div className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">
-                                Meeting Link for Partner Doctor:
-                              </div>
-                              <div className="text-xs text-blue-600 dark:text-blue-400 break-all mb-2">
-                                {request.meeting_link}
-                              </div>
-                              <div className="flex gap-2 flex-wrap">
-                                <button
-                                  onClick={() => {
-                                    setMeetingUrl(request.meeting_link || null);
-                                    setShowMeetingModal(true);
-                                  }}
-                                  className="inline-flex items-center px-2 py-1 bg-blue-600 border border-transparent rounded text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 transition"
-                                >
-                                  <Video className="w-3 h-3 mr-1" />
-                                  View Meeting
-                                </button>
-                                <button
-                                  onClick={() => window.open(request.meeting_link!, '_blank')}
-                                  className="inline-flex items-center px-2 py-1 bg-green-600 border border-transparent rounded text-xs text-white uppercase tracking-widest hover:bg-green-500 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 transition"
-                                >
-                                  <ExternalLink className="w-3 h-3 mr-1" />
-                                  Open External
-                                </button>
-                                <button
-                                  onClick={() => navigator.clipboard.writeText(request.meeting_link!)}
-                                  className="inline-flex items-center px-2 py-1 bg-gray-600 border border-transparent rounded text-xs text-white uppercase tracking-widest hover:bg-gray-500 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 transition"
-                                >
-                                  Copy Link
-                                </button>
-                              </div>
+                            <div className="flex items-center gap-1 py-1">
+                              <span className="text-xs text-blue-600">Meeting:</span>
+                              <button
+                                onClick={() => {
+                                  setMeetingUrl(request.meeting_link || null);
+                                  setShowMeetingModal(true);
+                                }}
+                                className="inline-flex items-center px-1 py-0.5 bg-blue-600 rounded text-xs text-white hover:bg-blue-500 transition"
+                                title="View Meeting"
+                              >
+                                <Video className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={() => window.open(request.meeting_link!, '_blank')}
+                                className="inline-flex items-center px-1 py-0.5 bg-green-600 rounded text-xs text-white hover:bg-green-500 transition"
+                                title="Open External"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={() => navigator.clipboard.writeText(request.meeting_link!)}
+                                className="inline-flex items-center px-1 py-0.5 bg-gray-600 rounded text-xs text-white hover:bg-gray-500 transition"
+                                title="Copy Link"
+                              >
+                                📋
+                              </button>
                             </div>
                           )}
-                          <div className="flex gap-2 mb-2">
+                          
+                          <div className="flex items-center gap-2">
                             <button
                               disabled={updatingId === request.id}
                               onClick={() => updateStatus(request.id, 'reminder_sent')}
-                              className="inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 active:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 disabled:opacity-25 transition"
+                              className="inline-flex items-center px-2 py-1 bg-green-600 border border-transparent rounded text-xs text-white hover:bg-green-500 disabled:opacity-25 transition"
                             >
                               {updatingId === request.id ? (
                                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
                               ) : null}
-                              Complete & Send Reminder
+                              Send Reminder
                             </button>
-                          </div>
-                          <div className="border-t border-neutral-200 pt-2">
-                            <div className="text-xs text-amber-700 font-medium mb-1">
-                              Change Doctor:
-                            </div>
+                            
                             <select 
                               disabled={assigningDoctorId === request.id} 
                               onChange={e => e.target.value && assignPartnerDoctor(request.id, parseInt(e.target.value))} 
-                              className="text-xs border border-neutral-300 dark:border-neutral-600 rounded-md px-2 py-1 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 disabled:bg-neutral-50 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed w-full"
+                              className="text-xs border border-neutral-300 rounded px-2 py-1 bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:bg-neutral-50 disabled:cursor-not-allowed flex-1"
                               defaultValue=""
                             >
-                              <option value="">Select Different Doctor</option>
+                              <option value="">Change Doctor</option>
                               {partnerDoctors.filter(doctor => doctor.id !== request.assigned_partner_doctor?.id).map(doctor => (
-                                <option key={doctor.id} value={doctor.id} title={`Doctor ID: ${doctor.id}`}>
-                                  {doctor.name} - {doctor.specialty} (ID: {doctor.id})
+                                <option key={doctor.id} value={doctor.id}>
+                                  {doctor.name} - {doctor.specialty}
                                 </option>
                               ))}
                             </select>
-                            {assigningDoctorId === request.id && (
-                              <div className="flex items-center gap-2 mt-1">
-                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-amber-700"></div>
-                                <span className="text-xs text-neutral-600">Changing doctor...</span>
-                              </div>
-                            )}
                           </div>
+                          
+                          {assigningDoctorId === request.id && (
+                            <div className="flex items-center gap-1">
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-amber-600"></div>
+                              <span className="text-xs text-neutral-600">Updating...</span>
+                            </div>
+                          )}
                         </div>
                       ) : request.status === 'reminder_sent' ? (
                         <div className="flex flex-col gap-2">
