@@ -24,7 +24,10 @@ import {
     AlertCircle,
     RefreshCw,
     LoaderCircle,
-    X
+    X,
+    Video,
+    ExternalLink,
+    Maximize2
 } from 'lucide-react';
 
 interface ConsultationRequest {
@@ -38,6 +41,7 @@ interface ConsultationRequest {
     consultation_latitude: number | null;
     consultation_longitude: number | null;
     consultation_location_address: string | null;
+    meeting_link: string | null;
     reason: string;
     medical_history: string | null;
     scheduled_datetime: string | null;
@@ -61,6 +65,8 @@ interface Props {
 export default function ConsultationTracker({ consultationRequests }: Props) {
     const [showRescheduleModal, setShowRescheduleModal] = useState(false);
     const [selectedConsultation, setSelectedConsultation] = useState<ConsultationRequest | null>(null);
+    const [showMeetingModal, setShowMeetingModal] = useState(false);
+    const [meetingUrl, setMeetingUrl] = useState<string | null>(null);
 
     const getStatusIcon = (status: string) => {
         switch (status) {
@@ -360,6 +366,52 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 </div>
                                             )}
 
+                                            {consultation.consultation_mode === 'online' && 
+                                             consultation.meeting_link && 
+                                             ['confirmed', 'reminder_sent', 'finished'].includes(consultation.status) && (
+                                                <div className="flex items-center gap-3">
+                                                    <Video className="h-5 w-5 text-blue-700" />
+                                                    <div className="flex-1">
+                                                        <p className="text-sm text-gray-700 font-medium">Online Meeting Link</p>
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <a
+                                                                href={consultation.meeting_link}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="font-semibold text-blue-700 hover:text-blue-800 underline text-sm break-all"
+                                                            >
+                                                                {consultation.meeting_link}
+                                                            </a>
+                                                            <div className="flex gap-2">
+                                                                <Button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        setMeetingUrl(consultation.meeting_link);
+                                                                        setShowMeetingModal(true);
+                                                                    }}
+                                                                    className="bg-blue-700 hover:bg-blue-800 text-white px-3 py-1 text-xs"
+                                                                >
+                                                                    <Video className="w-3 h-3 mr-1" />
+                                                                    Join in App
+                                                                </Button>
+                                                                <Button
+                                                                    type="button"
+                                                                    onClick={() => window.open(consultation.meeting_link!, '_blank')}
+                                                                    variant="outline"
+                                                                    className="border-blue-700 text-blue-700 hover:bg-blue-50 px-3 py-1 text-xs"
+                                                                >
+                                                                    <ExternalLink className="w-3 h-3 mr-1" />
+                                                                    Open External
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                        <p className="text-xs text-gray-600 mt-1">
+                                                            Join your consultation session directly in the app or in a new tab
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {consultation.scheduled_datetime && (
                                                 <div className="flex items-center gap-3">
                                                     <CheckCircle className="h-5 w-5 text-green-700" />
@@ -504,6 +556,64 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                     )}
                 </DialogContent>
             </Dialog>
+
+            {/* Meeting Modal */}
+            {showMeetingModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    {/* Blurred backdrop overlay */}
+                    <div 
+                        className="absolute inset-0 bg-black/70 backdrop-blur-md"
+                        aria-hidden="true"
+                    />
+                    
+                    {/* Modal Content */}
+                    <div className="relative w-[95vw] h-[95vh] bg-white border-0 shadow-2xl rounded-lg overflow-hidden flex flex-col">
+                        {/* Custom Header with Close Button */}
+                        <div className="relative flex items-center justify-between p-4 border-b bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                            <div className="flex items-center gap-2">
+                                <Video className="h-5 w-5" />
+                                <h2 className="text-lg font-semibold">Online Consultation Meeting</h2>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    if (window.confirm('Are you sure you want to exit the meeting? This will close your consultation session.')) {
+                                        setShowMeetingModal(false);
+                                    }
+                                }}
+                                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 transition-colors flex items-center justify-center text-white shadow-lg"
+                                title="Exit Meeting"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                        
+                        {/* Meeting Content */}
+                        <div className="flex-1 bg-gray-900">
+                            {meetingUrl && (
+                                <iframe
+                                    src={meetingUrl}
+                                    className="w-full h-full border-0"
+                                    allow="camera; microphone; fullscreen; speaker; display-capture"
+                                    title="Kaupod Meeting"
+                                />
+                            )}
+                        </div>
+                        
+                        {/* Bottom Controls */}
+                        <div className="flex justify-center p-3 bg-gradient-to-r from-gray-800 to-gray-900 border-t">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => window.open(meetingUrl!, '_blank')}
+                                className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white bg-transparent"
+                            >
+                                <ExternalLink className="w-4 h-4 mr-2" />
+                                Open in New Tab
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Footer */}
             <footer className="bg-gray-900 text-white py-12">

@@ -214,6 +214,11 @@ class ConsultationRequestController extends Controller
 
         $consultationRequest->update($updateData);
 
+        // Generate meeting link for online consultations when confirmed
+        if ($consultationRequest->consultation_mode === 'online') {
+            $consultationRequest->generateMeetingLink();
+        }
+
         return back()->with('status', 'Partner doctor assigned and consultation confirmed.');
     }
 }

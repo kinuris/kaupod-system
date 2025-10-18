@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { router, Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { MessageCircle, User, Phone, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, MapPin, Users, CheckCircle, AlertTriangle } from 'lucide-react';
+import { MessageCircle, User, Phone, Calendar, Clock, Search, Filter, X, ChevronDown, ChevronUp, ChevronsUpDown, Mail, MapPin, Users, CheckCircle, AlertTriangle, Video, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface User {
   id: number;
@@ -25,6 +26,7 @@ interface ConsultationRequest {
   preferred_time: string;
   consultation_type: string;
   consultation_mode: string;
+  meeting_link?: string;
   reason: string;
   medical_history?: string;
   consultation_location_address?: string;
@@ -115,6 +117,8 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
   const [showFilters, setShowFilters] = useState(false);
   const [assigningDoctorId, setAssigningDoctorId] = useState<number|null>(null);
   const [showDataWarning, setShowDataWarning] = useState(false);
+  const [showMeetingModal, setShowMeetingModal] = useState(false);
+  const [meetingUrl, setMeetingUrl] = useState<string | null>(null);
 
   // Run validation on component mount and when partnerDoctors changes
   React.useEffect(() => {
@@ -573,6 +577,41 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
                           <div className="text-xs text-neutral-500 mb-2">
                             {request.assigned_partner_doctor.specialty}
                           </div>
+                          {request.consultation_mode === 'online' && request.meeting_link && (
+                            <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+                              <div className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">
+                                Meeting Link for Partner Doctor:
+                              </div>
+                              <div className="text-xs text-blue-600 dark:text-blue-400 break-all mb-2">
+                                {request.meeting_link}
+                              </div>
+                              <div className="flex gap-2 flex-wrap">
+                                <button
+                                  onClick={() => {
+                                    setMeetingUrl(request.meeting_link || null);
+                                    setShowMeetingModal(true);
+                                  }}
+                                  className="inline-flex items-center px-2 py-1 bg-blue-600 border border-transparent rounded text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 transition"
+                                >
+                                  <Video className="w-3 h-3 mr-1" />
+                                  View Meeting
+                                </button>
+                                <button
+                                  onClick={() => window.open(request.meeting_link!, '_blank')}
+                                  className="inline-flex items-center px-2 py-1 bg-green-600 border border-transparent rounded text-xs text-white uppercase tracking-widest hover:bg-green-500 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 transition"
+                                >
+                                  <ExternalLink className="w-3 h-3 mr-1" />
+                                  Open External
+                                </button>
+                                <button
+                                  onClick={() => navigator.clipboard.writeText(request.meeting_link!)}
+                                  className="inline-flex items-center px-2 py-1 bg-gray-600 border border-transparent rounded text-xs text-white uppercase tracking-widest hover:bg-gray-500 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 transition"
+                                >
+                                  Copy Link
+                                </button>
+                              </div>
+                            </div>
+                          )}
                           <div className="flex gap-2 mb-2">
                             <button
                               disabled={updatingId === request.id}
@@ -727,6 +766,74 @@ export default function ConsultationRequestsIndex({ requests, statuses, partnerD
           </div>
         )}
       </div>
+
+      {/* Meeting Modal */}
+      {showMeetingModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Blurred backdrop overlay */}
+          <div 
+            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            aria-hidden="true"
+          />
+          
+          {/* Modal Content */}
+          <div className="relative w-[95vw] h-[95vh] bg-white border-0 shadow-2xl rounded-lg overflow-hidden flex flex-col">
+            {/* Custom Header with Close Button */}
+            <div className="relative flex items-center justify-between p-4 border-b bg-gradient-to-r from-red-600 to-red-700 text-white">
+              <div className="flex items-center gap-2">
+                <Video className="h-5 w-5" />
+                <h2 className="text-lg font-semibold">Consultation Meeting - Admin Monitor</h2>
+              </div>
+              <button
+                onClick={() => {
+                  if (window.confirm('Are you sure you want to exit the meeting monitor? This will close the admin view of the consultation session.')) {
+                    setShowMeetingModal(false);
+                  }
+                }}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 transition-colors flex items-center justify-center text-white shadow-lg"
+                title="Exit Meeting Monitor"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            {/* Meeting Content */}
+            <div className="flex-1 bg-gray-900">
+              {meetingUrl && (
+                <iframe
+                  src={meetingUrl}
+                  className="w-full h-full border-0"
+                  allow="camera; microphone; fullscreen; speaker; display-capture"
+                  title="Kaupod Meeting - Admin Monitor"
+                />
+              )}
+            </div>
+            
+            {/* Bottom Controls */}
+            <div className="flex justify-between items-center p-3 bg-gradient-to-r from-gray-800 to-gray-900 border-t">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => window.open(meetingUrl!, '_blank')}
+                className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white bg-transparent"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Open in New Tab
+              </Button>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigator.clipboard.writeText(meetingUrl!)}
+                  className="border-green-500 text-green-400 hover:bg-green-500 hover:text-white bg-transparent"
+                >
+                  Copy Link for Doctor
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AppLayout>
   );
 }

@@ -135,7 +135,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->latest()->get([
                 'id', 'status', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 
                 'consultation_mode', 'consultation_latitude', 'consultation_longitude', 
-                'consultation_location_address', 'reason', 'medical_history', 'scheduled_datetime',
+                'consultation_location_address', 'meeting_link', 'reason', 'medical_history', 'scheduled_datetime',
                 'assigned_partner_doctor_id', 'rescheduling_reason', 'last_rescheduled_at', 
                 'timeline', 'created_at', 'subscription_tier', 'tier_price'
             ]);
@@ -156,7 +156,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
         $kitOrders = $kitOrdersQuery->get(['id', 'status', 'phone', 'delivery_location_address', 'delivery_address', 'delivery_latitude', 'delivery_longitude', 'return_location_address', 'return_address', 'return_latitude', 'return_longitude', 'return_date', 'return_notes', 'created_at', 'timeline']);
         
-        $consultations = $user->consultationRequests()->latest()->get(['id', 'status', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 'created_at', 'timeline']);
+        $consultations = $user->consultationRequests()->latest()->get(['id', 'status', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 'consultation_mode', 'meeting_link', 'created_at', 'timeline']);
         
         return Inertia::render('my-orders', [
             'kitOrders' => $kitOrders,

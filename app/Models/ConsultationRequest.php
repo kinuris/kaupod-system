@@ -14,7 +14,7 @@ class ConsultationRequest extends Model
     protected $fillable = [
         'user_id', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 'subscription_tier', 'tier_price',
         'consultation_mode', 'consultation_latitude', 'consultation_longitude', 'consultation_location_address',
-        'reason', 'medical_history', 'schedule_preferences', 'status', 'confirmed_datetime', 'scheduled_datetime',
+        'meeting_link', 'reason', 'medical_history', 'schedule_preferences', 'status', 'confirmed_datetime', 'scheduled_datetime',
         'assigned_partner_doctor_id', 'rescheduling_reason', 'last_rescheduled_at', 'notes', 'timeline'
     ];
 
@@ -36,5 +36,50 @@ class ConsultationRequest extends Model
     public function assignedPartnerDoctor(): BelongsTo
     {
         return $this->belongsTo(PartnerDoctor::class, 'assigned_partner_doctor_id');
+    }
+
+    /**
+     * Generate a unique Kaupod meeting link for online consultations
+     */
+    public function generateMeetingLink(): string
+    {
+        if ($this->consultation_mode !== 'online') {
+            return '';
+        }
+
+        if ($this->meeting_link) {
+            return $this->meeting_link;
+        }
+
+        // Create a unique meeting room ID using consultation ID and timestamp
+        $roomId = 'kaupod-consultation-' . $this->id . '-' . time();
+        $meetingLink = 'https://meet.kaupod.com/' . $roomId;
+        
+        $this->update(['meeting_link' => $meetingLink]);
+        
+        return $meetingLink;
+    }
+
+    /**
+     * Get the meeting link if consultation is online and confirmed
+     */
+    public function getMeetingLinkAttribute(): ?string
+    {
+        if ($this->consultation_mode !== 'online' || 
+            !in_array($this->status, [ConsultationStatus::Confirmed, ConsultationStatus::ReminderSent, ConsultationStatus::Finished])) {
+            return null;
+        }
+
+        return $this->attributes['meeting_link'] ?? null;
+    }
+
+    /**
+     * Check if meeting link should be visible
+     */
+    public function shouldShowMeetingLink(): bool
+    {
+        return $this->consultation_mode === 'online' && 
+               in_array($this->status, [ConsultationStatus::Confirmed, ConsultationStatus::ReminderSent, ConsultationStatus::Finished]) &&
+               !empty($this->attributes['meeting_link']);
     }
 }
