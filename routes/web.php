@@ -32,7 +32,10 @@ Route::get('/postcounseling', function () {
 })->name('postcounseling');
 
 Route::get('/order-item', function () {
-    return Inertia::render('order-item');
+    $products = \App\Models\Product::active()->get();
+    return Inertia::render('order-item', [
+        'products' => $products
+    ]);
 })->name('order-item');
 
 Route::get('/chatbot/messages', [ChatbotController::class, 'getMessages'])->name('chatbot.messages');

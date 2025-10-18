@@ -1,125 +1,278 @@
 import { Head } from '@inertiajs/react';
 import ClientNavigation from '@/components/client-navigation';
-import { ShoppingCart, Package, Truck, CreditCard } from 'lucide-react';
+import { ShoppingCart, Package, Plus, Minus } from 'lucide-react';
+import { useState } from 'react';
 
-export default function OrderItem() {
+interface Product {
+    id: number;
+    name: string;
+    category: string;
+    price: number;
+    stock: number;
+    description: string;
+    image?: string;
+}
+
+interface Props {
+    products: Product[];
+}
+
+const categories = [
+    { id: "all", name: "All Products", icon: "🏥" },
+    { id: "condom", name: "Condoms", icon: "🛡️" },
+    { id: "pregnancy_test", name: "Pregnancy Tests", icon: "🧪" },
+    { id: "pills", name: "Pills", icon: "💊" },
+    { id: "vitamins", name: "Vitamins", icon: "🌿" },
+    { id: "other_kits", name: "Other Kits", icon: "🩹" },
+];
+
+export default function OrderItem({ products }: Props) {
+    const [selectedCategory, setSelectedCategory] = useState<string>("all");
+    const [cart, setCart] = useState<{[key: number]: number}>({});
+    const [showCart, setShowCart] = useState(false);
+
+    const filteredProducts = selectedCategory === "all" 
+        ? products 
+        : products.filter(product => product.category === selectedCategory);
+
+    const addToCart = (productId: number) => {
+        const product = products.find(p => p.id === productId);
+        if (product && (cart[productId] || 0) < product.stock) {
+            setCart(prev => ({
+                ...prev,
+                [productId]: (prev[productId] || 0) + 1
+            }));
+        }
+    };
+
+    const removeFromCart = (productId: number) => {
+        setCart(prev => {
+            const newCart = { ...prev };
+            if (newCart[productId] > 1) {
+                newCart[productId]--;
+            } else {
+                delete newCart[productId];
+            }
+            return newCart;
+        });
+    };
+
+    const getCartItemCount = () => {
+        return Object.values(cart).reduce((sum, count) => sum + count, 0);
+    };
+
+    const getCartTotal = () => {
+        return Object.entries(cart).reduce((total, [productId, count]) => {
+            const product = products.find(p => p.id === parseInt(productId));
+            return total + (product ? product.price * count : 0);
+        }, 0);
+    };
+
+    const ProductCard = ({ product }: { product: Product }) => (
+        <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 border border-gray-200">
+            <div className="aspect-square bg-gray-100 rounded-md mb-4 flex items-center justify-center">
+                <Package className="h-12 w-12 text-gray-400" />
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-2 text-sm leading-tight">
+                {product.name}
+            </h3>
+            <p className="text-gray-600 text-xs mb-3 line-clamp-2">
+                {product.description}
+            </p>
+            <div className="flex items-center justify-between mb-3">
+                <span className="text-lg font-bold text-blue-600">₱{product.price}</span>
+                <span className="text-xs text-gray-500">Stock: {product.stock}</span>
+            </div>
+            <div className="flex items-center gap-2">
+                {cart[product.id] ? (
+                    <div className="flex items-center gap-2 flex-1">
+                        <button
+                            onClick={() => removeFromCart(product.id)}
+                            className="p-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
+                        >
+                            <Minus className="h-3 w-3" />
+                        </button>
+                        <span className="text-sm text-gray-500 font-medium min-w-[20px] text-center">
+                            {cart[product.id]}
+                        </span>
+                        <button
+                            onClick={() => addToCart(product.id)}
+                            disabled={cart[product.id] >= product.stock}
+                            className="p-1 bg-green-100 text-green-600 rounded hover:bg-green-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <Plus className="h-3 w-3" />
+                        </button>
+                    </div>
+                ) : (
+                    <button
+                        onClick={() => addToCart(product.id)}
+                        disabled={product.stock === 0}
+                        className="flex-1 bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+
     return (
         <>
-            <Head title="Order Item - Kaupod" />
+            <Head title="Order Items - Kaupod" />
             
             <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
                 <ClientNavigation />
                 
                 {/* Header Section */}
                 <header className="bg-white shadow-sm border-b border-gray-200 mt-14">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                        <div className="text-center">
-                            <div className="flex justify-center mb-4">
-                                <ShoppingCart className="h-12 w-12 text-blue-600" />
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                                    Health Products Store
+                                </h1>
+                                <p className="text-gray-600 mt-2">
+                                    Order healthcare products with discrete delivery
+                                </p>
                             </div>
-                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-                                Order Items
-                            </h1>
-                            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-                                Browse and order medical supplies, health kits, and other healthcare products 
-                                available through the Kaupod system.
-                            </p>
+                            <button
+                                onClick={() => setShowCart(!showCart)}
+                                className="relative bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
+                            >
+                                <ShoppingCart className="h-5 w-5" />
+                                <span>Cart</span>
+                                {getCartItemCount() > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                        {getCartItemCount()}
+                                    </span>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </header>
 
                 {/* Main Content */}
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    {/* Coming Soon Section */}
-                    <div className="text-center mb-12">
-                        <div className="bg-white rounded-lg shadow-md p-8 border border-blue-200">
-                            <div className="flex justify-center mb-6">
-                                <Package className="h-16 w-16 text-blue-600" />
-                            </div>
-                            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                                Order System Coming Soon
-                            </h2>
-                            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                                We're working on bringing you a comprehensive ordering system for medical supplies 
-                                and healthcare products. This feature will be available soon.
-                            </p>
-                            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-md text-sm font-medium">
-                                <Package className="h-4 w-4" />
-                                Feature in Development
-                            </div>
+                    {/* Category Filter */}
+                    <div className="mb-8">
+                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Categories</h2>
+                        <div className="flex flex-wrap gap-2">
+                            {categories.map((category) => (
+                                <button
+                                    key={category.id}
+                                    onClick={() => setSelectedCategory(category.id)}
+                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                                        selectedCategory === category.id
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    {category.icon} {category.name}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Feature Preview */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Package className="h-6 w-6 text-blue-600" />
-                                <h3 className="text-lg font-semibold text-gray-900">Medical Supplies</h3>
-                            </div>
-                            <p className="text-gray-600 text-sm">
-                                Order essential medical supplies and equipment for personal or professional use.
-                            </p>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Truck className="h-6 w-6 text-blue-600" />
-                                <h3 className="text-lg font-semibold text-gray-900">Fast Delivery</h3>
-                            </div>
-                            <p className="text-gray-600 text-sm">
-                                Quick and reliable delivery of your ordered items directly to your location.
-                            </p>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-                            <div className="flex items-center gap-3 mb-4">
-                                <CreditCard className="h-6 w-6 text-blue-600" />
-                                <h3 className="text-lg font-semibold text-gray-900">Secure Payment</h3>
-                            </div>
-                            <p className="text-gray-600 text-sm">
-                                Safe and secure payment processing for all your healthcare product orders.
-                            </p>
-                        </div>
+                    {/* Products Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+                        {filteredProducts.map((product) => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
                     </div>
 
-                    {/* Temporary Contact Section */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-blue-800 mb-4">
-                            Need to Order Items Now?
-                        </h3>
-                        <p className="text-blue-700 text-sm mb-4">
-                            While our online ordering system is being developed, you can still place orders 
-                            by contacting our support team directly.
-                        </p>
-                        <div className="space-y-2 text-sm text-blue-700">
-                            <p>• Contact our support team for assistance with orders</p>
-                            <p>• Check available products and pricing</p>
-                            <p>• Schedule delivery arrangements</p>
-                            <p>• Get help with bulk orders for medical facilities</p>
+                    {filteredProducts.length === 0 && (
+                        <div className="text-center py-12">
+                            <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                            <p className="text-gray-600">No products found in this category</p>
                         </div>
-                    </div>
+                    )}
                 </main>
 
-                {/* Footer */}
-                <footer className="bg-white border-t border-gray-200 mt-16">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                        <div className="text-center">
-                            <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                                Stay Updated
-                            </h4>
-                            <p className="text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                                We'll notify you as soon as our ordering system is available. 
-                                Thank you for your patience as we work to improve your healthcare experience.
-                            </p>
-                            <div className="mt-6 pt-6 border-t border-gray-200">
-                                <p className="text-xs text-gray-500">
-                                    &copy; 2024 Kaupod System. All rights reserved. | Order Management System
-                                </p>
+                {/* Cart Sidebar */}
+                {showCart && (
+                    <div className="fixed inset-0 z-50 overflow-hidden">
+                        <div className="absolute inset-0 bg-black/50 backdrop-blur-xs" onClick={() => setShowCart(false)} />
+                        <div className="absolute right-0 top-0 h-full w-96 bg-white shadow-xl p-6 overflow-y-auto">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-xl font-semibold">Shopping Cart</h2>
+                                <button
+                                    onClick={() => setShowCart(false)}
+                                    className="text-gray-500 hover:text-gray-700"
+                                >
+                                    ✕
+                                </button>
                             </div>
+                            
+                            {Object.entries(cart).length === 0 ? (
+                                <p className="text-gray-600 text-center py-8">Your cart is empty</p>
+                            ) : (
+                                <>
+                                    <div className="space-y-4 mb-6">
+                                        {Object.entries(cart).map(([productId, count]) => {
+                                            const product = products.find(p => p.id === parseInt(productId));
+                                            if (!product) return null;
+                                            
+                                            return (
+                                                <div key={productId} className="flex items-center gap-3 p-3 border border-gray-200 rounded">
+                                                    <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+                                                        <Package className="h-6 w-6 text-gray-400" />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h4 className="text-sm font-medium text-gray-900 truncate">
+                                                            {product.name}
+                                                        </h4>
+                                                        <p className="text-sm text-gray-600">₱{product.price} each</p>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => removeFromCart(product.id)}
+                                                            className="p-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                                                        >
+                                                            <Minus className="h-3 w-3" />
+                                                        </button>
+                                                        <span className="text-sm font-medium min-w-[20px] text-center">
+                                                            {count}
+                                                        </span>
+                                                        <button
+                                                            onClick={() => addToCart(product.id)}
+                                                            disabled={count >= product.stock}
+                                                            className="p-1 bg-green-100 text-green-600 rounded hover:bg-green-200 disabled:opacity-50"
+                                                        >
+                                                            <Plus className="h-3 w-3" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    
+                                    <div className="border-t pt-4">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <span className="text-lg font-semibold">Total:</span>
+                                            <span className="text-xl font-bold text-blue-600">₱{getCartTotal()}</span>
+                                        </div>
+                                        <button className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition-colors">
+                                            Proceed to Checkout
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
-                </footer>
+                )}
+
+                {/* Important Notice */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <h3 className="text-sm font-semibold text-amber-800 mb-2">Important Notice</h3>
+                        <ul className="text-xs text-amber-700 space-y-1">
+                            <li>• All orders are processed discretely with confidential packaging</li>
+                            <li>• Prescription medications require valid prescription before checkout</li>
+                            <li>• Delivery is available within Capiz Province</li>
+                            <li>• For questions about products, consult with our healthcare professionals</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </>
     );
