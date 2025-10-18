@@ -3,6 +3,7 @@ import { type SharedData } from '@/types';
 import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import AppLogoIcon from '@/components/app-logo-icon';
 
 export default function ClientNavigation() {
     const { auth } = usePage<SharedData>().props;
@@ -81,13 +82,12 @@ export default function ClientNavigation() {
                     <div className="flex justify-between h-14">
                         <div className="flex items-center">
                             <div className="flex-shrink-0">
-                                <Link href={home()} className="text-2xl font-bold text-red-700">
-                                    Kaupod
+                                <Link href={home()} className="flex items-center space-x-2 text-2xl font-bold text-red-700">
+                                    <AppLogoIcon className="w-20 object-contain" />
+                                    {/* <span>Kaupod</span> */}
                                 </Link>
                             </div>
-                        </div>
-
-                        {/* Desktop Navigation */}
+                        </div>                        {/* Desktop Navigation */}
                         <div className="hidden md:flex items-center space-x-2">
                             {auth.user ? (
                                 <>

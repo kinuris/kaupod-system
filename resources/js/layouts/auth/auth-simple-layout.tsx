@@ -22,7 +22,7 @@ export default function AuthSimpleLayout({
                     <Link href={home()} className="mb-8 inline-block">
                         <div className="flex items-center justify-center space-x-4">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white">
-                                <AppLogoIcon className="size-10 fill-current text-red-700" />
+                                <AppLogoIcon className="size-14 object-contain" />
                             </div>
                             <div className="text-left">
                                 <div className="text-3xl font-bold">Kaupod</div>
@@ -54,7 +54,7 @@ export default function AuthSimpleLayout({
                                 className="lg:hidden flex flex-col items-center gap-2"
                             >
                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-red-700 to-amber-700">
-                                    <AppLogoIcon className="size-8 fill-current text-white" />
+                                    <AppLogoIcon className="min-w-20 object-contain" />
                                 </div>
                                 <span className="text-xl font-bold text-red-700">Kaupod</span>
                             </Link>
