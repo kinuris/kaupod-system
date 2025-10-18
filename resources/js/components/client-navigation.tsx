@@ -198,6 +198,13 @@ export default function ClientNavigation() {
                                                         >
                                                             Postcounseling
                                                         </Link>
+                                                        <Link 
+                                                            href="/hiv-counseling-capiz" 
+                                                            className="block px-3 py-1.5 text-purple-700 hover:bg-purple-50 hover:text-purple-800 transition-colors text-sm"
+                                                            onClick={() => setIsSupportDropdownOpen(false)}
+                                                        >
+                                                            Antiretroviral Therapy
+                                                        </Link>
                                                     </div>
                                                 )}
                                             </div>
@@ -384,6 +391,13 @@ export default function ClientNavigation() {
                                                 onClick={closeMobileMenu}
                                             >
                                                 Postcounseling
+                                            </Link>
+                                            <Link 
+                                                href="/hiv-counseling-capiz" 
+                                                className="block text-purple-700 hover:text-purple-800 font-medium py-1 pl-4 transition-colors"
+                                                onClick={closeMobileMenu}
+                                            >
+                                                Antiretroviral Therapy
                                             </Link>
                                         </div>
 
