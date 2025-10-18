@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Package, MessageCircle, DollarSign, Users, UserCog } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Package, MessageCircle, DollarSign, Users, UserCog, ShoppingBag } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const getMainNavItems = (isAdmin: boolean): NavItem[] => {
@@ -31,6 +31,11 @@ const getMainNavItems = (isAdmin: boolean): NavItem[] => {
                 title: 'Manage Kit Requests',
                 href: '/admin/kit-orders',
                 icon: Package,
+            },
+            {
+                title: 'Health Store Products',
+                href: '/admin/products',
+                icon: ShoppingBag,
             },
             {
                 title: 'Manage Consultations',

@@ -32,7 +32,18 @@ Route::get('/postcounseling', function () {
 })->name('postcounseling');
 
 Route::get('/order-item', function () {
-    $products = \App\Models\Product::active()->get();
+    $products = \App\Models\Product::active()->get()->map(function ($product) {
+        return [
+            'id' => $product->id,
+            'name' => $product->name,
+            'description' => $product->description,
+            'price' => (float) $product->price,
+            'stock' => (int) $product->stock,
+            'category' => $product->category,
+            'is_active' => (bool) $product->is_active,
+            'is_featured' => (bool) $product->is_featured,
+        ];
+    });
     return Inertia::render('order-item', [
         'products' => $products
     ]);
@@ -300,6 +311,9 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
     Route::patch('/clients/{client}', [\App\Http\Controllers\Admin\ClientController::class, 'update'])->name('clients.update');
     Route::delete('/clients/{client}', [\App\Http\Controllers\Admin\ClientController::class, 'destroy'])->name('clients.destroy');
     Route::post('/clients/{client}/toggle-status', [\App\Http\Controllers\Admin\ClientController::class, 'toggleStatus'])->name('clients.toggle-status');
+
+    // Products Management routes
+    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
 
     // Pricing settings routes
     Route::get('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'index'])->name('pricing.index');

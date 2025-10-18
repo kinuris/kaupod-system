@@ -13,12 +13,15 @@ class Product extends Model
         'stock',
         'description',
         'image',
-        'is_active'
+        'is_active',
+        'is_featured'
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
-        'is_active' => 'boolean'
+        'stock' => 'integer',
+        'is_active' => 'boolean',
+        'is_featured' => 'boolean'
     ];
 
     public function scopeActive($query)
