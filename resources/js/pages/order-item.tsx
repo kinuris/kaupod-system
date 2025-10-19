@@ -1,6 +1,6 @@
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import ClientNavigation from '@/components/client-navigation';
-import { ShoppingCart, Package, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, Package, Plus, Minus, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface Product {
@@ -30,6 +30,15 @@ export default function OrderItem({ products }: Props) {
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
     const [cart, setCart] = useState<{[key: number]: number}>({});
     const [showCart, setShowCart] = useState(false);
+    const [showCheckout, setShowCheckout] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [checkoutForm, setCheckoutForm] = useState({
+        customer_name: '',
+        customer_email: '',
+        customer_phone: '',
+        delivery_address: '',
+        notes: ''
+    });
 
     const filteredProducts = selectedCategory === "all" 
         ? products 
@@ -66,6 +75,69 @@ export default function OrderItem({ products }: Props) {
             const product = products.find(p => p.id === parseInt(productId));
             return total + (product ? product.price * count : 0);
         }, 0);
+    };
+
+    const handleCheckout = async () => {
+        if (Object.entries(cart).length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+
+        // Simple validation
+        if (!checkoutForm.customer_name || !checkoutForm.customer_email || 
+            !checkoutForm.customer_phone || !checkoutForm.delivery_address) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        setIsProcessing(true);
+
+        try {
+            const orderItems = Object.entries(cart).map(([productId, quantity]) => ({
+                product_id: parseInt(productId),
+                quantity: quantity
+            }));
+
+            const response = await fetch('/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+                body: JSON.stringify({
+                    items: orderItems,
+                    ...checkoutForm
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Open GCash in new tab
+                window.open('https://gcash.com', '_blank');
+                
+                // Clear cart and redirect to success page
+                setCart({});
+                setShowCart(false);
+                setShowCheckout(false);
+                
+                // Redirect to success page after a short delay
+                setTimeout(() => {
+                    window.location.href = `/order-success/${data.order_id}`;
+                }, 1000);
+            } else {
+                alert('Order failed: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('An error occurred during checkout. Please try again.');
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const proceedToCheckout = () => {
+        setShowCheckout(true);
     };
 
     const ProductCard = ({ product }: { product: Product }) => (
@@ -261,11 +333,106 @@ export default function OrderItem({ products }: Props) {
                                             <span className="text-lg font-semibold text-gray-900">Total:</span>
                                             <span className="text-xl font-bold text-blue-600">₱{getCartTotal().toFixed(2)}</span>
                                         </div>
-                                        <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">
+                                        <button 
+                                            onClick={proceedToCheckout}
+                                            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+                                        >
                                             Proceed to Checkout
                                         </button>
                                     </div>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Checkout Modal */}
+                {showCheckout && (
+                    <div className="fixed inset-0 z-50 overflow-hidden">
+                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCheckout(false)} />
+                        <div className="absolute inset-x-4 top-1/2 transform -translate-y-1/2 max-w-lg mx-auto bg-white rounded-lg shadow-2xl border border-gray-200">
+                            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                                <h2 className="text-xl font-semibold text-gray-900">Checkout Information</h2>
+                                <button
+                                    onClick={() => setShowCheckout(false)}
+                                    className="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div className="p-6 space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                    <input
+                                        type="text"
+                                        value={checkoutForm.customer_name}
+                                        onChange={(e) => setCheckoutForm({...checkoutForm, customer_name: e.target.value})}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Enter your full name"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                                    <input
+                                        type="email"
+                                        value={checkoutForm.customer_email}
+                                        onChange={(e) => setCheckoutForm({...checkoutForm, customer_email: e.target.value})}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Enter your email"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                                    <input
+                                        type="tel"
+                                        value={checkoutForm.customer_phone}
+                                        onChange={(e) => setCheckoutForm({...checkoutForm, customer_phone: e.target.value})}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Enter your phone number"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Address *</label>
+                                    <textarea
+                                        value={checkoutForm.delivery_address}
+                                        onChange={(e) => setCheckoutForm({...checkoutForm, delivery_address: e.target.value})}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        rows={3}
+                                        placeholder="Enter your complete delivery address"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Special Instructions (Optional)</label>
+                                    <textarea
+                                        value={checkoutForm.notes}
+                                        onChange={(e) => setCheckoutForm({...checkoutForm, notes: e.target.value})}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        rows={2}
+                                        placeholder="Any special delivery instructions..."
+                                    />
+                                </div>
+                                
+                                <div className="bg-gray-50 p-4 rounded-md">
+                                    <div className="flex justify-between items-center text-lg font-semibold">
+                                        <span>Total Amount:</span>
+                                        <span className="text-blue-600">₱{getCartTotal().toFixed(2)}</span>
+                                    </div>
+                                </div>
+                                
+                                <button
+                                    onClick={handleCheckout}
+                                    disabled={isProcessing}
+                                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isProcessing ? 'Processing...' : 'Complete Order & Pay with GCash'}
+                                </button>
                             </div>
                         </div>
                     </div>

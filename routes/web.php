@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\KitOrderController;
 use App\Http\Controllers\ConsultationRequestController;
+use App\Http\Controllers\ProductOrderController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -48,6 +49,10 @@ Route::get('/order-item', function () {
         'products' => $products
     ]);
 })->name('order-item');
+
+// Product order routes
+Route::post('/checkout', [ProductOrderController::class, 'checkout'])->name('product-order.checkout');
+Route::get('/order-success/{order}', [ProductOrderController::class, 'success'])->name('product-order.success');
 
 Route::get('/chatbot/messages', [ChatbotController::class, 'getMessages'])->name('chatbot.messages');
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
