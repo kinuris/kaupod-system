@@ -909,30 +909,30 @@ export default function ConsultationRequest({
                                                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Plus Plan Terms and Conditions</h3>
                                                 <div className="text-sm text-gray-700 space-y-3">
                                                     <p>
-                                                        The Plus Plan enhances the services of the Pro Plan by providing facilitated access to medical consultations with specialists. Team Kaupod will coordinate and secure appointments on behalf of the subscriber, using the details obtained from the Pro Plan as the basis for booking.
+                                                        The Plus Plan enhances the services of the Pro Plan by providing facilitated access to medical consultations with specialists, which may be conducted either online through the Kaupod website or in affiliated clinics, depending on the agreement between the doctor and the user. Team Kaupod not only coordinates and secures appointments on behalf of subscribers but may also host the consultations directly on the platform when preferred by both parties.
                                                     </p>
                                                     
                                                     <div className="grid md:grid-cols-3 gap-4 text-xs">
                                                         <div className="space-y-2">
                                                             <div className="font-medium text-red-700">Low-Risk Users</div>
-                                                            <p>One-time purchase grants <strong>one (1) medical consultation</strong> within twelve (12) months.</p>
+                                                            <p>A one-time purchase option grants <strong>one (1) medical consultation</strong> within twelve (12) months.</p>
                                                         </div>
                                                         <div className="space-y-2">
                                                             <div className="font-medium text-amber-700">Moderate-Risk Users</div>
-                                                            <p>Annual subscription provides <strong>two (2) consultations per year</strong>, scheduled every six (6) months.</p>
+                                                            <p>An annual subscription provides <strong>two (2) consultations per year</strong>, scheduled every six (6) months.</p>
                                                         </div>
                                                         <div className="space-y-2">
                                                             <div className="font-medium text-green-700">High-Risk Users</div>
-                                                            <p>Comprehensive subscription grants <strong>four (4) consultations annually</strong>, scheduled every three (3) months.</p>
+                                                            <p>A comprehensive subscription grants <strong>four (4) consultations annually</strong>, scheduled every three (3) months.</p>
                                                         </div>
                                                     </div>
                                                     
                                                     <div className="border-t border-gray-200 pt-3 space-y-2">
                                                         <p className="text-xs">
-                                                            <strong>Privacy & Confidentiality:</strong> All personal information provided by subscribers will be handled with strict confidentiality and used solely for the purpose of facilitating their appointments.
+                                                            <strong>Privacy & Confidentiality:</strong> All personal information provided by subscribers will be handled with strict confidentiality and used solely for facilitating their appointments.
                                                         </p>
                                                         <p className="text-xs">
-                                                            <strong>Cancellation & Refunds:</strong> Subscribers may discontinue their subscription at any time; however, all purchases and subscriptions under the Plus Plan are <strong>strictly non-refundable</strong>, ensuring fairness and consistency in the platform's operational and financial processes.
+                                                            <strong>Cancellation & Refunds:</strong> Subscribers may discontinue their subscription at any time; however, all purchases and subscriptions under the Plus Plan are <strong>strictly non-refundable</strong> to ensure fairness and consistency in the platform's operational and financial processes.
                                                         </p>
                                                     </div>
                                                     
