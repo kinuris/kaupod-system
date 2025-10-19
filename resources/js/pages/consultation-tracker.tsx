@@ -37,7 +37,7 @@ interface ConsultationRequest {
     preferred_date: string;
     preferred_time: string;
     consultation_type: string;
-    consultation_mode: string;
+    consultation_mode?: string; // Optional since it doesn't exist in the database
     consultation_latitude: number | null;
     consultation_longitude: number | null;
     consultation_location_address: string | null;
@@ -67,6 +67,22 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
     const [selectedConsultation, setSelectedConsultation] = useState<ConsultationRequest | null>(null);
     const [showMeetingModal, setShowMeetingModal] = useState(false);
     const [meetingUrl, setMeetingUrl] = useState<string | null>(null);
+
+    // Format consultation type for display
+    const formatConsultationType = (type: string): string => {
+        switch (type?.toLowerCase()) {
+            case 'hiv':
+                return 'HIV';
+            case 'gonorrhea':
+                return 'Gonorrhea';
+            case 'syphilis':
+                return 'Syphilis';
+            case 'chlamydia':
+                return 'Chlamydia';
+            default:
+                return type?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Unknown';
+        }
+    };
 
     const getStatusIcon = (status: string) => {
         switch (status) {
@@ -276,7 +292,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                             {getStatusIcon(consultation.status)}
                                             <div>
                                                 <h3 className="text-xl font-semibold text-gray-900">
-                                                    {consultation.consultation_type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                                    {formatConsultationType(consultation.consultation_type)}
                                                 </h3>
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(consultation.status)}`}>
@@ -325,17 +341,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center gap-3">
-                                                <MessageCircle className="h-5 w-5 text-red-700" />
-                                                <div>
-                                                    <p className="text-sm text-gray-700 font-medium">Consultation Mode</p>
-                                                    <p className="font-semibold text-gray-900 capitalize">
-                                                        {consultation.consultation_mode.replace('-', ' ')}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            {consultation.consultation_mode === 'in-person' && consultation.consultation_location_address && (
+                                            {consultation.consultation_location_address && (
                                                 <div className="flex items-start gap-3">
                                                     <MapPin className="h-5 w-5 text-red-700 mt-0.5" />
                                                     <div>
@@ -366,8 +372,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 </div>
                                             )}
 
-                                            {consultation.consultation_mode === 'online' && 
-                                             consultation.meeting_link && 
+                                            {consultation.meeting_link && 
                                              ['confirmed', 'reminder_sent', 'finished'].includes(consultation.status) && (
                                                 <div className="flex items-center gap-3">
                                                     <Video className="h-5 w-5 text-blue-700" />
