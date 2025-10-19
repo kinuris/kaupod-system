@@ -565,7 +565,7 @@ export default function KitRequest({
                                         </div>
                                     </div>
 
-                                    {/* Self-Testing Kit Terms and Conditions */}
+                                    {/* Pro Plan Terms and Conditions */}
                                     <div className="bg-gradient-to-r from-gray-50 to-stone-50 border border-gray-200 rounded-lg p-6">
                                         <div className="flex items-start gap-3">
                                             <div className="flex-shrink-0">
@@ -574,33 +574,33 @@ export default function KitRequest({
                                                 </div>
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="text-lg font-semibold text-gray-900 mb-3">Self-Testing Kit Terms and Conditions</h3>
+                                                <h3 className="text-lg font-semibold text-gray-900 mb-3">Pro Plan Terms and Conditions</h3>
                                                 <div className="text-sm text-gray-700 space-y-3">
                                                     <p>
-                                                        The Self-Testing Kit service provides access to various STI self-test kits through either a one-time purchase or an annual subscription, tailored to the individual's testing needs and risk level.
+                                                        The Pro Plan provides access to HIV and STD self-test kits through either a one-time purchase or an annual subscription, tailored to the individual's level of risk.
                                                     </p>
                                                     
                                                     <div className="grid md:grid-cols-3 gap-4 text-xs">
                                                         <div className="space-y-2">
                                                             <div className="font-medium text-red-700">Low-Risk Individuals</div>
-                                                            <p>One-time purchase includes <strong>one (1) kit</strong> valid for twelve (12) months.</p>
+                                                            <p>The one-time purchase option includes <strong>one (1) kit</strong> valid for twelve (12) months.</p>
                                                         </div>
                                                         <div className="space-y-2">
                                                             <div className="font-medium text-amber-700">Moderate-Risk Individuals</div>
-                                                            <p>Annual subscription provides <strong>two (2) kits per year</strong>, delivered every six (6) months.</p>
+                                                            <p>Are encouraged to avail of the annual subscription, which provides <strong>two (2) kits per year</strong>, delivered every six (6) months.</p>
                                                         </div>
                                                         <div className="space-y-2">
                                                             <div className="font-medium text-green-700">High-Risk Individuals</div>
-                                                            <p>Frequent subscription grants <strong>four (4) kits annually</strong>, delivered every three (3) months.</p>
+                                                            <p>May select the more frequent subscription option, granting <strong>four (4) kits annually</strong>, delivered every three (3) months.</p>
                                                         </div>
                                                     </div>
                                                     
                                                     <div className="border-t border-gray-200 pt-3 space-y-2">
                                                         <p className="text-xs">
-                                                            <strong>Delivery & Processing:</strong> All self-test kits are delivered directly to your preferred address, with scheduled pick-up after use for proper processing and disposal, ensuring safety, convenience, and confidentiality at every stage.
+                                                            <strong>Delivery & Processing:</strong> All self-test kits are delivered directly to the user's preferred address, with scheduled pick-up after use for proper processing and disposal, ensuring safety, convenience, and confidentiality at every stage.
                                                         </p>
                                                         <p className="text-xs">
-                                                            <strong>Cancellation & Refunds:</strong> Subscribers retain the option to discontinue their subscription at any time; however, all purchases and subscriptions for self-testing kits are <strong>strictly non-refundable</strong>.
+                                                            <strong>Cancellation & Refunds:</strong> Subscribers retain the option to discontinue their subscription at any time; however, it must be noted that all purchases and subscriptions under the Pro Plan are <strong>strictly non-refundable</strong>.
                                                         </p>
                                                     </div>
                                                     
@@ -613,7 +613,7 @@ export default function KitRequest({
                                                             className="h-4 w-4 text-red-700 border-gray-300 rounded focus:ring-red-700"
                                                         />
                                                         <label htmlFor="pro_terms_accepted" className="text-xs font-medium text-gray-900">
-                                                            I acknowledge and accept the Self-Testing Kit Terms and Conditions
+                                                            I acknowledge and accept the Pro Plan Terms and Conditions
                                                         </label>
                                                     </div>
                                                 </div>
@@ -627,7 +627,7 @@ export default function KitRequest({
                                             // Validate terms and conditions acceptance
                                             const termsCheckbox = document.getElementById('pro_terms_accepted') as HTMLInputElement;
                                             if (!termsCheckbox?.checked) {
-                                                alert('Please accept the Self-Testing Kit Terms and Conditions to proceed with your request.');
+                                                alert('Please accept the Pro Plan Terms and Conditions to proceed with your request.');
                                                 return;
                                             }
                                             
