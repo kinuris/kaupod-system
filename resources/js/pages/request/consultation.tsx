@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import InputError from '@/components/input-error';
 import ClientNavigation from '@/components/client-navigation';
 import DeliveryLocationMap from '@/components/delivery-location-map';
@@ -90,6 +90,13 @@ export default function ConsultationRequest({
 
     const [consultationMode, setConsultationMode] = useState<'online' | 'in-person' | ''>('');
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
+
+    // Clear location when switching from in-person to online mode
+    useEffect(() => {
+        if (consultationMode !== 'in-person') {
+            setSelectedLocation(null);
+        }
+    }, [consultationMode]);
     const [selectedTier, setSelectedTier] = useState<string>('');
     const [showAgeConfirmModal, setShowAgeConfirmModal] = useState(false);
     const [ageConfirmed, setAgeConfirmed] = useState(false);

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Consultation Location Conditional Logic</title>
+</head>
+<body>
+    <h1>Testing Consultation Location Picker</h1>
+    
+    <h2>Expected Behavior:</h2>
+    <ul>
+        <li>✅ Location picker should be hidden when "Online Consultation" is selected</li>
+        <li>✅ Location picker should be visible when "In-Person Consultation" is selected</li>
+        <li>✅ Location should be cleared when switching from in-person to online</li>
+        <li>✅ Location should be required for in-person consultations</li>
+        <li>✅ Location should not be required for online consultations</li>
+    </ul>
+    
+    <h2>Implementation Summary:</h2>
+    <ul>
+        <li>✅ Added useEffect to clear location when switching from in-person to online</li>
+        <li>✅ Conditional rendering with {consultationMode === 'in-person' && (...)}</li>
+        <li>✅ Backend validation with required_if:consultation_mode,in-person</li>
+        <li>✅ Hidden inputs only render when in-person mode is selected</li>
+    </ul>
+    
+    <h2>Test Steps:</h2>
+    <ol>
+        <li>Navigate to http://localhost:8000/consultation</li>
+        <li>Select "Online Consultation" - location picker should be hidden</li>
+        <li>Select "In-Person Consultation" - location picker should appear</li>
+        <li>Select a location on the map</li>
+        <li>Switch back to "Online Consultation" - location should be cleared and picker hidden</li>
+        <li>Try submitting form with online mode - should work without location</li>
+        <li>Try submitting form with in-person mode but no location - should show validation error</li>
+    </ol>
+</body>
+</html>

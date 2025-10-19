@@ -37,7 +37,7 @@ interface ConsultationRequest {
     preferred_date: string;
     preferred_time: string;
     consultation_type: string;
-    consultation_mode?: string; // Optional since it doesn't exist in the database
+    consultation_mode: string;
     consultation_latitude: number | null;
     consultation_longitude: number | null;
     consultation_location_address: string | null;
@@ -45,6 +45,10 @@ interface ConsultationRequest {
     reason: string;
     medical_history: string | null;
     scheduled_datetime: string | null;
+    schedule_preferences: {
+        consultation_mode?: string;
+        [key: string]: unknown;
+    };
     assigned_partner_doctor: {
         id: number;
         name: string;
@@ -82,6 +86,17 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
             default:
                 return type?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Unknown';
         }
+    };
+
+    // Get consultation mode from direct field or schedule preferences
+    const getConsultationMode = (consultation: ConsultationRequest): string => {
+        return consultation.consultation_mode || consultation.schedule_preferences?.consultation_mode || 'Not specified';
+    };
+
+    // Format consultation mode for display
+    const formatConsultationMode = (mode: string): string => {
+        if (!mode || mode === 'Not specified') return 'Not specified';
+        return mode.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
     };
 
     const getStatusIcon = (status: string) => {
@@ -341,6 +356,16 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                                 </div>
                                             </div>
 
+                                            <div className="flex items-center gap-3">
+                                                <MessageCircle className="h-5 w-5 text-red-700" />
+                                                <div>
+                                                    <p className="text-sm text-gray-700 font-medium">Consultation Mode</p>
+                                                    <p className="font-semibold text-gray-900 capitalize">
+                                                        {formatConsultationMode(getConsultationMode(consultation))}
+                                                    </p>
+                                                </div>
+                                            </div>
+
                                             {consultation.consultation_location_address && (
                                                 <div className="flex items-start gap-3">
                                                     <MapPin className="h-5 w-5 text-red-700 mt-0.5" />
@@ -373,6 +398,7 @@ export default function ConsultationTracker({ consultationRequests }: Props) {
                                             )}
 
                                             {consultation.meeting_link && 
+                                             getConsultationMode(consultation) === 'online' &&
                                              ['confirmed', 'reminder_sent', 'finished'].includes(consultation.status) && (
                                                 <div className="flex items-center gap-3">
                                                     <Video className="h-5 w-5 text-blue-700" />
