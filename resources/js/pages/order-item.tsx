@@ -191,72 +191,82 @@ export default function OrderItem({ products }: Props) {
                 {/* Cart Sidebar */}
                 {showCart && (
                     <div className="fixed inset-0 z-50 overflow-hidden">
-                        <div className="absolute inset-0 bg-black/50 backdrop-blur-xs" onClick={() => setShowCart(false)} />
-                        <div className="absolute right-0 top-0 h-full w-96 bg-white shadow-xl p-6 overflow-y-auto">
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-xl font-semibold">Shopping Cart</h2>
-                                <button
-                                    onClick={() => setShowCart(false)}
-                                    className="text-gray-500 hover:text-gray-700"
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                            
-                            {Object.entries(cart).length === 0 ? (
-                                <p className="text-gray-600 text-center py-8">Your cart is empty</p>
-                            ) : (
-                                <>
-                                    <div className="space-y-4 mb-6">
-                                        {Object.entries(cart).map(([productId, count]) => {
-                                            const product = products.find(p => p.id === parseInt(productId));
-                                            if (!product) return null;
-                                            
-                                            return (
-                                                <div key={productId} className="flex items-center gap-3 p-3 border border-gray-200 rounded">
-                                                    <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                                                        <Package className="h-6 w-6 text-gray-400" />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <h4 className="text-sm font-medium text-gray-900 truncate">
-                                                            {product.name}
-                                                        </h4>
-                                                        <p className="text-sm text-gray-600">₱{product.price} each</p>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <button
-                                                            onClick={() => removeFromCart(product.id)}
-                                                            className="p-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
-                                                        >
-                                                            <Minus className="h-3 w-3" />
-                                                        </button>
-                                                        <span className="text-sm font-medium min-w-[20px] text-center">
-                                                            {count}
-                                                        </span>
-                                                        <button
-                                                            onClick={() => addToCart(product.id)}
-                                                            disabled={count >= product.stock}
-                                                            className="p-1 bg-green-100 text-green-600 rounded hover:bg-green-200 disabled:opacity-50"
-                                                        >
-                                                            <Plus className="h-3 w-3" />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                    
-                                    <div className="border-t pt-4">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <span className="text-lg font-semibold">Total:</span>
-                                            <span className="text-xl font-bold text-blue-600">₱{getCartTotal()}</span>
+                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCart(false)} />
+                        <div className="absolute right-0 top-0 h-full w-96 bg-white shadow-2xl border-l border-gray-200">
+                            <div className="flex flex-col h-full">
+                                <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                                    <h2 className="text-xl font-semibold text-gray-900">Shopping Cart</h2>
+                                    <button
+                                        onClick={() => setShowCart(false)}
+                                        className="p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                <div className="flex-1 overflow-y-auto p-6">
+                                    {Object.entries(cart).length === 0 ? (
+                                        <div className="text-center py-12">
+                                            <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                                            <p className="text-gray-500">Your cart is empty</p>
                                         </div>
-                                        <button className="w-full bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition-colors">
+                                    ) : (
+                                        <div className="space-y-4">
+                                            {Object.entries(cart).map(([productId, count]) => {
+                                                const product = products.find(p => p.id === parseInt(productId));
+                                                if (!product) return null;
+                                                
+                                                return (
+                                                    <div key={productId} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                                        <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center border">
+                                                            <Package className="h-6 w-6 text-gray-400" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <h4 className="text-sm font-semibold text-gray-900 truncate">
+                                                                {product.name}
+                                                            </h4>
+                                                            <p className="text-sm text-gray-600">₱{product.price} each</p>
+                                                            <p className="text-xs text-gray-500">Subtotal: ₱{(product.price * count).toFixed(2)}</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <button
+                                                                onClick={() => removeFromCart(product.id)}
+                                                                className="p-1.5 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition-colors"
+                                                            >
+                                                                <Minus className="h-3 w-3" />
+                                                            </button>
+                                                            <span className="text-sm font-semibold text-gray-900 min-w-[24px] text-center">
+                                                                {count}
+                                                            </span>
+                                                            <button
+                                                                onClick={() => addToCart(product.id)}
+                                                                disabled={count >= product.stock}
+                                                                className="p-1.5 bg-green-100 text-green-600 rounded-md hover:bg-green-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                            >
+                                                                <Plus className="h-3 w-3" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                {Object.entries(cart).length > 0 && (
+                                    <div className="border-t border-gray-200 p-6 bg-gray-50">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <span className="text-lg font-semibold text-gray-900">Total:</span>
+                                            <span className="text-xl font-bold text-blue-600">₱{getCartTotal().toFixed(2)}</span>
+                                        </div>
+                                        <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">
                                             Proceed to Checkout
                                         </button>
                                     </div>
-                                </>
-                            )}
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}

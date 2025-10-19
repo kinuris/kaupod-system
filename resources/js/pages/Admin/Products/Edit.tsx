@@ -233,6 +233,7 @@ export default function ProductsEdit({ product }: PageProps) {
                                                 id="is_active"
                                                 checked={data.is_active}
                                                 onCheckedChange={(checked) => setData('is_active', !!checked)}
+                                                className='border border-white'
                                             />
                                             <div>
                                                 <Label htmlFor="is_active" className="text-sm font-medium text-gray-900 dark:text-white">
@@ -251,6 +252,7 @@ export default function ProductsEdit({ product }: PageProps) {
                                                 id="is_featured"
                                                 checked={data.is_featured}
                                                 onCheckedChange={(checked) => setData('is_featured', !!checked)}
+                                                className='border border-white'
                                             />
                                             <div>
                                                 <Label htmlFor="is_featured" className="text-sm font-medium text-gray-900 dark:text-white">
