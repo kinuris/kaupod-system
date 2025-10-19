@@ -94,24 +94,45 @@ export default function Register() {
                                     </div>
                                     <div className="flex-1">
                                         <h3 className="text-base font-semibold text-gray-900 mb-2">Terms and Conditions</h3>
-                                        <div className="text-xs text-gray-700 space-y-2 max-h-32 overflow-y-auto">
+                                        <div className="text-xs text-gray-700 space-y-2 max-h-40 overflow-y-auto">
                                             <p className="font-medium">Welcome to Kaupod!</p>
-                                            <p>By accessing or using our website, you agree to comply with and be bound by the following Terms and Conditions.</p>
+                                            <p>By accessing or using our website, you agree to comply with and be bound by the following Terms and Conditions. Please read them carefully before using our services.</p>
                                             
-                                            <div className="space-y-1">
-                                                <p><strong>1. Use of the Website:</strong> Kaupod is an ICT-based platform providing automated risk assessment, HIV-related information, and health services access in partnership with DOH and Capiz Shells Organization, Inc.</p>
+                                            <div className="space-y-2">
+                                                <div>
+                                                    <p><strong>1. Use of the Website</strong></p>
+                                                    <p className="ml-2">The Kaupod website is an ICT-based platform designed to provide automated risk assessment, HIV-related information, and access to health services in partnership with the Department of Health (DOH) and Capiz Shells Organization, Inc. You agree to use the website solely for lawful purposes related to personal healthcare needs and not in any way that may disrupt or compromise the platform. Any misuse, including attempts to interfere with its security or functionality, is strictly prohibited.</p>
+                                                </div>
                                                 
-                                                <p><strong>2. Services Provided:</strong> We offer Pro Plan (HIV self-test kits) and Plus Plan (medical consultations) with risk-based delivery schedules.</p>
+                                                <div>
+                                                    <p><strong>2. Services Provided</strong></p>
+                                                    <p className="ml-2">Kaupod offers key features including a risk assessment chatbot, risk categorization, HIV hub locator, pre- and post-test counseling and medication access to Antiretroviral Therapy (ART). Other services available: Pro Plan (Access to HIV, Chlamydia, Gonorrhea, Syphilis self-test kits through either a one-time purchase or subscription), Plus Plan (Facilitated booking and hosting of medical consultations with specialists), and In-app Purchases (sexual health products like condoms, contraceptive pills, pregnancy tests and supplements). Service availability may vary depending on location and partnerships and is subject to change without prior notice.</p>
+                                                </div>
                                                 
-                                                <p><strong>3. User Responsibility:</strong> You are responsible for accurate information and acknowledge Kaupod facilitates access to health services.</p>
+                                                <div>
+                                                    <p><strong>3. User Responsibility</strong></p>
+                                                    <p className="ml-2">You are responsible for ensuring the accuracy of all information provided when using the website or subscribing to services. You acknowledge that decisions made based on the services are at your own discretion and that Kaupod serves as a facilitator of access to health services, not a replacement for licensed medical professionals.</p>
+                                                </div>
                                                 
-                                                <p><strong>4. Confidentiality:</strong> All personal information is handled with strict confidentiality and used only for service delivery.</p>
+                                                <div>
+                                                    <p><strong>4. Confidentiality and Data Use</strong></p>
+                                                    <p className="ml-2">All personal information collected through the platform is handled with strict confidentiality and used only for the purpose of facilitating risk assessment, service delivery, and appointment scheduling. Kaupod will never disclose personal data to third parties without the user's consent, except as required by law or to fulfill service coordination with official health partners.</p>
+                                                </div>
                                                 
-                                                <p><strong>5. Subscriptions:</strong> All Pro Plan and Plus Plan subscriptions are strictly non-refundable.</p>
+                                                <div>
+                                                    <p><strong>5. Subscriptions and Payments</strong></p>
+                                                    <p className="ml-2">All Pro Plan and Plus Plan subscriptions are strictly non-refundable. Subscribers may opt out and discontinue services at any time; however, no refunds will be issued for prior payments. Payment terms, fees, and available packages are clearly indicated on the website and may be updated periodically.</p>
+                                                </div>
                                                 
-                                                <p><strong>6. Intellectual Property:</strong> All content and materials are owned by or licensed to Kaupod and are protected under applicable laws.</p>
+                                                <div>
+                                                    <p><strong>6. Intellectual Property</strong></p>
+                                                    <p className="ml-2">All content, design, and materials on the Kaupod website, software-driven features, and service frameworks, except educational resources, are owned by or licensed to Kaupod and are protected under applicable copyright and intellectual property laws. Unauthorized reproduction, distribution, or modification of any part of the platform is prohibited without prior written consent.</p>
+                                                </div>
                                                 
-                                                <p><strong>7. Changes to Terms:</strong> Kaupod reserves the right to update these Terms and Conditions at any time.</p>
+                                                <div>
+                                                    <p><strong>7. Changes to Terms</strong></p>
+                                                    <p className="ml-2">Kaupod reserves the right to update or revise these Terms and Conditions at any time. Continued use of the website and its services after changes are posted constitutes acceptance of the revised terms.</p>
+                                                </div>
                                             </div>
                                         </div>
                                         
