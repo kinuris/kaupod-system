@@ -33,17 +33,10 @@ export default function About() {
                         {/* About Kaupod */}
                         <div className="mb-16">
                             <div className="prose prose-lg max-w-none">
+                                <h2 className="text-3xl font-bold text-gray-900 mb-8">ABOUT US</h2>
                                 <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                                    Kaupod is a Capiz-based HIV platform dedicated to <strong>enhancing risk awareness and reducing stigma</strong> through accessible and structured services. Our core feature is a chatbot that conducts risk assessments and determines each user's risk level. Based on the assessment, the platform provides a detailed map of HIV hubs in Capiz, guiding individuals to appropriate health services.
+                                    Kaupod is a Capiz-based digital health platform established with the advocacy of promoting HIV awareness, prevention, and support, while also addressing the broader aspects of sexual health, including sexually transmitted diseases (STDs) such as Chlamydia, Gonorrhea, and Syphilis. Guided by its commitment to reduce stigma and promote inclusivity, Kaupod serves as a secure and confidential platform that enables individuals to access accurate information, testing, and care with dignity and privacy. The platform upholds the principles of early detection, responsible health management, and continuous education through the integration of digital innovation and collaboration with healthcare professionals and partner organizations. Anchored in compassion and social responsibility, Kaupod aims to foster a community that values openness, awareness, and equitable access to sexual health services for all.
                                 </p>
-                                <div className="bg-red-50 border-l-4 border-red-500 p-6 my-8">
-                                    <p className="text-red-800 text-xl font-semibold mb-2">
-                                        Our Mission
-                                    </p>
-                                    <p className="text-red-700">
-                                        We are designed to encourage timely testing, support informed decisions, and promote equitable access to healthcare within the community.
-                                    </p>
-                                </div>
                             </div>
                         </div>
 
