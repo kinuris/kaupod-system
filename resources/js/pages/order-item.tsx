@@ -450,6 +450,76 @@ export default function OrderItem({ products }: Props) {
                         </ul>
                     </div>
                 </div>
+
+                {/* Terms and Conditions - In-App Purchases */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+                    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Terms and Conditions – In-App Purchases</h3>
+                        <div className="text-sm text-gray-700 space-y-4 max-h-96 overflow-y-auto">
+                            <p>
+                                These Terms and Conditions govern the use of Team Kaupod's in-app purchase services, which allow users to buy verified sexual health products through the Kaupod platform in partnership with Watsons Philippines. By making an in-app purchase, users acknowledge and agree to comply with the following terms and conditions:
+                            </p>
+                            
+                            <div className="space-y-3">
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Service Scope</h4>
+                                    <p className="ml-4">
+                                        The in-app purchase feature provides users with access to a range of sexual health products, including but not limited to contraceptives, lubricants, vitamins, and hygiene items. All products are supplied and distributed by Watsons Philippines, ensuring quality and authenticity. Team Kaupod acts solely as a facilitator of transactions between the user and Watsons through the platform. Product availability, pricing, and specifications are subject to change based on Watsons' inventory and current policies.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Eligibility</h4>
+                                    <p className="ml-4">
+                                        The in-app purchase service is available exclusively to users aged 18 and above residing within Capiz. Users must ensure that all personal, contact, and delivery details provided during purchase are accurate and complete to prevent delays or order issues.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Ordering and Delivery</h4>
+                                    <p className="ml-4">
+                                        Orders are processed upon confirmation of payment through Kaupod's in-app system. Delivery times may vary depending on product availability, location, and Watsons' delivery schedules. Users will receive updates on their order status through the platform or registered contact information. Any delays caused by unforeseen circumstances, such as weather, logistics issues, or supply limitations, are beyond Team Kaupod's control.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Payment and Refund Policy</h4>
+                                    <p className="ml-4">
+                                        All payments for in-app purchases are processed securely within the Kaupod platform. Once confirmed, purchases are strictly non-refundable unless products are damaged, defective, or incorrect upon delivery, subject to Watsons' return and exchange policy. Refund or replacement requests must be filed within seven (7) days of receiving the product, accompanied by proof of purchase and supporting documentation.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Confidentiality and Data Protection</h4>
+                                    <p className="ml-4">
+                                        All personal and transactional information provided by users will be treated with strict confidentiality in accordance with applicable privacy laws. Data will only be shared with Watsons or authorized delivery partners for the purpose of processing and fulfilling orders. No sensitive health information will be disclosed without explicit consent from the user.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Limitations of Liability</h4>
+                                    <p className="ml-4">
+                                        Team Kaupod is not the manufacturer, distributor, or seller of any product offered through in-app purchases. Product quality, safety, and efficacy are the responsibility of Watsons Philippines and the respective manufacturers. Team Kaupod shall not be held liable for any adverse reactions, product misuse, or damages resulting from the use of purchased products.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Service Modifications and Termination</h4>
+                                    <p className="ml-4">
+                                        Team Kaupod reserves the right to modify, suspend, or terminate the in-app purchase feature at any time, with reasonable notice provided to active users. Changes in product availability or pricing shall be governed by Watsons' policies and may occur without prior notice.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Acceptance of Terms</h4>
+                                    <p className="ml-4">
+                                        By completing an in-app purchase, the user acknowledges that they have read, understood, and agreed to these Terms and Conditions, as well as Watsons' applicable sales and return policies.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     );
