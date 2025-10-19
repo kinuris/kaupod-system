@@ -57,7 +57,7 @@ class ConsultationRequestController extends Controller
             'preferred_day' => 'required|string|in:01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31',
             'preferred_year' => 'required|string|in:2025,2026',
             'preferred_time' => 'required|string',
-            'consultation_type' => 'required|string',
+            'consultation_type' => 'required|string|in:hiv,gonorrhea,syphilis,chlamydia',
             'subscription_tier' => 'required|string|in:one_time,moderate_annual,high_annual',
             'consultation_mode' => 'required|in:online,in-person',
             'consultation_latitude' => 'nullable|numeric|required_if:consultation_mode,in-person',

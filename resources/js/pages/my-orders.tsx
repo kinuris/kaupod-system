@@ -297,6 +297,21 @@ const formatKitType = (kitType: string) => {
     }
 };
 
+const formatConsultationType = (type: string) => {
+    switch (type?.toLowerCase()) {
+        case 'hiv':
+            return 'HIV Consultation';
+        case 'gonorrhea':
+            return 'Gonorrhea Consultation';
+        case 'syphilis':
+            return 'Syphilis Consultation';
+        case 'chlamydia':
+            return 'Chlamydia Consultation';
+        default:
+            return type?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Consultation';
+    }
+};
+
 export default function MyOrders({ kitOrders = [], consultationRequests = [], productOrders = [], filters }: StatusPageProps) {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<{
@@ -644,7 +659,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], pr
                                             
                                             <div className="space-y-1 text-sm text-gray-600 mb-2">
                                                 <div>
-                                                    <span className="font-medium">Type:</span> {request.consultation_type?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                                    <span className="font-medium">Type:</span> {formatConsultationType(request.consultation_type)}
                                                 </div>
                                                 <div>
                                                     <span className="font-medium">Preferred Date:</span> {new Date(request.preferred_date).toLocaleDateString()}
@@ -922,7 +937,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], pr
                                                 </div>
                                                 
                                                 <div className="space-y-1 text-xs text-gray-600">
-                                                    <div><span className="font-medium">Type:</span> {request.consultation_type?.replace('_', ' ')}</div>
+                                                    <div><span className="font-medium">Type:</span> {formatConsultationType(request.consultation_type)}</div>
                                                     <div><span className="font-medium">Date:</span> {new Date(request.preferred_date).toLocaleDateString()}</div>
                                                     <div><span className="font-medium">Time:</span> {request.preferred_time}</div>
                                                     <div><span className="font-medium">Contact:</span> {request.phone}</div>

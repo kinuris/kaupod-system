@@ -753,11 +753,10 @@ export default function ConsultationRequest({
                                                 className="border-input flex h-10 w-full min-w-0 rounded-md border bg-white text-gray-900 px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
                                             >
                                                 <option value="">Select consultation type</option>
-                                                <option value="general">General Consultation</option>
-                                                <option value="reproductive_health">Reproductive Health</option>
-                                                <option value="contraception">Contraception Guidance</option>
-                                                <option value="emergency">Emergency Consultation</option>
-                                                <option value="follow_up">Follow-up Consultation</option>
+                                                <option value="hiv">HIV Consultation</option>
+                                                <option value="gonorrhea">Gonorrhea Consultation</option>
+                                                <option value="syphilis">Syphilis Consultation</option>
+                                                <option value="chlamydia">Chlamydia Consultation</option>
                                             </select>
                                             <InputError message={errors.consultation_type} />
                                         </div>

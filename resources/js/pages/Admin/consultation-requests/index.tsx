@@ -109,7 +109,18 @@ const formatStatusDisplay = (status: string) => {
 };
 
 const formatConsultationType = (type: string) => {
-  return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  switch (type?.toLowerCase()) {
+    case 'hiv':
+      return 'HIV Consultation';
+    case 'gonorrhea':
+      return 'Gonorrhea Consultation';
+    case 'syphilis':
+      return 'Syphilis Consultation';
+    case 'chlamydia':
+      return 'Chlamydia Consultation';
+    default:
+      return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  }
 };
 
 export default function ConsultationRequestsIndex({ requests, statuses, partnerDoctors, filters }: PageProps) {
