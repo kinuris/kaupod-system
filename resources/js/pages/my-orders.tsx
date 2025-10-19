@@ -7,6 +7,7 @@ import ReturnKitModal from '@/components/ReturnKitModal';
 
 interface KitOrder {
     id: number;
+    kit_type: string;
     status: string;
     phone: string;
     delivery_location_address?: string;
@@ -281,6 +282,21 @@ const getConsultationTimelineStatusDetails = (status: string) => {
     }
 };
 
+const formatKitType = (kitType: string) => {
+    switch (kitType?.toLowerCase()) {
+        case 'hiv':
+            return 'HIV Testing Kit';
+        case 'gonorrhea':
+            return 'Gonorrhea Testing Kit';
+        case 'syphilis':
+            return 'Syphilis Testing Kit';
+        case 'chlamydia':
+            return 'Chlamydia Testing Kit';
+        default:
+            return 'Testing Kit';
+    }
+};
+
 export default function MyOrders({ kitOrders = [], consultationRequests = [], productOrders = [], filters }: StatusPageProps) {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<{
@@ -332,20 +348,20 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], pr
                             My Orders & Requests
                         </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Track the status of your Pro Plan orders and consultation requests
+                            Track the status of your self-testing kit orders and consultation requests
                         </p>
                     </div>
 
                     {/* Desktop/Tablet: 3 columns grid, Mobile: Horizontal scroll */}
                     <div className="hidden md:grid md:grid-cols-3 gap-6 xl:gap-8">
                         {/* Desktop 3-column layout */}
-                        {/* Pro Plan Orders */}
+                        {/* Self-Testing Kit Orders */}
                         <div className="bg-white rounded-2xl shadow-xl p-8">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
                                     <Package className="h-5 w-5 text-red-700" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-900">Pro Plan Orders</h2>
+                                <h2 className="text-2xl font-bold text-gray-900">Self-Testing Kit Orders</h2>
                             </div>
 
                             <div className="mb-6">
@@ -389,7 +405,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], pr
                                             <div className="flex items-start justify-between mb-3">
                                                 <div>
                                                     <div className="font-semibold text-gray-900">
-                                                        Pro Plan Order #{order.id}
+                                                        {formatKitType(order.kit_type)} #{order.id}
                                                     </div>
                                                     <div className="text-sm text-gray-500">
                                                         Ordered: {new Date(order.created_at).toLocaleDateString()}
@@ -796,13 +812,13 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], pr
                     {/* Mobile: Horizontal scroll */}
                     <div className="md:hidden">
                         <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                            {/* Pro Plan Orders - Mobile */}
+                            {/* Self-Testing Kit Orders - Mobile */}
                             <div className="flex-shrink-0 w-80 bg-white rounded-2xl shadow-xl p-6 snap-start">
                                 <div className="flex items-center gap-2 mb-3">
                                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100">
                                         <Package className="h-4 w-4 text-red-700" />
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900">Pro Plan Orders</h2>
+                                    <h2 className="text-lg font-bold text-gray-900">Self-Testing Kit Orders</h2>
                                 </div>
 
                                 <div className="mb-4">
@@ -846,7 +862,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], pr
                                                 <div className="flex items-start justify-between mb-2">
                                                     <div>
                                                         <div className="text-sm font-semibold text-gray-900">
-                                                            Pro Plan Order #{order.id}
+                                                            {formatKitType(order.kit_type)} #{order.id}
                                                         </div>
                                                         <div className="text-xs text-gray-500">
                                                             {new Date(order.created_at).toLocaleDateString()}
@@ -999,7 +1015,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], pr
                                     href="/request/kit"
                                     className="inline-block bg-red-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors"
                                 >
-                                    Order New Pro Plan
+                                    Order Testing Kit
                                 </a>
                                 <a 
                                     href="/request/consultation"

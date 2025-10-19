@@ -17,6 +17,7 @@ class KitOrderController extends Controller
     public function store(Request $request, PriceCalculator $calculator)
     {
         $data = $request->validate([
+            'kit_type' => 'required|in:hiv,gonorrhea,syphilis,chlamydia',
             'delivery_notes' => 'nullable|string|max:2000',
             'delivery_latitude' => 'nullable|numeric|between:-90,90',
             'delivery_longitude' => 'nullable|numeric|between:-180,180',
@@ -102,6 +103,7 @@ class KitOrderController extends Controller
             
             KitOrder::create([
                 'user_id' => $user->id,
+                'kit_type' => $data['kit_type'],
                 'subscription_id' => $subscriptionId,
                 'purchase_type' => $purchaseType,
                 'phone' => $data['phone'],

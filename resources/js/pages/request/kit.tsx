@@ -55,6 +55,7 @@ export default function KitRequest({
     hasActiveSubscription = false 
 }: KitRequestProps) {
     const [selectedLocation, setSelectedLocation] = useState<DeliveryLocation | null>(null);
+    const [kitType, setKitType] = useState<string>('hiv');
     
     // Check if user has active subscription with remaining kits
     const hasRemainingKits = hasActiveSubscription && activeSubscription && (activeSubscription.kits_used < activeSubscription.kits_allowed);
@@ -70,7 +71,7 @@ export default function KitRequest({
 
     return (
         <>
-            <Head title="Privacy Kit Request - Kaupod" />
+            <Head title="Self-Testing Kit Request - Kaupod" />
             
             <ClientNavigation />
 
@@ -84,10 +85,10 @@ export default function KitRequest({
                             </div>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Pro Plan Request
+                            Self-Testing Kit Request
                         </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Confidential HIV testing kits delivered to your exact location with secure result delivery
+                            Confidential self-testing kits for STI screening delivered to your exact location with secure result delivery
                         </p>
                     </div>
 
@@ -375,6 +376,104 @@ export default function KitRequest({
                             {({ processing, errors, submit }) => (
                                 <>
                                     <div className="grid gap-6">
+                                        {/* Kit Type Selection */}
+                                        <div className="grid gap-3">
+                                            <Label className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                                                <Package className="h-4 w-4" />
+                                                Select Testing Kit Type
+                                            </Label>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                                                    kitType === 'hiv' 
+                                                        ? 'border-red-500 bg-red-50' 
+                                                        : 'border-gray-300 hover:border-red-300'
+                                                }`}
+                                                onClick={() => setKitType('hiv')}>
+                                                    <div className="flex items-center gap-3">
+                                                        <input 
+                                                            type="radio" 
+                                                            name="kit_type" 
+                                                            value="hiv"
+                                                            checked={kitType === 'hiv'}
+                                                            onChange={() => setKitType('hiv')}
+                                                            className="text-red-600 focus:ring-red-500"
+                                                        />
+                                                        <div>
+                                                            <h4 className="font-semibold text-gray-900">HIV Testing Kit</h4>
+                                                            <p className="text-sm text-gray-600">FDA-approved HIV self-test kit</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                                                    kitType === 'gonorrhea' 
+                                                        ? 'border-red-500 bg-red-50' 
+                                                        : 'border-gray-300 hover:border-red-300'
+                                                }`}
+                                                onClick={() => setKitType('gonorrhea')}>
+                                                    <div className="flex items-center gap-3">
+                                                        <input 
+                                                            type="radio" 
+                                                            name="kit_type" 
+                                                            value="gonorrhea"
+                                                            checked={kitType === 'gonorrhea'}
+                                                            onChange={() => setKitType('gonorrhea')}
+                                                            className="text-red-600 focus:ring-red-500"
+                                                        />
+                                                        <div>
+                                                            <h4 className="font-semibold text-gray-900">Gonorrhea Testing Kit</h4>
+                                                            <p className="text-sm text-gray-600">Professional gonorrhea self-test kit</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                                                    kitType === 'syphilis' 
+                                                        ? 'border-red-500 bg-red-50' 
+                                                        : 'border-gray-300 hover:border-red-300'
+                                                }`}
+                                                onClick={() => setKitType('syphilis')}>
+                                                    <div className="flex items-center gap-3">
+                                                        <input 
+                                                            type="radio" 
+                                                            name="kit_type" 
+                                                            value="syphilis"
+                                                            checked={kitType === 'syphilis'}
+                                                            onChange={() => setKitType('syphilis')}
+                                                            className="text-red-600 focus:ring-red-500"
+                                                        />
+                                                        <div>
+                                                            <h4 className="font-semibold text-gray-900">Syphilis Testing Kit</h4>
+                                                            <p className="text-sm text-gray-600">Professional syphilis self-test kit</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                                                    kitType === 'chlamydia' 
+                                                        ? 'border-red-500 bg-red-50' 
+                                                        : 'border-gray-300 hover:border-red-300'
+                                                }`}
+                                                onClick={() => setKitType('chlamydia')}>
+                                                    <div className="flex items-center gap-3">
+                                                        <input 
+                                                            type="radio" 
+                                                            name="kit_type" 
+                                                            value="chlamydia"
+                                                            checked={kitType === 'chlamydia'}
+                                                            onChange={() => setKitType('chlamydia')}
+                                                            className="text-red-600 focus:ring-red-500"
+                                                        />
+                                                        <div>
+                                                            <h4 className="font-semibold text-gray-900">Chlamydia Testing Kit</h4>
+                                                            <p className="text-sm text-gray-600">Professional chlamydia self-test kit</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <InputError message={errors.kit_type} />
+                                        </div>
+
                                         <div className="grid gap-3">
                                             <Label htmlFor="delivery-map" className="text-base font-semibold text-gray-900 flex items-center gap-2">
                                                 <MapPin className="h-4 w-4" />
@@ -466,7 +565,7 @@ export default function KitRequest({
                                         </div>
                                     </div>
 
-                                    {/* Pro Plan Terms and Conditions */}
+                                    {/* Self-Testing Kit Terms and Conditions */}
                                     <div className="bg-gradient-to-r from-gray-50 to-stone-50 border border-gray-200 rounded-lg p-6">
                                         <div className="flex items-start gap-3">
                                             <div className="flex-shrink-0">
@@ -475,10 +574,10 @@ export default function KitRequest({
                                                 </div>
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="text-lg font-semibold text-gray-900 mb-3">Pro Plan Terms and Conditions</h3>
+                                                <h3 className="text-lg font-semibold text-gray-900 mb-3">Self-Testing Kit Terms and Conditions</h3>
                                                 <div className="text-sm text-gray-700 space-y-3">
                                                     <p>
-                                                        The Pro Plan provides access to HIV self-test kits through either a one-time purchase or an annual subscription, tailored to the individual's level of risk.
+                                                        The Self-Testing Kit service provides access to various STI self-test kits through either a one-time purchase or an annual subscription, tailored to the individual's testing needs and risk level.
                                                     </p>
                                                     
                                                     <div className="grid md:grid-cols-3 gap-4 text-xs">
@@ -501,7 +600,7 @@ export default function KitRequest({
                                                             <strong>Delivery & Processing:</strong> All self-test kits are delivered directly to your preferred address, with scheduled pick-up after use for proper processing and disposal, ensuring safety, convenience, and confidentiality at every stage.
                                                         </p>
                                                         <p className="text-xs">
-                                                            <strong>Cancellation & Refunds:</strong> Subscribers retain the option to discontinue their subscription at any time; however, all purchases and subscriptions under the Pro Plan are <strong>strictly non-refundable</strong>.
+                                                            <strong>Cancellation & Refunds:</strong> Subscribers retain the option to discontinue their subscription at any time; however, all purchases and subscriptions for self-testing kits are <strong>strictly non-refundable</strong>.
                                                         </p>
                                                     </div>
                                                     
@@ -514,7 +613,7 @@ export default function KitRequest({
                                                             className="h-4 w-4 text-red-700 border-gray-300 rounded focus:ring-red-700"
                                                         />
                                                         <label htmlFor="pro_terms_accepted" className="text-xs font-medium text-gray-900">
-                                                            I acknowledge and accept the Pro Plan Terms and Conditions
+                                                            I acknowledge and accept the Self-Testing Kit Terms and Conditions
                                                         </label>
                                                     </div>
                                                 </div>
@@ -528,7 +627,7 @@ export default function KitRequest({
                                             // Validate terms and conditions acceptance
                                             const termsCheckbox = document.getElementById('pro_terms_accepted') as HTMLInputElement;
                                             if (!termsCheckbox?.checked) {
-                                                alert('Please accept the Pro Plan Terms and Conditions to proceed with your request.');
+                                                alert('Please accept the Self-Testing Kit Terms and Conditions to proceed with your request.');
                                                 return;
                                             }
                                             
@@ -542,7 +641,7 @@ export default function KitRequest({
                                         {processing && (
                                             <LoaderCircle className="h-5 w-5 animate-spin mr-3" />
                                         )}
-                                        Submit Privacy Kit Request
+                                        Submit Self-Testing Kit Request
                                     </Button>
                                 </>
                             )}

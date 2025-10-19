@@ -177,7 +177,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if (!$showCancelled) {
             $kitOrdersQuery->where('status', '!=', 'cancelled');
         }
-        $kitOrders = $kitOrdersQuery->get(['id', 'status', 'phone', 'delivery_location_address', 'delivery_address', 'delivery_latitude', 'delivery_longitude', 'return_location_address', 'return_address', 'return_latitude', 'return_longitude', 'return_date', 'return_notes', 'created_at', 'timeline']);
+        $kitOrders = $kitOrdersQuery->get(['id', 'kit_type', 'status', 'phone', 'delivery_location_address', 'delivery_address', 'delivery_latitude', 'delivery_longitude', 'return_location_address', 'return_address', 'return_latitude', 'return_longitude', 'return_date', 'return_notes', 'created_at', 'timeline']);
         
         $consultations = $user->consultationRequests()->latest()->get(['id', 'status', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 'consultation_mode', 'meeting_link', 'created_at', 'timeline']);
         
