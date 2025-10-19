@@ -34,9 +34,31 @@ interface ConsultationRequest {
     timeline?: Record<string, string>;
 }
 
+interface ProductOrderItem {
+    product_id: number;
+    product_name: string;
+    price: number;
+    quantity: number;
+    subtotal: number;
+}
+
+interface ProductOrder {
+    id: number;
+    customer_name: string;
+    customer_email: string;
+    customer_phone: string;
+    delivery_address: string;
+    total_amount: number;
+    items: ProductOrderItem[];
+    status: string;
+    payment_status: string;
+    created_at: string;
+}
+
 interface StatusPageProps {
     kitOrders: KitOrder[];
     consultationRequests: ConsultationRequest[];
+    productOrders: ProductOrder[];
     filters: {
         show_cancelled: boolean;
     };
@@ -259,7 +281,7 @@ const getConsultationTimelineStatusDetails = (status: string) => {
     }
 };
 
-export default function MyOrders({ kitOrders = [], consultationRequests = [], filters }: StatusPageProps) {
+export default function MyOrders({ kitOrders = [], consultationRequests = [], productOrders = [], filters }: StatusPageProps) {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<{
         latitude: number;
@@ -304,7 +326,7 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
 
             {/* Hero Section */}
             <section className="bg-gradient-to-br from-red-50 to-amber-50 py-20">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-screen mx-auto px-8">
                     <div className="text-center mb-12">
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                             My Orders & Requests
@@ -314,38 +336,39 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                         </p>
                     </div>
 
-                    <div className="grid lg:grid-cols-2 gap-8">
+                    {/* Desktop/Tablet: 3 columns grid, Mobile: Horizontal scroll */}
+                    <div className="hidden md:grid md:grid-cols-3 gap-6 xl:gap-8">
+                        {/* Desktop 3-column layout */}
                         {/* Pro Plan Orders */}
-                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                            <div className="bg-gradient-to-r from-red-600 to-red-700 px-8 py-6">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center">
-                                        <Package className="h-6 w-6 text-white mr-3" />
-                                        <h2 className="text-2xl font-bold text-white">Pro Plan Orders</h2>
-                                    </div>
+                        <div className="bg-white rounded-2xl shadow-xl p-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                                    <Package className="h-5 w-5 text-red-700" />
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={filters.show_cancelled}
-                                            onChange={(e) => {
-                                                const url = new URL(window.location.href);
-                                                if (e.target.checked) {
-                                                    url.searchParams.set('show_cancelled', '1');
-                                                } else {
-                                                    url.searchParams.delete('show_cancelled');
-                                                }
-                                                router.get(url.pathname + url.search, {}, {
-                                                    preserveState: true,
-                                                    preserveScroll: true,
-                                                });
-                                            }}
-                                            className="rounded border-gray-300 text-red-700 focus:ring-red-500"
-                                        />
-                                        Show cancelled orders
-                                    </label>
-                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900">Pro Plan Orders</h2>
+                            </div>
+
+                            <div className="mb-6">
+                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={filters.show_cancelled}
+                                        onChange={(e) => {
+                                            const url = new URL(window.location.href);
+                                            if (e.target.checked) {
+                                                url.searchParams.set('show_cancelled', '1');
+                                            } else {
+                                                url.searchParams.delete('show_cancelled');
+                                            }
+                                            router.get(url.pathname + url.search, {}, {
+                                                preserveState: true,
+                                                preserveScroll: true,
+                                            });
+                                        }}
+                                        className="rounded border-gray-300 text-red-700 focus:ring-red-500"
+                                    />
+                                    Show cancelled orders
+                                </label>
                             </div>
 
                             {kitOrders.length === 0 ? (
@@ -666,6 +689,305 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                 </div>
                             )}
                         </div>
+
+                        {/* Healthcare Products */}
+                        <div className="bg-white rounded-2xl shadow-xl p-8">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+                                    <Package className="h-5 w-5 text-blue-700" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900">Healthcare Products</h2>
+                            </div>
+
+                            {productOrders.length === 0 ? (
+                                <div className="text-center py-8">
+                                    <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                                    <p className="text-gray-500 mb-4">No healthcare product orders yet</p>
+                                    <a 
+                                        href="/order-item"
+                                        className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                    >
+                                        Browse Healthcare Products
+                                    </a>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {productOrders.map((order) => (
+                                        <div key={order.id} className="border border-gray-200 rounded-lg p-4">
+                                            <div className="flex items-start justify-between mb-3">
+                                                <div>
+                                                    <div className="font-semibold text-gray-900">
+                                                        Order #{order.id}
+                                                    </div>
+                                                    <div className="text-sm text-gray-500">
+                                                        Ordered: {new Date(order.created_at).toLocaleDateString()}
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-sm font-medium ${getStatusColor(order.status)}`}>
+                                                        {getStatusIcon(order.status)}
+                                                        {formatStatusDisplay(order.status)}
+                                                    </div>
+                                                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-sm font-medium ${
+                                                        order.payment_status === 'paid' 
+                                                            ? 'bg-green-50 text-green-800 border-green-200'
+                                                            : 'bg-yellow-50 text-yellow-800 border-yellow-200'
+                                                    }`}>
+                                                        {order.payment_status === 'paid' ? (
+                                                            <CheckCircle className="h-4 w-4" />
+                                                        ) : (
+                                                            <Clock className="h-4 w-4" />
+                                                        )}
+                                                        Payment: {order.payment_status}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="mb-3">
+                                                <div className="text-sm text-gray-600 mb-2">
+                                                    <span className="font-medium">Customer:</span> {order.customer_name}
+                                                </div>
+                                                <div className="text-sm text-gray-600 mb-2">
+                                                    <span className="font-medium">Email:</span> {order.customer_email}
+                                                </div>
+                                                <div className="text-sm text-gray-600 mb-2">
+                                                    <span className="font-medium">Phone:</span> {order.customer_phone}
+                                                </div>
+                                                <div className="text-sm text-gray-600 mb-2">
+                                                    <span className="font-medium">Delivery Address:</span>
+                                                    <div className="ml-2 text-gray-700 bg-gray-50 p-2 rounded mt-1">
+                                                        {order.delivery_address}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Order Items */}
+                                            <div className="mb-3">
+                                                <div className="font-medium text-gray-900 mb-2">Order Items:</div>
+                                                <div className="space-y-2">
+                                                    {order.items.map((item, index) => (
+                                                        <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                                            <div className="flex-1">
+                                                                <div className="text-sm font-medium text-gray-900">{item.product_name}</div>
+                                                                <div className="text-xs text-gray-500">
+                                                                    ₱{item.price.toFixed(2)} × {item.quantity}
+                                                                </div>
+                                                            </div>
+                                                            <div className="text-sm font-semibold text-gray-900">
+                                                                ₱{item.subtotal.toFixed(2)}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <div className="border-t border-gray-200 pt-2 mt-2">
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="font-semibold text-gray-900">Total Amount:</span>
+                                                        <span className="text-lg font-bold text-blue-600">₱{order.total_amount.toFixed(2)}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Mobile: Horizontal scroll */}
+                    <div className="md:hidden">
+                        <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                            {/* Pro Plan Orders - Mobile */}
+                            <div className="flex-shrink-0 w-80 bg-white rounded-2xl shadow-xl p-6 snap-start">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100">
+                                        <Package className="h-4 w-4 text-red-700" />
+                                    </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Pro Plan Orders</h2>
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={filters.show_cancelled}
+                                            onChange={(e) => {
+                                                const url = new URL(window.location.href);
+                                                if (e.target.checked) {
+                                                    url.searchParams.set('show_cancelled', '1');
+                                                } else {
+                                                    url.searchParams.delete('show_cancelled');
+                                                }
+                                                router.get(url.pathname + url.search, {}, {
+                                                    preserveState: true,
+                                                    preserveScroll: true,
+                                                });
+                                            }}
+                                            className="rounded border-gray-300 text-red-700 focus:ring-red-500"
+                                        />
+                                        Show cancelled orders
+                                    </label>
+                                </div>
+
+                                {kitOrders.length === 0 ? (
+                                    <div className="text-center py-6">
+                                        <Package className="h-8 w-8 text-gray-300 mx-auto mb-3" />
+                                        <p className="text-sm text-gray-500 mb-3">No testing kit orders yet</p>
+                                        <a 
+                                            href="/request/kit"
+                                            className="inline-block bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-800 transition-colors"
+                                        >
+                                            Order Your First Kit
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                                        {kitOrders.map((order) => (
+                                            <div key={order.id} className="border border-gray-200 rounded-lg p-3">
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <div>
+                                                        <div className="text-sm font-semibold text-gray-900">
+                                                            Pro Plan Order #{order.id}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">
+                                                            {new Date(order.created_at).toLocaleDateString()}
+                                                        </div>
+                                                    </div>
+                                                    <div className={`flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-medium ${getStatusColor(order.status)}`}>
+                                                        {getStatusIcon(order.status)}
+                                                        <span className="hidden sm:inline">{formatStatusDisplay(order.status)}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="text-xs text-gray-600">
+                                                    <span className="font-medium">Contact:</span> {order.phone}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Medical Consultations - Mobile */}
+                            <div className="flex-shrink-0 w-80 bg-white rounded-2xl shadow-xl p-6 snap-start">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100">
+                                        <MessageCircle className="h-4 w-4 text-amber-700" />
+                                    </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Medical Consultations</h2>
+                                </div>
+
+                                {consultationRequests.length === 0 ? (
+                                    <div className="text-center py-6">
+                                        <MessageCircle className="h-8 w-8 text-gray-300 mx-auto mb-3" />
+                                        <p className="text-sm text-gray-500 mb-3">No consultation requests yet</p>
+                                        <a 
+                                            href="/request/consultation"
+                                            className="inline-block bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-amber-800 transition-colors"
+                                        >
+                                            Book Your First Consultation
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                                        {consultationRequests.map((request) => (
+                                            <div key={request.id} className="border border-gray-200 rounded-lg p-3">
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <div>
+                                                        <div className="text-sm font-semibold text-gray-900">
+                                                            Consultation #{request.id}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">
+                                                            {new Date(request.created_at).toLocaleDateString()}
+                                                        </div>
+                                                    </div>
+                                                    <div className={`flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-medium ${getStatusColor(request.status)}`}>
+                                                        {getStatusIcon(request.status)}
+                                                        <span className="hidden sm:inline">{formatStatusDisplay(request.status)}</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="space-y-1 text-xs text-gray-600">
+                                                    <div><span className="font-medium">Type:</span> {request.consultation_type?.replace('_', ' ')}</div>
+                                                    <div><span className="font-medium">Date:</span> {new Date(request.preferred_date).toLocaleDateString()}</div>
+                                                    <div><span className="font-medium">Time:</span> {request.preferred_time}</div>
+                                                    <div><span className="font-medium">Contact:</span> {request.phone}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Healthcare Products - Mobile */}
+                            <div className="flex-shrink-0 w-80 bg-white rounded-2xl shadow-xl p-6 snap-start">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                                        <Package className="h-4 w-4 text-blue-700" />
+                                    </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Healthcare Products</h2>
+                                </div>
+
+                                {productOrders.length === 0 ? (
+                                    <div className="text-center py-6">
+                                        <Package className="h-8 w-8 text-gray-300 mx-auto mb-3" />
+                                        <p className="text-sm text-gray-500 mb-3">No healthcare product orders yet</p>
+                                        <a 
+                                            href="/order-item"
+                                            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors"
+                                        >
+                                            Browse Products
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                                        {productOrders.map((order) => (
+                                            <div key={order.id} className="border border-gray-200 rounded-lg p-3">
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <div>
+                                                        <div className="text-sm font-semibold text-gray-900">
+                                                            Order #{order.id}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">
+                                                            {new Date(order.created_at).toLocaleDateString()}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col gap-1">
+                                                        <div className={`flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-medium ${getStatusColor(order.status)}`}>
+                                                            {getStatusIcon(order.status)}
+                                                        </div>
+                                                        <div className={`flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-medium ${
+                                                            order.payment_status === 'paid' 
+                                                                ? 'bg-green-50 text-green-800 border-green-200'
+                                                                : 'bg-yellow-50 text-yellow-800 border-yellow-200'
+                                                        }`}>
+                                                            {order.payment_status === 'paid' ? (
+                                                                <CheckCircle className="h-3 w-3" />
+                                                            ) : (
+                                                                <Clock className="h-3 w-3" />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="space-y-1 text-xs text-gray-600 mb-2">
+                                                    <div><span className="font-medium">Customer:</span> {order.customer_name}</div>
+                                                    <div><span className="font-medium">Total:</span> ₱{order.total_amount.toFixed(2)}</div>
+                                                    <div><span className="font-medium">Items:</span> {order.items.length} item(s)</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {/* Mobile scroll indicator */}
+                        <div className="flex justify-center mt-2">
+                            <div className="flex space-x-2">
+                                <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                                <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                                <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Quick Actions */}
@@ -684,6 +1006,12 @@ export default function MyOrders({ kitOrders = [], consultationRequests = [], fi
                                     className="inline-block bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-800 transition-colors"
                                 >
                                     Book New Consultation
+                                </a>
+                                <a 
+                                    href="/order-item"
+                                    className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                >
+                                    Browse Healthcare Products
                                 </a>
                             </div>
                         </div>

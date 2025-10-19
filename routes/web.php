@@ -181,9 +181,45 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         $consultations = $user->consultationRequests()->latest()->get(['id', 'status', 'phone', 'preferred_date', 'preferred_time', 'consultation_type', 'consultation_mode', 'meeting_link', 'created_at', 'timeline']);
         
+        // Get user's product orders
+        $productOrdersQuery = $user ? $user->productOrders()->latest() : \App\Models\ProductOrder::where('customer_email', $user?->email ?? '')->latest();
+        if (!$showCancelled) {
+            $productOrdersQuery->where('status', '!=', 'cancelled');
+        }
+        $productOrders = $productOrdersQuery->get(['id', 'customer_name', 'customer_email', 'customer_phone', 'delivery_address', 'total_amount', 'items', 'status', 'payment_status', 'created_at']);
+        
+        // Cast numeric values for frontend
+        $productOrders = $productOrders->map(function ($order) {
+            $items = is_array($order->items) ? $order->items : [];
+            // Cast numeric values in items array
+            $castedItems = array_map(function ($item) {
+                return [
+                    'product_id' => (int) $item['product_id'],
+                    'product_name' => $item['product_name'],
+                    'price' => (float) $item['price'],
+                    'quantity' => (int) $item['quantity'],
+                    'subtotal' => (float) $item['subtotal']
+                ];
+            }, $items);
+            
+            return [
+                'id' => $order->id,
+                'customer_name' => $order->customer_name,
+                'customer_email' => $order->customer_email,
+                'customer_phone' => $order->customer_phone,
+                'delivery_address' => $order->delivery_address,
+                'total_amount' => (float) $order->total_amount,
+                'items' => $castedItems,
+                'status' => $order->status,
+                'payment_status' => $order->payment_status,
+                'created_at' => $order->created_at,
+            ];
+        });
+        
         return Inertia::render('my-orders', [
             'kitOrders' => $kitOrders,
             'consultationRequests' => $consultations,
+            'productOrders' => $productOrders,
             'filters' => [
                 'show_cancelled' => $showCancelled,
             ],

@@ -67,6 +67,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the product orders for the user.
+     */
+    public function productOrders()
+    {
+        return $this->hasMany(ProductOrder::class);
+    }
+
+    /**
      * Get the subscriptions for the user.
      */
     public function subscriptions()
