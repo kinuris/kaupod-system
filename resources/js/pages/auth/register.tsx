@@ -28,7 +28,7 @@ export default function Register() {
                     <>
                         <div className="space-y-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name">Codename</Label>
                                 <Input
                                     id="name"
                                     type="text"
@@ -37,7 +37,7 @@ export default function Register() {
                                     tabIndex={1}
                                     autoComplete="name"
                                     name="name"
-                                    placeholder="Enter your full name"
+                                    placeholder="Enter a codename"
                                 />
                                 <InputError message={errors.name} />
                             </div>

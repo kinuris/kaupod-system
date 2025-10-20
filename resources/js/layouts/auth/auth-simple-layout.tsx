@@ -53,7 +53,7 @@ export default function AuthSimpleLayout({
                                 href={home()}
                                 className="lg:hidden flex flex-col items-center gap-2"
                             >
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-red-700 to-amber-700">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full">
                                     <AppLogoIcon className="min-w-20 object-contain" />
                                 </div>
                                 <span className="text-xl font-bold text-red-700">Kaupod</span>

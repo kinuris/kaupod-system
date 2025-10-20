@@ -112,7 +112,7 @@ export default function ClientNavigation() {
                                                     }}
                                                     className="flex items-center text-red-700 hover:text-red-800 font-medium transition-colors text-sm"
                                                 >
-                                                    Testing Services
+                                                    Pro Plan
                                                     <ChevronDown className={`ml-0.5 h-3 w-3 transition-transform ${isTestingDropdownOpen ? 'rotate-180' : ''}`} />
                                                 </button>
                                                 {isTestingDropdownOpen && (
@@ -122,14 +122,14 @@ export default function ClientNavigation() {
                                                             className="block px-3 py-1.5 text-red-700 hover:bg-red-50 hover:text-red-800 transition-colors text-sm"
                                                             onClick={() => setIsTestingDropdownOpen(false)}
                                                         >
-                                                            Pro Plan
+                                                            Testing Services
                                                         </Link>
                                                         <Link 
                                                             href="/subscriptions" 
                                                             className="block px-3 py-1.5 text-orange-700 hover:bg-orange-50 hover:text-orange-800 transition-colors text-sm"
                                                             onClick={() => setIsTestingDropdownOpen(false)}
                                                         >
-                                                            Subscriptions
+                                                            Testing Tracker
                                                         </Link>
                                                     </div>
                                                 )}
@@ -145,7 +145,7 @@ export default function ClientNavigation() {
                                                     }}
                                                     className="flex items-center text-amber-700 hover:text-amber-800 font-medium transition-colors text-sm"
                                                 >
-                                                    Consultation Services
+                                                    Plus Plan
                                                     <ChevronDown className={`ml-0.5 h-3 w-3 transition-transform ${isConsultationDropdownOpen ? 'rotate-180' : ''}`} />
                                                 </button>
                                                 {isConsultationDropdownOpen && (
@@ -155,7 +155,7 @@ export default function ClientNavigation() {
                                                             className="block px-3 py-1.5 text-amber-700 hover:bg-amber-50 hover:text-amber-800 transition-colors text-sm"
                                                             onClick={() => setIsConsultationDropdownOpen(false)}
                                                         >
-                                                            Consultations
+                                                            Consultation Services
                                                         </Link>
                                                         <Link 
                                                             href="/plus-tracker" 
@@ -361,35 +361,35 @@ export default function ClientNavigation() {
                                         {/* Testing Services Group */}
                                         <div className="py-2">
                                             <div className="text-red-700 font-semibold text-sm uppercase tracking-wide mb-2">
-                                                Testing Services
+                                               Pro Plan 
                                             </div>
                                             <Link 
                                                 href="/request/kit" 
                                                 className="block text-red-700 hover:text-red-800 font-medium py-1 pl-4 transition-colors"
                                                 onClick={closeMobileMenu}
                                             >
-                                                Pro Plan
+                                                Testing Services
                                             </Link>
                                             <Link 
                                                 href="/subscriptions" 
                                                 className="block text-orange-700 hover:text-orange-800 font-medium py-1 pl-4 transition-colors"
                                                 onClick={closeMobileMenu}
                                             >
-                                                Subscriptions
+                                                Testing Tracker
                                             </Link>
                                         </div>
                                         
                                         {/* Consultation Services Group */}
                                         <div className="py-2">
                                             <div className="text-amber-700 font-semibold text-sm uppercase tracking-wide mb-2">
-                                                Consultation Services
+                                                Plus Plan
                                             </div>
                                             <Link 
                                                 href="/request/consultation" 
                                                 className="block text-amber-700 hover:text-amber-800 font-medium py-1 pl-4 transition-colors"
                                                 onClick={closeMobileMenu}
                                             >
-                                                Consultations
+                                                Consultation Services
                                             </Link>
                                             <Link 
                                                 href="/plus-tracker" 
