@@ -1,7 +1,7 @@
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import ClientNavigation from '@/components/client-navigation';
-import { ShoppingCart, Package, Plus, Minus, X } from 'lucide-react';
-import { useState } from 'react';
+import { ShoppingCart, Package, Plus, Minus } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface Product {
     id: number;
@@ -26,12 +26,35 @@ const categories = [
     { id: "other_kits", name: "Other Kits", icon: "🩹" },
 ];
 
+const CART_STORAGE_KEY = 'kaupod-health-store-cart';
+
+const loadCartFromStorage = (): {[key: number]: number} => {
+    if (typeof window === 'undefined') return {};
+    try {
+        const stored = localStorage.getItem(CART_STORAGE_KEY);
+        return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+        console.warn('Failed to load cart from localStorage:', error);
+        return {};
+    }
+};
+
+const saveCartToStorage = (cart: {[key: number]: number}) => {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    } catch (error) {
+        console.warn('Failed to save cart to localStorage:', error);
+    }
+};
+
 export default function OrderItem({ products }: Props) {
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
-    const [cart, setCart] = useState<{[key: number]: number}>({});
+    const [cart, setCart] = useState<{[key: number]: number}>(loadCartFromStorage);
     const [showCart, setShowCart] = useState(false);
     const [showCheckout, setShowCheckout] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [cartLoaded, setCartLoaded] = useState(false);
     const [checkoutForm, setCheckoutForm] = useState({
         customer_name: '',
         customer_email: '',
@@ -39,6 +62,43 @@ export default function OrderItem({ products }: Props) {
         delivery_address: '',
         notes: ''
     });
+
+    // Save cart to localStorage whenever it changes
+    useEffect(() => {
+        saveCartToStorage(cart);
+    }, [cart]);
+
+    // Validate and clean up cart when products are loaded
+    useEffect(() => {
+        if (products.length === 0) return;
+        
+        // Debug: Log products to see if images are being loaded
+        console.log('Products loaded:', products.map(p => ({ id: p.id, name: p.name, image: p.image })));
+        
+        const storedCart = loadCartFromStorage();
+        const validatedCart: {[key: number]: number} = {};
+        let hasItems = false;
+        
+        Object.entries(storedCart).forEach(([productIdStr, quantity]) => {
+            const productId = parseInt(productIdStr);
+            const product = products.find(p => p.id === productId);
+            
+            // Only keep items that still exist and have valid quantities
+            if (product && quantity > 0) {
+                // Ensure quantity doesn't exceed current stock
+                validatedCart[productId] = Math.min(quantity, product.stock);
+                hasItems = true;
+            }
+        });
+        
+        setCart(validatedCart);
+        setCartLoaded(true);
+        
+        // Show a brief notification if cart had items loaded from storage
+        if (hasItems && Object.keys(validatedCart).length > 0) {
+            console.log(`Cart loaded with ${Object.values(validatedCart).reduce((sum, qty) => sum + qty, 0)} items from previous session`);
+        }
+    }, [products]);
 
     const filteredProducts = selectedCategory === "all" 
         ? products 
@@ -75,6 +135,11 @@ export default function OrderItem({ products }: Props) {
             const product = products.find(p => p.id === parseInt(productId));
             return total + (product ? product.price * count : 0);
         }, 0);
+    };
+
+    const clearCart = () => {
+        setCart({});
+        saveCartToStorage({});
     };
 
     const handleCheckout = async () => {
@@ -117,7 +182,7 @@ export default function OrderItem({ products }: Props) {
                 window.open('https://gcash.com', '_blank');
                 
                 // Clear cart and redirect to success page
-                setCart({});
+                clearCart();
                 setShowCart(false);
                 setShowCheckout(false);
                 
@@ -142,16 +207,22 @@ export default function OrderItem({ products }: Props) {
 
     const ProductCard = ({ product }: { product: Product }) => (
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 border border-gray-200">
-            <div className="aspect-square bg-gray-100 rounded-md mb-4 flex items-center justify-center overflow-hidden">
+            <div className="aspect-square bg-gray-50 rounded-md mb-4 flex items-center justify-center overflow-hidden border border-gray-200">
                 {product.image ? (
                     <img 
                         src={product.image} 
                         alt={product.name}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain p-2"
+                        onError={(e) => {
+                            console.log(`Failed to load image for ${product.name}: ${product.image}`);
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        }}
                     />
-                ) : (
+                ) : null}
+                <div className={`flex items-center justify-center ${product.image ? 'hidden' : ''}`}>
                     <Package className="h-12 w-12 text-gray-400" />
-                )}
+                </div>
             </div>
             <h3 className="font-semibold text-gray-900 mb-2 text-sm leading-tight">
                 {product.name}
@@ -313,8 +384,16 @@ export default function OrderItem({ products }: Props) {
                                                 
                                                 return (
                                                     <div key={productId} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                                        <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center border">
-                                                            <Package className="h-6 w-6 text-gray-400" />
+                                                        <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center border overflow-hidden">
+                                                            {product.image ? (
+                                                                <img 
+                                                                    src={product.image} 
+                                                                    alt={product.name}
+                                                                    className="w-full h-full object-contain"
+                                                                />
+                                                            ) : (
+                                                                <Package className="h-6 w-6 text-gray-400" />
+                                                            )}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
                                                             <h4 className="text-sm font-semibold text-gray-900 truncate">
@@ -354,12 +433,24 @@ export default function OrderItem({ products }: Props) {
                                             <span className="text-lg font-semibold text-gray-900">Total:</span>
                                             <span className="text-xl font-bold text-red-600">₱{getCartTotal().toFixed(2)}</span>
                                         </div>
-                                        <button 
-                                            onClick={proceedToCheckout}
-                                            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors shadow-sm"
-                                        >
-                                            Proceed to Checkout
-                                        </button>
+                                        <div className="space-y-3">
+                                            <button 
+                                                onClick={proceedToCheckout}
+                                                className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors shadow-sm"
+                                            >
+                                                Proceed to Checkout
+                                            </button>
+                                            <button 
+                                                onClick={() => {
+                                                    if (confirm('Are you sure you want to clear your cart?')) {
+                                                        clearCart();
+                                                    }
+                                                }}
+                                                className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors border border-gray-300"
+                                            >
+                                                Clear Cart
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                             </div>
