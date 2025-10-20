@@ -142,8 +142,16 @@ export default function OrderItem({ products }: Props) {
 
     const ProductCard = ({ product }: { product: Product }) => (
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 border border-gray-200">
-            <div className="aspect-square bg-gray-100 rounded-md mb-4 flex items-center justify-center">
-                <Package className="h-12 w-12 text-gray-400" />
+            <div className="aspect-square bg-gray-100 rounded-md mb-4 flex items-center justify-center overflow-hidden">
+                {product.image ? (
+                    <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-full h-full object-contain"
+                    />
+                ) : (
+                    <Package className="h-12 w-12 text-gray-400" />
+                )}
             </div>
             <h3 className="font-semibold text-gray-900 mb-2 text-sm leading-tight">
                 {product.name}

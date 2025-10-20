@@ -22,6 +22,7 @@ class ProductController extends Controller
                 'price' => (float) $product->price,
                 'stock' => (int) $product->stock,
                 'category' => $product->category,
+                'image' => $product->image,
                 'is_active' => (bool) $product->is_active,
                 'is_featured' => (bool) $product->is_featured,
                 'created_at' => $product->created_at,
@@ -53,9 +54,18 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category' => 'required|in:condom,pregnancy_test,pills,vitamins,other_kits',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/products'), $imageName);
+            $validated['image'] = '/images/products/' . $imageName;
+        }
 
         Product::create($validated);
 
@@ -76,6 +86,7 @@ class ProductController extends Controller
                 'price' => (float) $product->price,
                 'stock' => (int) $product->stock,
                 'category' => $product->category,
+                'image' => $product->image,
                 'is_active' => (bool) $product->is_active,
                 'is_featured' => (bool) $product->is_featured,
                 'created_at' => $product->created_at,
@@ -97,6 +108,7 @@ class ProductController extends Controller
                 'price' => (float) $product->price,
                 'stock' => (int) $product->stock,
                 'category' => $product->category,
+                'image' => $product->image,
                 'is_active' => (bool) $product->is_active,
                 'is_featured' => (bool) $product->is_featured,
                 'created_at' => $product->created_at,
@@ -110,15 +122,33 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        // Debug: Log the incoming request data
+        \Log::info('Product update request data:', $request->all());
+        \Log::info('Product update files:', $request->allFiles());
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category' => 'required|in:condom,pregnancy_test,pills,vitamins,other_kits',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image && file_exists(public_path($product->image))) {
+                unlink(public_path($product->image));
+            }
+            
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/products'), $imageName);
+            $validated['image'] = '/images/products/' . $imageName;
+        }
 
         $product->update($validated);
 

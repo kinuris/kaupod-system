@@ -41,6 +41,7 @@ Route::get('/order-item', function () {
             'price' => (float) $product->price,
             'stock' => (int) $product->stock,
             'category' => $product->category,
+            'image' => $product->image,
             'is_active' => (bool) $product->is_active,
             'is_featured' => (bool) $product->is_featured,
         ];

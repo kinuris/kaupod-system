@@ -14,6 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import ImageUpload from '@/components/ui/image-upload';
 import { type BreadcrumbItem } from '@/types';
 
 interface CreateProductForm {
@@ -22,6 +23,7 @@ interface CreateProductForm {
     price: number | string;
     stock: number | string;
     category: string;
+    image: File | null;
     is_active: boolean;
     is_featured: boolean;
 }
@@ -33,6 +35,7 @@ export default function ProductsCreate() {
         price: '',
         stock: '',
         category: '',
+        image: null,
         is_active: true,
         is_featured: false,
     });
@@ -53,7 +56,9 @@ export default function ProductsCreate() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/admin/products');
+        post('/admin/products', {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -191,6 +196,15 @@ export default function ProductsCreate() {
                                         {errors.category && (
                                             <p className="mt-1 text-sm text-red-600">{errors.category}</p>
                                         )}
+                                    </div>
+
+                                    {/* Product Image */}
+                                    <div className="md:col-span-2">
+                                        <ImageUpload
+                                            label="Product Image"
+                                            onImageSelect={(file) => setData('image', file)}
+                                            error={errors.image}
+                                        />
                                     </div>
                                 </div>
                             </div>

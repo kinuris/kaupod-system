@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#f3f4f6"/>
+  <rect x="90" y="100" width="120" height="60" rx="8" fill="#ec4899" stroke="#db2777" stroke-width="2"/>
+  <rect x="110" y="120" width="80" height="8" rx="4" fill="white"/>
+  <rect x="110" y="135" width="80" height="8" rx="4" fill="white"/>
+  <text x="150" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#374151">Early Detection Test</text>
+  <text x="150" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Test Strip</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#f3f4f6"/>
+  <rect x="90" y="90" width="120" height="80" rx="8" fill="#ec4899" stroke="#db2777" stroke-width="2"/>
+  <rect x="110" y="110" width="80" height="20" rx="4" fill="white"/>
+  <circle cx="150" cy="140" r="8" fill="#ec4899"/>
+  <text x="150" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#374151">Digital Pregnancy Test</text>
+  <text x="150" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Clear Digital Results</text>
+</svg>

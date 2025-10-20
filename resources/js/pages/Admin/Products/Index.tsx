@@ -26,6 +26,7 @@ interface Product {
     price: number;
     stock: number;
     category: string;
+    image?: string | null;
     is_active: boolean;
     is_featured: boolean;
     created_at: string;
@@ -136,6 +137,9 @@ export default function ProductsIndex({ products }: PageProps) {
                             <thead className="bg-gray-50 dark:bg-gray-900/20">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                        Image
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                                         Product
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
@@ -158,7 +162,7 @@ export default function ProductsIndex({ products }: PageProps) {
                             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 {filteredProducts.length === 0 ? (
                                     <tr>
-                                        <td colSpan={6} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                        <td colSpan={7} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                             <Package className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
                                             <p>No products found</p>
                                         </td>
@@ -166,6 +170,21 @@ export default function ProductsIndex({ products }: PageProps) {
                                 ) : (
                                     filteredProducts.map((product) => (
                                         <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/20">
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex-shrink-0 h-12 w-12">
+                                                    {product.image ? (
+                                                        <img 
+                                                            src={product.image} 
+                                                            alt={product.name}
+                                                            className="h-12 w-12 rounded-lg object-contain border border-gray-200 dark:border-gray-600"
+                                                        />
+                                                    ) : (
+                                                        <div className="h-12 w-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                                            <Package className="h-6 w-6 text-gray-400" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div>
                                                     <div className="text-sm font-medium text-gray-900 dark:text-white">

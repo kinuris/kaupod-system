@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#f3f4f6"/>
+  <rect x="80" y="90" width="140" height="100" rx="8" fill="#1f2937" stroke="#111827" stroke-width="2"/>
+  <rect x="90" y="100" width="120" height="50" rx="4" fill="#374151"/>
+  <rect x="100" y="110" width="100" height="30" rx="2" fill="#6b7280"/>
+  <text x="150" y="130" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">888</text>
+  <circle cx="110" cy="170" r="8" fill="#ef4444"/>
+  <circle cx="130" cy="170" r="8" fill="#10b981"/>
+  <circle cx="170" cy="170" r="8" fill="#3b82f6"/>
+  <circle cx="190" cy="170" r="8" fill="#f59e0b"/>
+  <text x="150" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#374151">Blood Glucose Kit</text>
+  <text x="150" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Glucose Monitoring</text>
+</svg>

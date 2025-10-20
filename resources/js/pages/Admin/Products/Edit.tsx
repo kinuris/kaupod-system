@@ -14,6 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import ImageUpload from '@/components/ui/image-upload';
 import { type BreadcrumbItem } from '@/types';
 
 interface Product {
@@ -23,6 +24,7 @@ interface Product {
     price: number;
     stock: number;
     category: string;
+    image?: string | null;
     is_active: boolean;
     is_featured: boolean;
 }
@@ -33,8 +35,10 @@ interface EditProductForm {
     price: number | string;
     stock: number | string;
     category: string;
+    image: File | null;
     is_active: boolean;
     is_featured: boolean;
+    _method?: string;
 }
 
 interface PageProps {
@@ -42,14 +46,15 @@ interface PageProps {
 }
 
 export default function ProductsEdit({ product }: PageProps) {
-    const { data, setData, patch, processing, errors } = useForm<EditProductForm>({
+    const { data, setData, post, processing, errors } = useForm<EditProductForm>({
         name: product.name,
         description: product.description,
         price: product.price,
         stock: product.stock,
         category: product.category,
-        is_active: product.is_active,
-        is_featured: product.is_featured,
+        image: null,
+        is_active: Boolean(product.is_active),
+        is_featured: Boolean(product.is_featured),
     });
 
     const breadcrumbItems: BreadcrumbItem[] = [
@@ -68,7 +73,20 @@ export default function ProductsEdit({ product }: PageProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        patch(`/admin/products/${product.id}`);
+        
+        console.log('Form data before submit:', data);
+        
+        // Use POST with method spoofing for file uploads
+        setData('_method', 'PATCH');
+        post(`/admin/products/${product.id}`, {
+            forceFormData: true,
+            onError: (errors) => {
+                console.log('Form errors:', errors);
+            },
+            onSuccess: () => {
+                console.log('Form submitted successfully');
+            }
+        });
     };
 
     return (
@@ -206,6 +224,16 @@ export default function ProductsEdit({ product }: PageProps) {
                                         {errors.category && (
                                             <p className="mt-1 text-sm text-red-600">{errors.category}</p>
                                         )}
+                                    </div>
+
+                                    {/* Product Image */}
+                                    <div className="md:col-span-2">
+                                        <ImageUpload
+                                            label="Product Image"
+                                            currentImage={product.image}
+                                            onImageSelect={(file) => setData('image', file)}
+                                            error={errors.image}
+                                        />
                                     </div>
                                 </div>
                             </div>

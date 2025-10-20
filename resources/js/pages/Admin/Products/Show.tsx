@@ -12,6 +12,7 @@ interface Product {
     price: number;
     stock: number;
     category: string;
+    image?: string | null;
     is_active: boolean;
     is_featured: boolean;
     created_at: string;

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#f3f4f6"/>
+  <rect x="100" y="80" width="100" height="140" rx="8" fill="#7c3aed" stroke="#6d28d9" stroke-width="2"/>
+  <rect x="110" y="90" width="80" height="30" rx="4" fill="white"/>
+  <text x="150" y="110" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#7c3aed">MULTIVITAMIN</text>
+  <circle cx="125" cy="135" r="8" fill="#f59e0b"/>
+  <circle cx="150" cy="135" r="8" fill="#10b981"/>
+  <circle cx="175" cy="135" r="8" fill="#ef4444"/>
+  <circle cx="125" cy="155" r="8" fill="#3b82f6"/>
+  <circle cx="150" cy="155" r="8" fill="#f97316"/>
+  <circle cx="175" cy="155" r="8" fill="#8b5cf6"/>
+  <text x="150" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#374151">Multivitamin for Women</text>
+  <text x="150" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Complete Daily Nutrition</text>
+</svg>
