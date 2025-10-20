@@ -160,8 +160,16 @@ export default function OrderItem({ products }: Props) {
                 {product.description}
             </p>
             <div className="flex items-center justify-between mb-3">
-                <span className="text-lg font-bold text-blue-600">₱{product.price}</span>
-                <span className="text-xs text-gray-500">Stock: {product.stock}</span>
+                <span className="text-lg font-bold text-red-600">₱{product.price}</span>
+                <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                    product.stock === 0 ? 'bg-red-100 text-red-800' :
+                    product.stock < 10 ? 'bg-amber-100 text-amber-800' :
+                    'bg-green-100 text-green-800'
+                }`}>
+                    {product.stock === 0 ? 'Out of Stock' : 
+                     product.stock < 10 ? `Low Stock (${product.stock})` : 
+                     `In Stock (${product.stock})`}
+                </span>
             </div>
             <div className="flex items-center gap-2">
                 {cart[product.id] ? (
@@ -187,7 +195,7 @@ export default function OrderItem({ products }: Props) {
                     <button
                         onClick={() => addToCart(product.id)}
                         disabled={product.stock === 0}
-                        className="flex-1 bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 bg-red-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
                     </button>
@@ -200,29 +208,33 @@ export default function OrderItem({ products }: Props) {
         <>
             <Head title="Order Items - Kaupod" />
             
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+            <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-amber-50">
                 <ClientNavigation />
                 
                 {/* Header Section */}
-                <header className="bg-white shadow-sm border-b border-gray-200 mt-14">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <header className="relative bg-gradient-to-r from-red-600 to-red-700 text-white py-12 mt-14">
+                    <div className="absolute inset-0 bg-black/10"></div>
+                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between items-center">
-                            <div>
-                                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                            <div className="text-center md:text-left">
+                                <div className="flex justify-center md:justify-start mb-4">
+                                    <Package className="h-12 w-12 text-red-200" />
+                                </div>
+                                <h1 className="text-3xl md:text-4xl font-bold mb-4">
                                     Health Products Store
                                 </h1>
-                                <p className="text-gray-600 mt-2">
-                                    Order healthcare products with discrete delivery
+                                <p className="text-xl text-red-100 max-w-2xl">
+                                    Order healthcare products with discreet delivery and complete privacy
                                 </p>
                             </div>
                             <button
                                 onClick={() => setShowCart(!showCart)}
-                                className="relative bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                className="relative bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2 border border-white/30"
                             >
                                 <ShoppingCart className="h-5 w-5" />
-                                <span>Cart</span>
+                                <span className="font-semibold">Cart</span>
                                 {getCartItemCount() > 0 && (
-                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                    <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
                                         {getCartItemCount()}
                                     </span>
                                 )}
@@ -234,20 +246,21 @@ export default function OrderItem({ products }: Props) {
                 {/* Main Content */}
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Category Filter */}
-                    <div className="mb-8">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Categories</h2>
-                        <div className="flex flex-wrap gap-2">
+                    <div className="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <h2 className="text-xl font-bold text-gray-900 mb-6">Shop by Category</h2>
+                        <div className="flex flex-wrap gap-3">
                             {categories.map((category) => (
                                 <button
                                     key={category.id}
                                     onClick={() => setSelectedCategory(category.id)}
-                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                                    className={`px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
                                         selectedCategory === category.id
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            ? 'bg-red-600 text-white shadow-lg transform scale-105'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-transparent'
                                     }`}
                                 >
-                                    {category.icon} {category.name}
+                                    <span className="text-base mr-2">{category.icon}</span>
+                                    {category.name}
                                 </button>
                             ))}
                         </div>
@@ -339,11 +352,11 @@ export default function OrderItem({ products }: Props) {
                                     <div className="border-t border-gray-200 p-6 bg-gray-50">
                                         <div className="flex justify-between items-center mb-4">
                                             <span className="text-lg font-semibold text-gray-900">Total:</span>
-                                            <span className="text-xl font-bold text-blue-600">₱{getCartTotal().toFixed(2)}</span>
+                                            <span className="text-xl font-bold text-red-600">₱{getCartTotal().toFixed(2)}</span>
                                         </div>
                                         <button 
                                             onClick={proceedToCheckout}
-                                            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+                                            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors shadow-sm"
                                         >
                                             Proceed to Checkout
                                         </button>
@@ -430,14 +443,14 @@ export default function OrderItem({ products }: Props) {
                                 <div className="bg-gray-50 p-4 rounded-md">
                                     <div className="flex justify-between items-center text-lg font-semibold">
                                         <span>Total Amount:</span>
-                                        <span className="text-blue-600">₱{getCartTotal().toFixed(2)}</span>
+                                        <span className="text-red-600">₱{getCartTotal().toFixed(2)}</span>
                                     </div>
                                 </div>
                                 
                                 <button
                                     onClick={handleCheckout}
                                     disabled={isProcessing}
-                                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isProcessing ? 'Processing...' : 'Complete Order & Pay with GCash'}
                                 </button>

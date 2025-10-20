@@ -122,10 +122,6 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        // Debug: Log the incoming request data
-        \Log::info('Product update request data:', $request->all());
-        \Log::info('Product update files:', $request->allFiles());
-        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',

@@ -74,18 +74,10 @@ export default function ProductsEdit({ product }: PageProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        console.log('Form data before submit:', data);
-        
         // Use POST with method spoofing for file uploads
         setData('_method', 'PATCH');
         post(`/admin/products/${product.id}`, {
-            forceFormData: true,
-            onError: (errors) => {
-                console.log('Form errors:', errors);
-            },
-            onSuccess: () => {
-                console.log('Form submitted successfully');
-            }
+            forceFormData: true
         });
     };
 
