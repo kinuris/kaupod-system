@@ -32,8 +32,8 @@ interface Product {
 interface EditProductForm {
     name: string;
     description: string;
-    price: number | string;
-    stock: number | string;
+    price: number;
+    stock: number;
     category: string;
     image: File | null;
     is_active: boolean;
@@ -55,6 +55,7 @@ export default function ProductsEdit({ product }: PageProps) {
         image: null,
         is_active: Boolean(product.is_active),
         is_featured: Boolean(product.is_featured),
+        _method: 'PATCH',
     });
 
     const breadcrumbItems: BreadcrumbItem[] = [
@@ -75,9 +76,9 @@ export default function ProductsEdit({ product }: PageProps) {
         e.preventDefault();
         
         // Use POST with method spoofing for file uploads
-        setData('_method', 'PATCH');
         post(`/admin/products/${product.id}`, {
-            forceFormData: true
+            forceFormData: true,
+            preserveScroll: true,
         });
     };
 
@@ -169,7 +170,7 @@ export default function ProductsEdit({ product }: PageProps) {
                                             step="0.01"
                                             min="0"
                                             value={data.price}
-                                            onChange={(e) => setData('price', e.target.value)}
+                                            onChange={(e) => setData('price', parseFloat(e.target.value) || 0)}
                                             className={`mt-1 ${errors.price ? 'border-red-500' : ''}`}
                                             placeholder="0.00"
                                         />
@@ -186,7 +187,7 @@ export default function ProductsEdit({ product }: PageProps) {
                                             type="number"
                                             min="0"
                                             value={data.stock}
-                                            onChange={(e) => setData('stock', e.target.value)}
+                                            onChange={(e) => setData('stock', parseInt(e.target.value) || 0)}
                                             className={`mt-1 ${errors.stock ? 'border-red-500' : ''}`}
                                             placeholder="0"
                                         />
