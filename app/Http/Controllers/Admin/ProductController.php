@@ -144,6 +144,10 @@ class ProductController extends Controller
             $imageName = time() . '_' . $image->getClientOriginalName();
             $image->move(public_path('images/products'), $imageName);
             $validated['image'] = '/images/products/' . $imageName;
+        } else {
+            // Remove image from validated data if no new image uploaded
+            // This preserves the existing image in the database
+            unset($validated['image']);
         }
 
         $product->update($validated);
