@@ -163,13 +163,13 @@ export default function ConsultationRequest({
             setSubmitCallback(() => () => {
                 submit();
                 // Open GCash in new tab after successful submission
-                window.open('https://gcash.com', '_blank');
+                // window.open('https://gcash.com', '_blank');
             });
             setShowAgeConfirmModal(true);
         } else {
             submit();
             // Open GCash in new tab after successful submission
-            window.open('https://gcash.com', '_blank');
+            // window.open('https://gcash.com', '_blank');
         }
     };
 

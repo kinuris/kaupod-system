@@ -179,7 +179,7 @@ export default function OrderItem({ products }: Props) {
 
             if (data.success) {
                 // Open GCash in new tab
-                window.open('https://gcash.com', '_blank');
+                // window.open('https://gcash.com', '_blank');
                 
                 // Clear cart and redirect to success page
                 clearCart();
