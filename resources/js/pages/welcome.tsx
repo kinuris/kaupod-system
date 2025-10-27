@@ -7,7 +7,7 @@ export default function Welcome() {
 
     return (
         <>
-            <Head title="Kaupod - Reproductive Health Care" />
+            <Head title="Kaupod" />
             
             <ClientNavigation />
 
