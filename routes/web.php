@@ -357,6 +357,12 @@ Route::middleware(['auth','verified', \App\Http\Middleware\IsAdmin::class])->pre
     // Products Management routes
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
 
+    // Product Orders Management routes
+    Route::get('/product-orders', [\App\Http\Controllers\Admin\ProductOrderController::class, 'index'])->name('product-orders.index');
+    Route::get('/product-orders/{productOrder}', [\App\Http\Controllers\Admin\ProductOrderController::class, 'show'])->name('product-orders.show');
+    Route::patch('/product-orders/{productOrder}/status', [\App\Http\Controllers\Admin\ProductOrderController::class, 'updateStatus'])->name('product-orders.update-status');
+    Route::patch('/product-orders/{productOrder}/payment-status', [\App\Http\Controllers\Admin\ProductOrderController::class, 'updatePaymentStatus'])->name('product-orders.update-payment-status');
+
     // Pricing settings routes
     Route::get('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'index'])->name('pricing.index');
     Route::patch('/pricing', [\App\Http\Controllers\Admin\PricingController::class, 'update'])->name('pricing.update');
