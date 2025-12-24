@@ -131,21 +131,21 @@ export default function Welcome() {
 
                     {/* Feature Grid */}
                     <div className="grid lg:grid-cols-2 gap-8 mb-16">
-                        {/* Risk Assessment */}
+                        {/* Chat with us */}
                         <div className="bg-white rounded-2xl p-8 shadow-lg">
                             <div className="flex items-center mb-6">
                                 <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
                                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                     </svg>
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900">Assess Your HIV Risk</h3>
+                                <h3 className="text-xl font-bold text-gray-900">Chat with us</h3>
                             </div>
                             <p className="text-gray-600 mb-4">
                                 Use our confidential chatbot to assess your HIV risk with accuracy and ease. Know your risk level instantly based on your responses.
                             </p>
                             <a href="/chat" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                                Start Risk Assessment
+                                Start Chat
                             </a>
                         </div>
 
