@@ -5,6 +5,19 @@ import { Head, Link, usePage } from '@inertiajs/react';
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
 
+    const openRiskAssessmentForm = () => {
+        const width = 500;
+        const height = 600;
+        const left = (window.screen.width - width) / 2;
+        const top = (window.screen.height - height) / 2;
+        
+        window.open(
+            'https://n8n.fcuinternal.online/form/afbf11a5-c7b5-4fbb-82ee-53c3edbd9a23',
+            'RiskAssessment',
+            `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+        );
+    };
+
     return (
         <>
             <Head title="Kaupod" />
@@ -40,7 +53,7 @@ export default function Welcome() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-12">
+                    <div className="grid md:grid-cols-3 gap-12">
                         <div className="bg-red-50 rounded-2xl p-8 border border-red-100">
                             <div className="w-12 h-12 bg-red-700 rounded-lg flex items-center justify-center mb-6">
                                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,6 +96,22 @@ export default function Welcome() {
                                     Book Consultation
                                 </a>
                             )}
+                        </div>
+
+                        <div className="bg-green-50 rounded-2xl p-8 border border-green-100">
+                            <div className="w-12 h-12 bg-green-700 rounded-lg flex items-center justify-center mb-6">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4">Free Risk Assessment</h3>
+                            <p className="text-gray-600 mb-6 leading-relaxed">
+                                Get a comprehensive free HIV risk assessment from our trusted partners. 
+                                Take the first step towards understanding your health in complete privacy.
+                            </p>
+                            <button onClick={openRiskAssessmentForm} className="inline-block bg-green-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors">
+                                Start Assessment
+                            </button>
                         </div>
                     </div>
                 </div>
